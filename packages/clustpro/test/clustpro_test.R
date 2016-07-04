@@ -1,0 +1,25 @@
+#setwd("D:/git/proteomics/packages)
+#devtools::create("clustpro")
+if(F){
+  library(devtools)
+  setwd("D:/git/proteomics/packages/clustpro")
+# devtools::check()
+  devtools::document()
+  devtools::install()
+  #devtools::reload()
+}
+
+# library(clustpro)
+# library(htmlwidgets)
+# library(ggplot2)
+# library(pracma)
+# library(Biobase)
+# library(Mfuzz)
+# library(clusterSim)
+# library(doSNOW)
+# library(pheatmap)
+# library(gplots)
+# library(ctc)
+# library(jsonlite)
+
+clustpro()

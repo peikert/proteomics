@@ -1,0 +1,919 @@
+{
+  "data_matrix": {
+    "mtx": [
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 4.9,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 1.3,
+        "Sepal.Length": 4.7,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 4.6,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 4.6,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 4.9,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 1.6,
+        "Sepal.Length": 4.8,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 4.8,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 1,
+        "Sepal.Length": 4.6,
+        "Sepal.Width": 3.6
+      },
+      {
+        "Petal.Length": 1.6,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 1.6,
+        "Sepal.Length": 4.7,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 1.6,
+        "Sepal.Length": 4.8,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 4.9,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 1.2,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 4.8,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 4.6,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3.3
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 4.4,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 1.1,
+        "Sepal.Length": 4.3,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 1.3,
+        "Sepal.Length": 4.4,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 1.3,
+        "Sepal.Length": 4.5,
+        "Sepal.Width": 2.3
+      },
+      {
+        "Petal.Length": 1.3,
+        "Sepal.Length": 4.4,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 1.7,
+        "Sepal.Length": 5.4,
+        "Sepal.Width": 3.9
+      },
+      {
+        "Petal.Length": 1.2,
+        "Sepal.Length": 5.8,
+        "Sepal.Width": 4
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 4.4
+      },
+      {
+        "Petal.Length": 1.3,
+        "Sepal.Length": 5.4,
+        "Sepal.Width": 3.9
+      },
+      {
+        "Petal.Length": 1.7,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 3.8
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.2,
+        "Sepal.Width": 4.1
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 5.5,
+        "Sepal.Width": 4.2
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.5
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3.6
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.4,
+        "Sepal.Width": 3.7
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.5
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.8
+      },
+      {
+        "Petal.Length": 1.7,
+        "Sepal.Length": 5.4,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.7
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.2,
+        "Sepal.Width": 3.5
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 5.2,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.4,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.3,
+        "Sepal.Length": 5.5,
+        "Sepal.Width": 3.5
+      },
+      {
+        "Petal.Length": 1.4,
+        "Sepal.Length": 4.9,
+        "Sepal.Width": 3.6
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.3,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3.5
+      },
+      {
+        "Petal.Length": 1.6,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.8
+      },
+      {
+        "Petal.Length": 1.5,
+        "Sepal.Length": 5.3,
+        "Sepal.Width": 3.7
+      },
+      {
+        "Petal.Length": 1.7,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.3
+      },
+      {
+        "Petal.Length": 1.9,
+        "Sepal.Length": 4.8,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.6,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 1.6,
+        "Sepal.Length": 5,
+        "Sepal.Width": 3.5
+      },
+      {
+        "Petal.Length": 1.9,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 3.8
+      },
+      {
+        "Petal.Length": 5.9,
+        "Sepal.Length": 7.1,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 6.6,
+        "Sepal.Length": 7.6,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 6.3,
+        "Sepal.Length": 7.3,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 6.1,
+        "Sepal.Length": 7.2,
+        "Sepal.Width": 3.6
+      },
+      {
+        "Petal.Length": 6.7,
+        "Sepal.Length": 7.7,
+        "Sepal.Width": 3.8
+      },
+      {
+        "Petal.Length": 6.9,
+        "Sepal.Length": 7.7,
+        "Sepal.Width": 2.6
+      },
+      {
+        "Petal.Length": 6.7,
+        "Sepal.Length": 7.7,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 6,
+        "Sepal.Length": 7.2,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 5.8,
+        "Sepal.Length": 7.2,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 6.1,
+        "Sepal.Length": 7.4,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 6.4,
+        "Sepal.Length": 7.9,
+        "Sepal.Width": 3.8
+      },
+      {
+        "Petal.Length": 6.1,
+        "Sepal.Length": 7.7,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 6,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 3.3
+      },
+      {
+        "Petal.Length": 5.8,
+        "Sepal.Length": 6.5,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 6.5,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 5.5,
+        "Sepal.Length": 6.8,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 5.3,
+        "Sepal.Length": 6.4,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 5.5,
+        "Sepal.Length": 6.5,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 5.7,
+        "Sepal.Length": 6.9,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 5.7,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 3.3
+      },
+      {
+        "Petal.Length": 5.6,
+        "Sepal.Length": 6.4,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 5.6,
+        "Sepal.Length": 6.4,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 5.6,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 5.5,
+        "Sepal.Length": 6.4,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 5.4,
+        "Sepal.Length": 6.9,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 5.6,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 6.9,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 5.9,
+        "Sepal.Length": 6.8,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 5.7,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 3.3
+      },
+      {
+        "Petal.Length": 5.2,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 5.2,
+        "Sepal.Length": 6.5,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 5.4,
+        "Sepal.Length": 6.2,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 4,
+        "Sepal.Length": 5.5,
+        "Sepal.Width": 2.3
+      },
+      {
+        "Petal.Length": 3.9,
+        "Sepal.Length": 5.2,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 4,
+        "Sepal.Length": 6,
+        "Sepal.Width": 2.2
+      },
+      {
+        "Petal.Length": 3.6,
+        "Sepal.Length": 5.6,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 4.1,
+        "Sepal.Length": 5.8,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 3.9,
+        "Sepal.Length": 5.6,
+        "Sepal.Width": 2.5
+      },
+      {
+        "Petal.Length": 3.5,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 2.6
+      },
+      {
+        "Petal.Length": 3.8,
+        "Sepal.Length": 5.5,
+        "Sepal.Width": 2.4
+      },
+      {
+        "Petal.Length": 3.7,
+        "Sepal.Length": 5.5,
+        "Sepal.Width": 2.4
+      },
+      {
+        "Petal.Length": 3.9,
+        "Sepal.Length": 5.8,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 4.1,
+        "Sepal.Length": 5.6,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4,
+        "Sepal.Length": 5.5,
+        "Sepal.Width": 2.5
+      },
+      {
+        "Petal.Length": 4,
+        "Sepal.Length": 5.8,
+        "Sepal.Width": 2.6
+      },
+      {
+        "Petal.Length": 4.2,
+        "Sepal.Length": 5.6,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 4.2,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.2,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 4.1,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 3.3,
+        "Sepal.Length": 4.9,
+        "Sepal.Width": 2.4
+      },
+      {
+        "Petal.Length": 3.5,
+        "Sepal.Length": 5,
+        "Sepal.Width": 2
+      },
+      {
+        "Petal.Length": 3.3,
+        "Sepal.Length": 5,
+        "Sepal.Width": 2.3
+      },
+      {
+        "Petal.Length": 3,
+        "Sepal.Length": 5.1,
+        "Sepal.Width": 2.5
+      },
+      {
+        "Petal.Length": 4.9,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 2.5
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 6,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 5.6,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 5.8,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 2.5
+      },
+      {
+        "Petal.Length": 5.3,
+        "Sepal.Length": 6.4,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 5,
+        "Sepal.Length": 6,
+        "Sepal.Width": 2.2
+      },
+      {
+        "Petal.Length": 4.9,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 5.6,
+        "Sepal.Length": 6.1,
+        "Sepal.Width": 2.6
+      },
+      {
+        "Petal.Length": 5,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 2.5
+      },
+      {
+        "Petal.Length": 4.8,
+        "Sepal.Length": 5.9,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 5.8,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 5,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 2.5
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 5.8,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 4.9,
+        "Sepal.Length": 5.6,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 4.8,
+        "Sepal.Length": 6.2,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 4.9,
+        "Sepal.Length": 6.1,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.8,
+        "Sepal.Length": 6,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 5.8,
+        "Sepal.Width": 2.7
+      },
+      {
+        "Petal.Length": 5.1,
+        "Sepal.Length": 5.9,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.7,
+        "Sepal.Length": 7,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 6.4,
+        "Sepal.Width": 3.2
+      },
+      {
+        "Petal.Length": 4.9,
+        "Sepal.Length": 6.9,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 4.6,
+        "Sepal.Length": 6.5,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 4.7,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 3.3
+      },
+      {
+        "Petal.Length": 4.6,
+        "Sepal.Length": 6.6,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 4.4,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 4.4,
+        "Sepal.Length": 6.6,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.8,
+        "Sepal.Length": 6.8,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 5,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.7,
+        "Sepal.Length": 6.7,
+        "Sepal.Width": 3.1
+      },
+      {
+        "Petal.Length": 4.2,
+        "Sepal.Length": 5.9,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.7,
+        "Sepal.Length": 6.1,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 6.2,
+        "Sepal.Width": 2.2
+      },
+      {
+        "Petal.Length": 4,
+        "Sepal.Length": 6.1,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 4.7,
+        "Sepal.Length": 6.1,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 4.3,
+        "Sepal.Length": 6.4,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 6,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 6,
+        "Sepal.Width": 3.4
+      },
+      {
+        "Petal.Length": 4.4,
+        "Sepal.Length": 6.3,
+        "Sepal.Width": 2.3
+      },
+      {
+        "Petal.Length": 4.6,
+        "Sepal.Length": 6.1,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.3,
+        "Sepal.Length": 6.2,
+        "Sepal.Width": 2.9
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 5.7,
+        "Sepal.Width": 2.8
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 5.6,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 5.4,
+        "Sepal.Width": 3
+      },
+      {
+        "Petal.Length": 4.4,
+        "Sepal.Length": 5.5,
+        "Sepal.Width": 2.6
+      },
+      {
+        "Petal.Length": 4.5,
+        "Sepal.Length": 4.9,
+        "Sepal.Width": 2.5
+      }
+    ],
+    "rownames": ["2", "3", "4", "7", "10", "12", "13", "23", "26", "30", "31", "35", "36", "46", "48", "50", "9", "14", "39", "42", "43", "6", "15", "16", "17", "19", "33", "34", "1", "5", "8", "11", "18", "20", "21", "22", "28", "29", "32", "37", "38", "40", "41", "47", "49", "24", "25", "27", "44", "45", "103", "106", "108", "110", "118", "119", "123", "126", "130", "131", "132", "136", "101", "105", "111", "113", "116", "117", "121", "125", "129", "133", "137", "138", "140", "141", "142", "144", "145", "146", "148", "149", "54", "60", "63", "65", "68", "70", "80", "81", "82", "83", "89", "90", "93", "95", "96", "97", "100", "58", "61", "94", "99", "73", "84", "104", "109", "112", "120", "124", "134", "135", "147", "71", "102", "114", "115", "122", "127", "128", "139", "143", "150", "51", "52", "53", "55", "57", "59", "66", "76", "77", "78", "87", "62", "64", "69", "72", "74", "75", "79", "86", "88", "92", "98", "56", "67", "85", "91", "107"],
+    "colnames": ["Petal.Length", "Sepal.Length", "Sepal.Width"],
+    "dim": [150, 3]
+  },
+  "clusters": [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 12, 12, 12, 12, 12, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3],
+  "dendnw_row": ["(((5,10),(11,(1,12))),((6,7),((8,9),((4,13),(14,(2,3))))));"],
+  "dendnw_col": ["(Petal.Width,(Sepal.Width,Petal.Length));"],
+  "color_matrix": {
+    "mtx": [
+      ["#D8D49D", "#FEFD05", "#F1EA6A"],
+      ["#D7D2A0", "#FCFB11", "#F2EC60"],
+      ["#DAD69B", "#FCFA16", "#F2EB65"],
+      ["#D8D49D", "#FCFA16", "#F4EF54"],
+      ["#DAD69B", "#FEFD05", "#F2EB65"],
+      ["#DCD799", "#FDFC0A", "#F4EF54"],
+      ["#D8D49D", "#FDFC0A", "#F1EA6A"],
+      ["#D0CDA7", "#FCFA16", "#F5F149"],
+      ["#DCD799", "#FFFF00", "#F1EA6A"],
+      ["#DCD799", "#FCFB11", "#F2EC60"],
+      ["#DCD799", "#FDFC0A", "#F2EB65"],
+      ["#DAD69B", "#FEFD05", "#F2EB65"],
+      ["#D4D0A2", "#FFFF00", "#F2EC60"],
+      ["#D8D49D", "#FDFC0A", "#F1EA6A"],
+      ["#D8D49D", "#FCFA16", "#F2EC60"],
+      ["#D8D49D", "#FFFF00", "#F3EE59"],
+      ["#D8D49D", "#FAF821", "#F0E970"],
+      ["#D2CFA5", "#FAF726", "#F1EA6A"],
+      ["#D7D2A0", "#FAF821", "#F1EA6A"],
+      ["#D7D2A0", "#FBF91B", "#E9E28A"],
+      ["#D7D2A0", "#FAF821", "#F2EC60"],
+      ["#DED997", "#FFEF00", "#F7F438"],
+      ["#D4D0A2", "#FFE000", "#F8F435"],
+      ["#DAD69B", "#FFE400", "#FAF821"],
+      ["#D7D2A0", "#FFEF00", "#F7F438"],
+      ["#DED997", "#FFE400", "#F7F33D"],
+      ["#DAD69B", "#FFF700", "#F8F532"],
+      ["#D8D49D", "#FFEC00", "#F9F62C"],
+      ["#D8D49D", "#FFFB00", "#F4F04F"],
+      ["#D8D49D", "#FFFF00", "#F5F149"],
+      ["#DAD69B", "#FFFF00", "#F4EF54"],
+      ["#DAD69B", "#FFEF00", "#F6F244"],
+      ["#D8D49D", "#FFFB00", "#F4F04F"],
+      ["#DAD69B", "#FFFB00", "#F7F33D"],
+      ["#DED997", "#FFEF00", "#F4EF54"],
+      ["#DAD69B", "#FFFB00", "#F6F244"],
+      ["#DAD69B", "#FFF700", "#F4F04F"],
+      ["#D8D49D", "#FFF700", "#F4EF54"],
+      ["#DAD69B", "#FFEF00", "#F4EF54"],
+      ["#D7D2A0", "#FFEC00", "#F4F04F"],
+      ["#D8D49D", "#FEFD05", "#F5F149"],
+      ["#DAD69B", "#FFFB00", "#F4EF54"],
+      ["#D7D2A0", "#FFFF00", "#F4F04F"],
+      ["#DCD799", "#FFFB00", "#F7F33D"],
+      ["#DAD69B", "#FFF300", "#F6F244"],
+      ["#DED997", "#FFFB00", "#F3EE59"],
+      ["#E3DC92", "#FDFC0A", "#F4EF54"],
+      ["#DCD799", "#FFFF00", "#F4EF54"],
+      ["#DCD799", "#FFFF00", "#F4F04F"],
+      ["#E3DC92", "#FFFB00", "#F7F33D"],
+      ["#FFDD00", "#FFB300", "#F1EA6A"],
+      ["#FFC500", "#FF9C00", "#F1EA6A"],
+      ["#FFD000", "#FFAB00", "#F0E970"],
+      ["#FFD800", "#FFAF00", "#F5F149"],
+      ["#FFC200", "#FF9500", "#F7F33D"],
+      ["#FFBA00", "#FF9500", "#EEE681"],
+      ["#FFC200", "#FF9500", "#EFE875"],
+      ["#FFDA00", "#FFAF00", "#F2EC60"],
+      ["#FFE000", "#FFAF00", "#F1EA6A"],
+      ["#FFD800", "#FFA700", "#EFE875"],
+      ["#FFCD00", "#FF8700", "#F7F33D"],
+      ["#FFD800", "#FF9500", "#F1EA6A"],
+      ["#FFDA00", "#FFD000", "#F3EE59"],
+      ["#FFE000", "#FFC900", "#F1EA6A"],
+      ["#FFFB00", "#FFC900", "#F2EC60"],
+      ["#FFEC00", "#FFBD00", "#F1EA6A"],
+      ["#FFF300", "#FFCD00", "#F2EC60"],
+      ["#FFEC00", "#FFC900", "#F1EA6A"],
+      ["#FFE400", "#FFBA00", "#F2EC60"],
+      ["#FFE400", "#FFC200", "#F3EE59"],
+      ["#FFE800", "#FFCD00", "#EFE875"],
+      ["#FFE800", "#FFCD00", "#EFE875"],
+      ["#FFE800", "#FFD000", "#F4EF54"],
+      ["#FFEC00", "#FFCD00", "#F2EB65"],
+      ["#FFEF00", "#FFBA00", "#F2EB65"],
+      ["#FFE800", "#FFC200", "#F2EB65"],
+      ["#FFFB00", "#FFBA00", "#F2EB65"],
+      ["#FFDD00", "#FFBD00", "#F2EC60"],
+      ["#FFE400", "#FFC200", "#F3EE59"],
+      ["#FFF700", "#FFC200", "#F1EA6A"],
+      ["#FFF700", "#FFC900", "#F1EA6A"],
+      ["#FFEF00", "#FFD500", "#F4EF54"],
+      ["#F8F435", "#FFEC00", "#E9E28A"],
+      ["#F7F438", "#FFF700", "#EFE77B"],
+      ["#F8F435", "#FFDA00", "#E7E08D"],
+      ["#F5F149", "#FFE800", "#F0E970"],
+      ["#F8F532", "#FFE000", "#EFE77B"],
+      ["#F7F438", "#FFE800", "#EDE585"],
+      ["#F4F04F", "#FFE400", "#EEE681"],
+      ["#F7F33D", "#FFEC00", "#EBE387"],
+      ["#F6F244", "#FFEC00", "#EBE387"],
+      ["#F7F438", "#FFE000", "#EFE77B"],
+      ["#F8F532", "#FFE800", "#F1EA6A"],
+      ["#F8F435", "#FFEC00", "#EDE585"],
+      ["#F8F435", "#FFE000", "#EEE681"],
+      ["#F9F62C", "#FFE800", "#EFE77B"],
+      ["#F9F62C", "#FFE400", "#F1EA6A"],
+      ["#F9F62C", "#FFE400", "#F0E970"],
+      ["#F8F532", "#FFE400", "#EFE875"],
+      ["#F3EE59", "#FEFD05", "#EBE387"],
+      ["#F4F04F", "#FFFF00", "#E4DD90"],
+      ["#F3EE59", "#FFFF00", "#E9E28A"],
+      ["#F1EA6A", "#FFFB00", "#EDE585"],
+      ["#FEFD05", "#FFD000", "#EDE585"],
+      ["#FFFB00", "#FFDA00", "#EFE77B"],
+      ["#FFE800", "#FFD000", "#F0E970"],
+      ["#FFE000", "#FFC200", "#EDE585"],
+      ["#FFF300", "#FFCD00", "#EFE77B"],
+      ["#FFFF00", "#FFDA00", "#E7E08D"],
+      ["#FEFD05", "#FFD000", "#EFE77B"],
+      ["#FFFB00", "#FFD000", "#EFE875"],
+      ["#FFE800", "#FFD800", "#EEE681"],
+      ["#FFFF00", "#FFD000", "#EDE585"],
+      ["#FDFC0A", "#FFDD00", "#F2EC60"],
+      ["#FFFB00", "#FFE000", "#EFE77B"],
+      ["#FFFF00", "#FFE400", "#EDE585"],
+      ["#FFFB00", "#FFE000", "#EFE875"],
+      ["#FEFD05", "#FFE800", "#EFE875"],
+      ["#FDFC0A", "#FFD500", "#EFE875"],
+      ["#FEFD05", "#FFD800", "#F1EA6A"],
+      ["#FDFC0A", "#FFDA00", "#F1EA6A"],
+      ["#FFFB00", "#FFE000", "#EFE77B"],
+      ["#FFFB00", "#FFDD00", "#F1EA6A"],
+      ["#FCFB11", "#FFB600", "#F2EC60"],
+      ["#FBF91B", "#FFCD00", "#F2EC60"],
+      ["#FEFD05", "#FFBA00", "#F2EB65"],
+      ["#FCFA16", "#FFC900", "#EFE875"],
+      ["#FCFB11", "#FFD000", "#F3EE59"],
+      ["#FCFA16", "#FFC500", "#F0E970"],
+      ["#FAF821", "#FFC200", "#F2EB65"],
+      ["#FAF821", "#FFC500", "#F1EA6A"],
+      ["#FDFC0A", "#FFBD00", "#EFE875"],
+      ["#FFFF00", "#FFC200", "#F1EA6A"],
+      ["#FCFB11", "#FFC200", "#F2EB65"],
+      ["#F9F62C", "#FFDD00", "#F1EA6A"],
+      ["#FCFB11", "#FFD800", "#F0E970"],
+      ["#FBF91B", "#FFD500", "#E7E08D"],
+      ["#F8F435", "#FFD800", "#EFE875"],
+      ["#FCFB11", "#FFD800", "#EFE875"],
+      ["#FAF726", "#FFCD00", "#F0E970"],
+      ["#FBF91B", "#FFDA00", "#F0E970"],
+      ["#FBF91B", "#FFDA00", "#F4EF54"],
+      ["#FAF821", "#FFD000", "#E9E28A"],
+      ["#FCFA16", "#FFD800", "#F1EA6A"],
+      ["#FAF726", "#FFD500", "#F0E970"],
+      ["#FBF91B", "#FFE400", "#EFE875"],
+      ["#FBF91B", "#FFE800", "#F1EA6A"],
+      ["#FBF91B", "#FFEF00", "#F1EA6A"],
+      ["#FAF821", "#FFEC00", "#EEE681"],
+      ["#FBF91B", "#FEFD05", "#EDE585"]
+    ],
+    "rownames": ["2", "3", "4", "7", "10", "12", "13", "23", "26", "30", "31", "35", "36", "46", "48", "50", "9", "14", "39", "42", "43", "6", "15", "16", "17", "19", "33", "34", "1", "5", "8", "11", "18", "20", "21", "22", "28", "29", "32", "37", "38", "40", "41", "47", "49", "24", "25", "27", "44", "45", "103", "106", "108", "110", "118", "119", "123", "126", "130", "131", "132", "136", "101", "105", "111", "113", "116", "117", "121", "125", "129", "133", "137", "138", "140", "141", "142", "144", "145", "146", "148", "149", "54", "60", "63", "65", "68", "70", "80", "81", "82", "83", "89", "90", "93", "95", "96", "97", "100", "58", "61", "94", "99", "73", "84", "104", "109", "112", "120", "124", "134", "135", "147", "71", "102", "114", "115", "122", "127", "128", "139", "143", "150", "51", "52", "53", "55", "57", "59", "66", "76", "77", "78", "87", "62", "64", "69", "72", "74", "75", "79", "86", "88", "92", "98", "56", "67", "85", "91", "107"],
+    "colnames": ["Petal.Length", "Sepal.Length", "Sepal.Width"],
+    "dim": [150, 3]
+  }
+}

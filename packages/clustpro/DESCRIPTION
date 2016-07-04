@@ -1,0 +1,31 @@
+Package: clustpro
+Type: Package
+Title: What the Package Does (one line, title case)
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Christian D.","Peikert", role = c("aut", "cre"), email = "christian.peikert@biologie.uni-freiburg.de"),
+    person("Muhammad Numair", "Mansur", email = "numair.mansur@gmail.com", role = c("aut"))
+    )
+Maintainer: Christian D. Peikert <christian.peikert@biologie.uni-freiburg.de>
+Description: .....
+License: GPL-3 | file LICENSE
+Depends:
+    htmlwidgets,
+    ggplot2,
+    pracma,
+    Biobase,
+    Mfuzz,
+    clusterSim,
+    doSNOW,
+    pheatmap,
+    gplots,
+    ctc,
+    jsonlite
+Imports:
+Suggests:
+    shiny,
+    knitr
+VignetteBuilder: knitr
+Collate:
+    'clustpro.R'
+RoxygenNote: 5.0.1
