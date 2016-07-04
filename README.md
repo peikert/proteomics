@@ -2,4 +2,4 @@
 ## Description
 
 ## Packages
-[ClustPro](/packages/clustpro/readme.md)
+[ClustPro](/packages/clustpro/README.md)
