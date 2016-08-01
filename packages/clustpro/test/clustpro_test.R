@@ -8,8 +8,8 @@ if(F){
   devtools::install()
   #devtools::reload()
 }
-
-# library(clustpro)
+setwd("D:/git/proteomics/packages/clustpro/output")
+ library(clustpro)
 # library(htmlwidgets)
 # library(ggplot2)
 # library(pracma)

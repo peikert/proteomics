@@ -63,7 +63,7 @@ clustpro <- function(width = NULL, height = NULL) {
                                                         )
                             )
   show(widget)
-  saveWidget(widget, file=paste(getwd(),'output/widget.html',sep='/'))
+  saveWidget(widget, file=paste(getwd(),'widget.html',sep='/'))
 }
 
 #' Shiny bindings for clustpro
@@ -118,7 +118,7 @@ distributions_histograms <- function(data, title) {
     title_add <- i
     if (!is.null(colnames(data)))
       title_add <- colnames(data)[i]
-    initialize_graphic(paste('./output/',title, title_add, sep = "_"))
+    initialize_graphic(paste(title, title_add, sep = "_"))
     g <- ggplot(x, aes_string(x = colnames(x))) + stat_bin(breaks = h$breaks)
     show(g)
     dev.off()
@@ -218,7 +218,7 @@ clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, me
     k <- fixed_k
   } else {
     db_list <- get_best_k(clustering_data, min_k, max_k, method)
-    initialize_graphic(paste('./output/',"db_index_ratio_div_ratio", sep = ""))
+    initialize_graphic(paste("db_index_ratio_div_ratio", sep = ""))
     plot(db_list, type = "b")
     dev.off()
     k <- db_list[db_list[, 2] == max(db_list[, 2],na.rm=TRUE), ][1]
@@ -323,7 +323,7 @@ clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, me
 
 
   json_payload = toJSON(payload, pretty = TRUE)
-  write(json_payload, file = "./output/payload.json", ncolumns = 1, append = FALSE)
+  write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
 
   return(json_payload)
   #  opar <- par(mfrow = c(1, 2))
