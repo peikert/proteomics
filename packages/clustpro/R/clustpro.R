@@ -21,7 +21,7 @@ test_package <- function(){
   color_spectrum_unqiue_breaks(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
 
   matrix <- iris[-ncol(iris)]
-  return(clustering(matrix,method = "kmeans"))
+  return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
 }
 
 
@@ -285,28 +285,30 @@ clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, me
 
   #############
 
-  # options <- c(options, list(
-  #   xaxis_height = xaxis_height,
-  #   yaxis_width = yaxis_width,
-  #   xaxis_font_size = xaxis_font_size,
-  #   yaxis_font_size = yaxis_font_size,
-  #   brush_color = brush_color,
-  #   show_grid = show_grid,
-  #   anim_duration = anim_duration
-  # ))
-  #
-  # if (is.null(dendnw_row)) {
-  #   c(options, list(yclust_width = 0))
-  # }
-  # if (is.null(dendnw_row)) {
-  #   c(options, list(xclust_height = 0))
-  # }
 
+  xaxis_height = 80
+  yaxis_width = 120
+  xaxis_font_size = NULL
+  yaxis_font_size = NULL
+  brush_color = "#0000FF"
+  show_grid = TRUE
+  anim_duration = 500
+
+  options <- NULL
+  options <- c(options, list(
+    xaxis_height = xaxis_height,
+    yaxis_width = yaxis_width,
+    xaxis_font_size = xaxis_font_size,
+    yaxis_font_size = yaxis_font_size,
+    brush_color = brush_color,
+    show_grid = show_grid,
+    anim_duration = anim_duration
+  ))
 
   #############
   payload <- list(
-    data_matrix = list(mtx=ordered_df_wo_cluster, rownames=rownames(ordered_df_wo_cluster), colnames=colnames(ordered_df_wo_cluster), dim = dim(ordered_df_wo_cluster)),
-  #  options = options,
+    matrix = list(data=as.matrix(ordered_df_wo_cluster), rows=rownames(ordered_df_wo_cluster), cols=colnames(ordered_df_wo_cluster), dim = dim(ordered_df_wo_cluster)),
+    options = options,
     clusters = as.vector(unlist(ordered_df['cluster']))
   )
 
@@ -318,7 +320,7 @@ clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, me
   }
 
   if(!is.null(color_matrix)){
-    payload <- c(payload, list(color_matrix=list(mtx = as.matrix(color_matrix), rownames=rownames(color_matrix), colnames=colnames(color_matrix), dim = dim(color_matrix))))
+    payload <- c(payload, list(colors=list(data = as.matrix(color_matrix), rows=rownames(color_matrix), cols=colnames(color_matrix), dim = dim(color_matrix))))
   }
 
 
