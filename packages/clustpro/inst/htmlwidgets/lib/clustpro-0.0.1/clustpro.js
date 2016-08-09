@@ -222,7 +222,11 @@ function clustpro(selector, data, options){
 
     //var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding);
     //var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding);
-    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height);
+
+    //TEMPORARY SOLUTION.
+    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width*(-1), colormapBounds.height*(-1)); // TEMPORARY SOLUTION
+
+
     //var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
     //var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
 
