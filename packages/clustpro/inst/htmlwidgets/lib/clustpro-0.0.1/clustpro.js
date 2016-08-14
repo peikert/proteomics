@@ -2,7 +2,7 @@ function clustpro(selector, data, options){
     debugger;
     console.log(data);
     console.log("Last Updated: August 7th [11:50 AM] (numair.mansur@gmail.com)");
-    document.write("press F12 in chrome to see cluster object (console tab).");
+    // document.write("press F12 in chrome to see cluster object (console tab).");
 
 
 
@@ -224,7 +224,7 @@ function clustpro(selector, data, options){
     //var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding);
 
     //TEMPORARY SOLUTION.
-    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width*(-1), colormapBounds.height*(-1)); // TEMPORARY SOLUTION
+    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height); // TEMPORARY SOLUTION
 
 
     //var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);

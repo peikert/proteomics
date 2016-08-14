@@ -35,7 +35,7 @@ HTMLWidgets.widget({
         var self = this;
         instance.lastValue = x;
 
-        el.innerHTML = "";
+        // el.innerHTML = "";
         var merged = [];
         var dataMatrixIndex = 0;
         // coloring information.
