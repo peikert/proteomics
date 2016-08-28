@@ -58,8 +58,7 @@ clustpro <- function(width = NULL, height = NULL) {
                             rs,
                             width = width,
                             height = height,
-                            sizingPolicy = sizingPolicy(padding = 0,
-                                                        browser.fill = TRUE
+                            sizingPolicy = sizingPolicy(browser.fill = TRUE
                                                         )
                             )
   show(widget)

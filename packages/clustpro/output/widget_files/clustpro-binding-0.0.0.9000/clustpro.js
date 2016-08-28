@@ -3,7 +3,7 @@ HTMLWidgets.widget({
     type: "output",
 
     initialize: function(el, width, height) {
-        console.log("Last Updated: August 7th [11:50 AM] (numair.mansur@gmail.com)");
+        console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
         debugger;
         return {
             lastTheme: null,
@@ -58,9 +58,18 @@ HTMLWidgets.widget({
             x.matrix.merged = newMerged;
         }
 
-        var heatMapObject = clustpro(el, x, x.options);
+        // Preparing the needed data objects here:
+        var location_object_array = []; // Document it's purpose here.
+        var cluster_change_rows = []; // Document it's purpose here.
+        var cluster = x.clusters; //Document it's purpose here.
+        // Calculate at which row index where the cluster value changes:
+        cluster_change_rows = this.clusterChangeInformation(cluster, cluster_change_rows);
+
+        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster);
         },
 
+
+    // HELPER FUNCTIONS
     hextorgb: function(hex){
         var hex2 = hex.replace('#','');
         var bigint = parseInt(hex2, 16);
@@ -68,6 +77,24 @@ HTMLWidgets.widget({
         var g = (bigint >> 8) & 255;
         var b = bigint & 255;
         return "rgba(" + r + "," + g + "," + b + ",1)";
+    },
+
+    clusterChangeInformation: function(cluster, cluster_change_rows){
+        var current_cluster_value = cluster[0];
+        var startRow = 0;
+        for(var i=0; i<cluster.length; i++){
+            if(current_cluster_value != cluster[i]){
+                cluster_change_rows.push({ylocation:i, cluster:current_cluster_value,
+                    rowInformation:{startRow:startRow, endRow:i-1}}); //cluster changes at this y-Location.
+                current_cluster_value = cluster[i];
+                startRow = i;
+            }
+        }
+        //adding information for last cluster
+        cluster_change_rows.push({ylocation:null, cluster:current_cluster_value,
+            rowInformation:{startRow:startRow , endRow:cluster.length-1}});
+        return cluster_change_rows;
     }
+
 
 });

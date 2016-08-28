@@ -1,11 +1,7 @@
-function clustpro(selector, data, options){
+function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster){
     debugger;
     console.log(data);
-    console.log("Last Updated: August 7th [11:50 AM] (numair.mansur@gmail.com)");
-    // document.write("press F12 in chrome to see cluster object (console tab).");
-
-
-
+    console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
 
     // ==== BEGIN HELPERS =================================
 
@@ -19,7 +15,7 @@ function clustpro(selector, data, options){
     // cell, meaning it will take up any remaining width/height.
     //
     // rows and cols are arrays that contain numeric pixel dimensions,
-    // and up to one "*" value.
+    // and up to one "*" value.s
     function GridSizer(widths, heights, /*optional*/ totalWidth, /*optional*/ totalHeight) {
         this.widths = widths;
         this.heights = heights;
@@ -220,15 +216,10 @@ function clustpro(selector, data, options){
         });
     })();
 
-    //var row = !data.rows ? null : dendrogram(el.select('svg.rowDend'), data.rows, false, rowDendBounds.width, rowDendBounds.height, opts.axis_padding);
-    //var col = !data.cols ? null : dendrogram(el.select('svg.colDend'), data.cols, true, colDendBounds.width, colDendBounds.height, opts.axis_padding);
-
-    //TEMPORARY SOLUTION.
-    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height); // TEMPORARY SOLUTION
-
-
-    //var xax = axisLabels(el.select('svg.xaxis'), data.cols || data.matrix.cols, true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
-    //var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
+    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height);
+    columnNames = data.matrix.cols;
+    var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
+    var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
 
     function colormap(svg, data, width, height) {
         // Check for no data
@@ -238,15 +229,12 @@ function clustpro(selector, data, options){
         if (!opts.show_grid) {
             svg.style("shape-rendering", "crispEdges");
         }
-
         var cols = data.dim[1];
         var rows = data.dim[0];
-
         var merged = data.merged;
-
         var x = d3.scale.linear().domain([0, cols]).range([0, width]);
         var y = d3.scale.linear().domain([0, rows]).range([0, height]);
-        var tip = d3.tip()
+        var tip = d3.tip() //HTML of the tip
             .attr('class', 'd3heatmap-tip')
             .html(function(d, i) {
                 return "<table>" +
@@ -323,12 +311,34 @@ function clustpro(selector, data, options){
         } else {
             spacing = 0;
         }
+
         function draw(selection) {
+            location_object_array = [];
+            d3.selectAll("line").remove();
+
             selection
                 .attr("x", function(d, i) {
                     return x(i % cols);
                 })
                 .attr("y", function(d, i) {
+                    // Cluster line drawing
+                    for(var j =0; j < cluster_change_rows.length; j++)
+                    {
+                        if(selection[0][i].rowIndex == cluster_change_rows[j].ylocation)
+                        {
+                            location_object_array.push({begin:null,end:y(Math.floor(i / cols)),
+                                cluster:cluster_change_rows[j].cluster, rowInformation:cluster_change_rows[j].rowInformation});
+                            svg.append("line")
+                                .attr("x1", 0)
+                                .attr("y1", y(Math.floor(i / cols)))
+                                .attr("x2", selection[0][i].width.animVal.value* (cols +1))
+                                .attr("y2", y(Math.floor(i / cols)))
+                                .attr("stroke","black")
+                                .attr("stroke-width",1.25)
+                                .attr("fill","none");
+                        }
+                    }
+                    // End of line Drawing.
                     return y(Math.floor(i / cols));
                 })
                 .attr("width", (x(1) - x(0)) - spacing)
@@ -504,128 +514,6 @@ function clustpro(selector, data, options){
 
     }
 
-    function edgeStrokeWidth(node) {
-        if (node.edgePar && node.edgePar.lwd)
-            return node.edgePar.lwd;
-        else
-            return 1;
-    }
-
-    function maxChildStrokeWidth(node, recursive) {
-        var max = 0;
-        for (var i = 0; i < node.children.length; i++) {
-            if (recursive) {
-                max = Math.max(max, maxChildStrokeWidth(node.children[i], true));
-            }
-            max = Math.max(max, edgeStrokeWidth(node.children[i]));
-        }
-        return max;
-    }
-
-    function dendrogram(svg, data, rotated, width, height, padding) {
-        var topLineWidth = maxChildStrokeWidth(data, false);
-
-        var x = d3.scale.linear()
-            .domain([data.height, 0])
-            .range([topLineWidth/2, width-padding]);
-        var y = d3.scale.linear()
-            .domain([0, height])
-            .range([0, height]);
-
-        var cluster = d3.layout.cluster()
-            .separation(function(a, b) { return 1; })
-            .size([rotated ? width : height, NaN]);
-
-        var transform = "translate(1,0)";
-        if (rotated) {
-            // Flip dendrogram vertically
-            x.range([topLineWidth/2, -height+padding+2]);
-            // Rotate
-            transform = "rotate(-90) translate(-2,0)";
-        }
-
-        var dendrG = svg
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", transform);
-
-        var nodes = cluster.nodes(data),
-            links = cluster.links(nodes);
-
-        // I'm not sure why, but after the heatmap loads the "links"
-        // array mutates to much smaller values. I can't figure out
-        // what's doing it, so instead we just make a deep copy of
-        // the parts we want.
-        var links1 = links.map(function(link, i) {
-            return {
-                source: {x: link.source.x, y: link.source.height},
-                target: {x: link.target.x, y: link.target.height},
-                edgePar: link.target.edgePar
-            };
-        });
-
-        var lines = dendrG.selectAll("polyline").data(links1);
-        lines
-            .enter().append("polyline")
-            .attr("class", "link")
-            .attr("stroke", function(d, i) {
-                if (!d.edgePar.col) {
-                    return opts.link_color;
-                } else {
-                    return d.edgePar.col;
-                }
-            })
-            .attr("stroke-width", edgeStrokeWidth)
-            .attr("stroke-dasharray", function(d, i) {
-                var pattern;
-                switch (d.edgePar.lty) {
-                    case 6:
-                        pattern = [3,3,5,3];
-                        break;
-                    case 5:
-                        pattern = [15,5];
-                        break;
-                    case 4:
-                        pattern = [2,4,4,4];
-                        break;
-                    case 3:
-                        pattern = [2,4];
-                        break;
-                    case 2:
-                        pattern = [4,4];
-                        break;
-                    case 1:
-                    default:
-                        pattern = [];
-                        break;
-                }
-                for (var i = 0; i < pattern.length; i++) {
-                    pattern[i] = pattern[i] * (d.edgePar.lwd || 1);
-                }
-                return pattern.join(",");
-            });
-
-        function draw(selection) {
-            function elbow(d, i) {
-                return x(d.source.y) + "," + y(d.source.x) + " " +
-                    x(d.source.y) + "," + y(d.target.x) + " " +
-                    x(d.target.y) + "," + y(d.target.x);
-            }
-
-            selection
-                .attr("points", elbow);
-        }
-
-        controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function(_) {
-            var scaleBy = _.scale[rotated ? 0 : 1];
-            var translateBy = _.translate[rotated ? 0 : 1];
-            y.range([translateBy, height * scaleBy + translateBy]);
-            draw(lines.transition().duration(opts.anim_duration).ease("linear"));
-        });
-
-        draw(lines);
-    }
 
 
     var dispatcher = d3.dispatch('hover', 'click');
