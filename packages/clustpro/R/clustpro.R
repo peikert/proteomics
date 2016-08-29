@@ -240,8 +240,8 @@ clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, me
   cluster_centers$cluster <- NULL
 
   set.seed(1234)
-  d_rows <- dist(cluster_centers[-1], method = "euclidean") # distance matrix
-  d_cols <- dist(t(cluster_centers[-1]), method = "euclidean") # distance matrix
+  d_rows <- dist(cluster_centers, method = "euclidean") # distance matrix
+  d_cols <- dist(t(cluster_centers), method = "euclidean") # distance matrix
 
   row_dend <- hclust(d_rows, method="ward.D2")
   col_dend <- hclust(d_cols, method="ward.D2")
