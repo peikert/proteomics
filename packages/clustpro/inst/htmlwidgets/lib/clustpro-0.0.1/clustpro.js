@@ -152,10 +152,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         opts.anim_duration = 500;
     }
 
-    if (!data.rows) {
+    if (!data.dendnw_row) {
         opts.yclust_width = 0;
     }
-    if (!data.cols) {
+    if (!data.dendnw_col) {
         opts.xclust_height = 0;
     }
 
@@ -220,6 +220,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     columnNames = data.matrix.cols;
     var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
+    var row = dendogram(el.select('svg.rowDend'), rowDendBounds.width, rowDendBounds.height)
+
 
     function colormap(svg, data, width, height) {
         // Check for no data
@@ -512,6 +514,15 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 });
         });
 
+    }
+
+    function dendogram(svg, width, height){
+        var transform = "translate(1,0)";
+        var dendrG = svg
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", transform);
     }
 
 

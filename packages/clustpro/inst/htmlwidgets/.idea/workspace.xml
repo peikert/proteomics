@@ -34,10 +34,11 @@
       <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3405">
-              <caret line="400" column="0" selection-start-line="400" selection-start-column="0" selection-end-line="400" selection-end-column="0" />
+            <state relative-caret-position="518">
+              <caret line="527" column="0" selection-start-line="527" selection-start-column="0" selection-end-line="527" selection-end-column="0" />
               <folding>
                 <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+                <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -205,12 +206,12 @@
       <workItem from="1471276897592" duration="6468000" />
       <workItem from="1471478142477" duration="10722000" />
       <workItem from="1472309874481" duration="15623000" />
-      <workItem from="1472405848761" duration="968000" />
+      <workItem from="1472405848761" duration="4883000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59977000" />
+    <option name="totallyTimeSpent" value="63892000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="27" y="-3" width="1253" height="1027" extended-state="6" />
@@ -220,18 +221,18 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32944915" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -284,6 +285,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -318,6 +320,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -344,6 +347,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -362,6 +366,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -380,6 +385,7 @@
           <caret line="16" column="74" selection-start-line="16" selection-start-column="74" selection-end-line="16" selection-end-column="74" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -398,6 +404,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -424,6 +431,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -442,6 +450,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -460,6 +469,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -478,6 +488,7 @@
           <caret line="154" column="53" selection-start-line="154" selection-start-column="53" selection-end-line="154" selection-end-column="53" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -508,10 +519,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3405">
-          <caret line="400" column="0" selection-start-line="400" selection-start-column="0" selection-end-line="400" selection-end-column="0" />
+        <state relative-caret-position="518">
+          <caret line="527" column="0" selection-start-line="527" selection-start-column="0" selection-end-line="527" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
