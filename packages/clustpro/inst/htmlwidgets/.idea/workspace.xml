@@ -24,8 +24,8 @@
       <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/clustpro.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="81" column="11" selection-start-line="81" selection-start-column="11" selection-end-line="81" selection-end-column="11" />
+            <state relative-caret-position="980">
+              <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -34,11 +34,15 @@
       <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2595">
-              <caret line="0" column="64" selection-start-line="0" selection-start-column="43" selection-end-line="0" selection-end-column="64" />
+            <state relative-caret-position="393">
+              <caret line="589" column="16" selection-start-line="589" selection-start-column="16" selection-end-line="589" selection-end-column="16" />
               <folding>
-                <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+                <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+                <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+                <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+                <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+                <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -83,10 +87,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="32" />
-    <option name="y" value="18" />
-    <option name="width" value="1334" />
-    <option name="height" value="750" />
+    <option name="x" value="27" />
+    <option name="y" value="15" />
+    <option name="width" value="1573" />
+    <option name="height" value="1185" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -208,32 +212,33 @@
       <workItem from="1472309874481" duration="15623000" />
       <workItem from="1472405848761" duration="5259000" />
       <workItem from="1472473207315" duration="1224000" />
+      <workItem from="1473442152403" duration="22891000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="65492000" />
+    <option name="totallyTimeSpent" value="88383000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="32" y="18" width="1334" height="750" extended-state="6" />
+    <frame x="27" y="15" width="1573" height="1185" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13886672" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32944915" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -267,11 +272,19 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="4" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/clustpro.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1215">
+          <caret line="81" column="11" selection-start-line="81" selection-start-column="11" selection-end-line="81" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/clustpro.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="960">
@@ -285,8 +298,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -320,8 +337,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -355,8 +376,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -382,8 +407,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -401,8 +430,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -420,8 +453,12 @@
         <state relative-caret-position="240">
           <caret line="16" column="74" selection-start-line="16" selection-start-column="74" selection-end-line="16" selection-end-column="74" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -439,8 +476,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -466,8 +507,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -485,8 +530,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -504,8 +553,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -523,17 +576,13 @@
         <state relative-caret-position="2310">
           <caret line="154" column="53" selection-start-line="154" selection-start-column="53" selection-end-line="154" selection-end-column="53" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -545,21 +594,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/clustpro.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="81" column="11" selection-start-line="81" selection-start-column="11" selection-end-line="81" selection-end-column="11" />
+        <state relative-caret-position="980">
+          <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2595">
-          <caret line="0" column="64" selection-start-line="0" selection-start-column="43" selection-end-line="0" selection-end-column="64" />
+        <state relative-caret-position="393">
+          <caret line="589" column="16" selection-start-line="589" selection-start-column="16" selection-end-line="589" selection-end-column="16" />
           <folding>
-            <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
+            <element signature="n#!!block;n#drawRowDendLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
