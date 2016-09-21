@@ -79,7 +79,7 @@ HTMLWidgets.widget({
             console.log("you clicked a line");
             console.log(i);
             console.log(d);
-            self.refreshData(d,el,x, rowNewickSting, colNewickString, instance);
+            self.refreshRowDendogram(d,el,x, rowNewickSting, colNewickString, instance);
 
         });
 
@@ -89,14 +89,14 @@ HTMLWidgets.widget({
             console.log("you clicked a column dendogram line");
             console.log(i);
             console.log(d);
-            self.refreshColumn(d,el,x,rowNewickSting,colNewickString,instance);
+            self.refreshColDendogram(d,el,x,rowNewickSting,colNewickString,instance);
         });
 
 
         },
 
 
-    refreshData: function(d,el,x,rowNewickSting, colNewickString,instance){
+    refreshRowDendogram: function(d,el,x,rowNewickSting, colNewickString,instance){
         debugger;
         var clusterSwapArray_1 =x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow+1);
         var clusterSwapArray_2 = x.clusters.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow+1);
@@ -119,21 +119,84 @@ HTMLWidgets.widget({
         this.doRenderValue(el,x,rowNewickSting,colNewickString,instance, x.matrix.merged);
     },
 
-    refreshColumn: function(d,el,x,rowNewickSting, colNewickString, instance){
+    refreshColDendogram: function(d,el,x,rowNewickSting, colNewickString, instance){
         debugger;
         var columnRangeClicked = d.columnRange;
         var siblingColumnRange = d.siblingColumnRange;
 
         if(columnRangeClicked.start < siblingColumnRange.start){
-
+            x.matrix = this.columnMatrixSwap(x,columnRangeClicked,siblingColumnRange);
+            colNewickString = this.stringSwap(d,colNewickString); //refresh newick string.
+            x.dendnw_col[0] = colNewickString; //refresh newick string.
+            x.matrix.cols = this.refreshColumns(x,columnRangeClicked,siblingColumnRange);
         }
         else{
-
+                //Handle the other case.
         }
+        this.doRenderValue(el,x,rowNewickSting, colNewickString, instance, x.matrix.merged);
     },
 
 
     // HELPER FUNCTIONS
+
+    refreshColumns : function(x,columnRangeClicked, siblingColumnRange){
+        swap1 = x.matrix.cols.slice(columnRangeClicked.start, columnRangeClicked.end ==null ? columnRangeClicked.start+1 : columnRangeClicked.end +1 );
+        swap2 = x.matrix.cols.slice(siblingColumnRange.start, siblingColumnRange.end == null? siblingColumnRange.start+1 : siblingColumnRange.end +1 );
+        var columns = x.matrix.cols.slice(0,columnRangeClicked.start);
+        columns = columns.concat(swap2);
+        columns = columns.concat(swap1);
+        if(siblingColumnRange.end == null)
+        {
+            if(columns.length < x.matrix.cols.length)
+            {
+                columns = columns.concat(x.matrix.cols.slice(columns.length,x.matrix.cols.length));
+            }
+            else {
+                // pass
+            }
+        }
+        else {
+            if (siblingColumnRange.end == x.matrix.cols.length - 1) {
+                // pass
+            }
+            else {
+                x.matrix.cols.slice(siblingColumnRange.end, x.matrix.cols.length);
+            }
+        }
+        return  columns;
+    },
+
+    columnMatrixSwap: function(x, columnRangeClicked,siblingColumnRange ){
+        for(var i=0; i<x.matrix.data.length; i=i+4)
+        {
+            columnstobeSwaped1 = x.matrix.data.slice(i+columnRangeClicked.start, columnRangeClicked.end ==null ? i+columnRangeClicked.start+1 : i+columnRangeClicked.end +1 );
+            columnstobeSwaped2 = x.matrix.data.slice(i+siblingColumnRange.start, siblingColumnRange.end == null? i+siblingColumnRange.start+1 : i+siblingColumnRange.end +1 );
+            mergecolumnstobeSwapped1 = x.matrix.merged.slice(i+columnRangeClicked.start, columnRangeClicked.end ==null ? i+columnRangeClicked.start+1 : i+columnRangeClicked.end +1 );
+            mergeColumnstoBeSwapped2 = x.matrix.merged.slice(i+siblingColumnRange.start, siblingColumnRange.end == null? i+siblingColumnRange.start+1 : i+siblingColumnRange.end +1 );
+
+            var newArray = x.matrix.data.slice(i,i+columnRangeClicked.start);
+            var newMergeArray = x.matrix.merged.slice(i,i+columnRangeClicked.start);
+
+            newArray = newArray.concat(columnstobeSwaped2);
+            newMergeArray = newMergeArray.concat(mergeColumnstoBeSwapped2);
+
+            newArray = newArray.concat(columnstobeSwaped1);
+            newMergeArray = newMergeArray.concat(mergecolumnstobeSwapped1);
+
+            newArray = newArray.concat(siblingColumnRange.end == null ? x.matrix.data.slice(siblingColumnRange.start+1,i+4) : x.matrix.data.slice(siblingColumnRange.end,i+4));
+            newMergeArray = newMergeArray.concat(siblingColumnRange.end == null ? x.matrix.merged.slice(i+siblingColumnRange.start+1,i+4) : x.matrix.merged.slice(i+siblingColumnRange.end,i+4));
+
+            var newArraycounter = 0;
+            for(var j=i; j<i+4;j++)
+            {
+                x.matrix.data[j] =newArray[newArraycounter];
+                x.matrix.merged[j] = newMergeArray[newArraycounter];
+                newArraycounter++;
+            }
+        }
+        return x.matrix;
+
+    },
 
     stringSwap: function(d,newickString){
         var clickedString = d.correspondingString;
