@@ -1,4 +1,4 @@
-function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster){
+function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
     debugger;
     console.log(data);
     console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
@@ -220,8 +220,11 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
     var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
-                opts.axis_padding,  /*no of cols*/ data.matrix.cols.length, cluster, data.dendnw_row[0],columnNames);
+                opts.axis_padding,  /*no of cols*/ data.matrix.cols.length, cluster, data.dendnw_row[0], columnNames);
 
+     var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
+                opts.axis_padding, data.matrix.cols.length , cluster, data.dendnw_col[0], columnNames);
+    var a = 10;
 
     function colormap(svg, data, width, height) {
         // Check for no data
@@ -234,6 +237,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var cols = data.dim[1];
         var rows = data.dim[0];
         var merged = data.merged;
+
         var x = d3.scale.linear().domain([0, cols]).range([0, width]);
         var y = d3.scale.linear().domain([0, rows]).range([0, height]);
         var tip = d3.tip() //HTML of the tip
@@ -551,31 +555,43 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             location_object_array[i].begin = location_object_array[i-1].end;
         }
         return location_object_array;
-
     }
 
     // ------------ End of Helper functions ------------- //
 
-    function string_parser(string_array, location_object_array, pointer, id, rowDendogram, colDendogram,
-                           /*col dendogram arguments*/ columnNames,columnsDrawnSoFar,width)
+    function string_parser(string_array, location_object_array, pointer, id, colDendogram,
+                           /*col dendogram arguments*/ columnNames, columnsDrawnSoFar, width)
     {
         var table = [];
         var elements = [];
         var last2Elements=[];
-        var correspondingString ="(";
+        var correspondingString = !colDendogram ? "(" : "";
         while (pointer < string_array.length)
         {
             if (string_array[pointer] == "(")
             {
-                result = string_parser(string_array, location_object_array, pointer+1, id, rowDendogram, colDendogram, columnNames, columnsDrawnSoFar, width);
-                sub_table = result[0];
-                pointer = result[1];
-                id = result[2];
-                correspondingString = correspondingString + result[3];
-                // PUT SOMETHING HERE ALSO FOR CORRESPONDING STRINGS.
-                table = table.concat(sub_table);
-                last2Elements.push(sub_table[sub_table.length-1]);
+                result = string_parser(string_array, location_object_array, pointer+1, id, colDendogram, columnNames, columnsDrawnSoFar, width);
+                if(!colDendogram){
+                    sub_table = result[0];
+                    pointer = result[1];
+                    id = result[2];
+                    correspondingString = correspondingString + result[3];
+                    // PUT SOMETHING HERE ALSO FOR CORRESPONDING STRINGS.
+                    table = table.concat(sub_table);
+                    last2Elements.push(sub_table[sub_table.length - 1]);
+                }
+                if(colDendogram){
+                    sub_table = result[0];
+                    pointer = result[1];
+                    columnsDrawnSoFar = result[2]; // ADD THIS.
+                    correspondingString =correspondingString + result[3];
+                    elements = elements.concat(result[4]); // ADD THIS.
+                    table = table.concat(sub_table);
+                    last2Elements.push(sub_table[sub_table.length-1]);
+                }
             }
+
+
             else if (string_array[pointer] == ")")
             {
                 var children = [];
@@ -583,83 +599,173 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 // At this point you must have only two OBJCTS in the table.
                 // combine them and make a new object from them and push them into the table
                 // then retrun to the previous recursion level.
-                correspondingString = correspondingString + string_array[pointer];
-                // ADD the sibling information.
 
-                for(i in table)
-                {
-                    if(table[i].character == last2Elements[0].character){
-                        table[i].sibling = last2Elements[1];
-                    }
-                    if(table[i].character ==last2Elements[1].character){
-                        table[i].sibling = last2Elements[0];
+                // ADD the sibling information.
+                if(!colDendogram) {
+                    for (i in table) {
+                        if (table[i].character == last2Elements[0].character) {
+                            table[i].sibling = last2Elements[1];
+                        }
+                        if (table[i].character == last2Elements[1].character) {
+                            table[i].sibling = last2Elements[0];
+                        }
                     }
                 }
+
+                if(colDendogram){
+                    for(i in table)
+                    {
+                        if(table[i].correspondingString == last2Elements[0].correspondingString)
+                        {
+                            table[i].sibling = last2Elements[1];
+                        }
+                        if(table[i].correspondingString == last2Elements[1].correspondingString)
+                        {
+                            table[i].sibling = last2Elements[0];
+                        }
+                    }
+                }
+
                 last2Elements[0].sibling = last2Elements[1];
                 last2Elements[1].sibling = last2Elements[0];
                 // ADDED
 
-                var new_character = "";
+                if(!colDendogram) {
+                    var new_character = "";
+                    if (last2Elements.length == 0) {
+                        for (var j = table.length - 2; j <= table.length - 1; j++) {
+                            sum = sum + table[j].location.vertical;
+                            new_character = new_character + table[j].character;
+                            children.push(table[j]);
+                        }
+                    }
+                    else // Will this always be true ?? Verify ! Because last 2 elements  will always have tw
+                    {
+                        for (var j = 0; j <= last2Elements.length - 1; j++) {
+                            sum = sum + last2Elements[j].location.vertical;
+                            new_character = new_character + last2Elements[j].character;
+                            children.push(last2Elements[j]);
+                        }
+                    }
+                    var mid_point = sum / 2;
+                    // Find out how many characters does the string have, that way, we will be able to find the horizontal location of the
+                    // object.
+                    correspondingString = correspondingString + string_array[pointer];
+                    var horizontal = (new_character.length - 1) * 3;
+                    var location = {horizontal: horizontal, vertical: mid_point};
+                    var rowStart = last2Elements[0].rowLocationInformation.startRow;
+                    var rowEnd = last2Elements[1].rowLocationInformation.endRow;
+                    table.push({
+                        character: new_character,
+                        location: location,
+                        children: children,
+                        id: id,
+                        rowLocationInformation: {startRow: rowStart, endRow: rowEnd},
+                        sibling: null,
+                        correspondingString: correspondingString
+                    });
+                    id = id + 1;
+                    return [table, pointer + 1, id, correspondingString];
+                }
 
-                if(last2Elements.length == 0)
-                {
-                    for(var j=table.length-2 ; j<= table.length-1; j++)
+            if(colDendogram) {
+                    for(i in last2Elements)
                     {
-                        sum = sum + table[j].location.vertical;
-                        new_character = new_character+table[j].character;
-                        children.push(table[j]);
+                        sum = sum + last2Elements[i].location.horizontal;
+                        children.push(last2Elements[i]);
                     }
-                }
-                else // Will this always be true ?? Verify ! Because last 2 elements  will always have tw
-                {
-                    for(var j=0; j<=last2Elements.length-1;j++)
+                    correspondingString = "(" + last2Elements[0].correspondingString +","+last2Elements[1].correspondingString+")";
+                    var horizontal = sum/2;
+                    var vertical = (elements.length-1)*8;
+                    var location={vertical:vertical, horizontal:horizontal};
+                    //Finding the column range
+                    var colRangeArray = [];
                     {
-                        sum = sum + last2Elements[j].location.vertical;
-                        new_character = new_character+last2Elements[j].character;
-                        children.push(last2Elements[j]);
+                        for(var i in elements)
+                        {
+                            colRangeArray.push(columnNames.indexOf(elements[i]));
+                        }
                     }
+                    var start= Math.min.apply(null,colRangeArray);
+                    var end = Math.max.apply(null,colRangeArray);
+                    //
+
+                    var columnRange = {start:start, end:end};
+                    table.push({column: correspondingString, location:location, correspondingString: correspondingString, children:children, sibling: null, columnRange:columnRange});
+                    return [table, pointer+1,columnsDrawnSoFar, correspondingString,elements];
                 }
-                mid_point = sum/2;
-                // Find out how many characters does the string have, that way, we will be able to find the horizontal location of the
-                // object.
-                var horizontal = (new_character.length-1) * 3;
-                var location = { horizontal: horizontal, vertical: mid_point};
-                var rowStart = last2Elements[0].rowLocationInformation.startRow;
-                var rowEnd = last2Elements[1].rowLocationInformation.endRow;
-                table.push({character: new_character, location: location, children: children, id:id,
-                    rowLocationInformation:{startRow: rowStart, endRow:rowEnd}, sibling:null, correspondingString: correspondingString});
-                id = id+1;
-                return [table, pointer+1,id, correspondingString];
+
             }
             else if(string_array[pointer] == ",")
             {
                 // Do nothing;
                 correspondingString = correspondingString + string_array[pointer];
-                pointer = pointer + 1;
+                pointer++;
             }
             else if(string_array[pointer] =="" || string_array[pointer] == " " || string_array[pointer] ==";")
             {
                 pointer++;
             }
-            else // The object is a cluster name
+            else // The object is a cluster OR a column name.
             {
-                var vertical = 0;
-                correspondingString = correspondingString + string_array[pointer];
-                var rowLocationInformation ;
-                for(var j in location_object_array){
-                    if (string_array[pointer] == parseInt(location_object_array[j].cluster))
-                    {
-                        vertical = (location_object_array[j].begin + location_object_array[j].end ) /2;
-                        rowLocationInformation = location_object_array[j].rowInformation;
+                if(!colDendogram) {
+                    var vertical = 0;
+                    correspondingString = correspondingString + string_array[pointer];
+                    var rowLocationInformation;
+                    for (var j in location_object_array) {
+                        if (string_array[pointer] == parseInt(location_object_array[j].cluster)) {
+                            vertical = (location_object_array[j].begin + location_object_array[j].end ) / 2;
+                            rowLocationInformation = location_object_array[j].rowInformation;
+                        }
                     }
+                    var location = {horizontal: 0, vertical: vertical};
+                    table.push({
+                        character: string_array[pointer],
+                        location: location,
+                        children: null,
+                        id: id,
+                        rowLocationInformation: rowLocationInformation,
+                        sibling: null,
+                        correspondingString: string_array[pointer]
+                    });
+                    last2Elements.push({
+                        character: string_array[pointer],
+                        location: location,
+                        children: null,
+                        id: id,
+                        rowLocationInformation: rowLocationInformation,
+                        sibling: null,
+                        correspondingString: string_array[pointer]
+                    });
+                    pointer = pointer + 1;
+                    id = id + 1;
                 }
-                var location = {horizontal: 0, vertical: vertical};
-                table.push({character:string_array[pointer] , location: location, children: null, id:id,
-                    rowLocationInformation:rowLocationInformation, sibling: null, correspondingString: string_array[pointer]});
-                last2Elements.push({character:string_array[pointer] , location: location, children: null, id:id,
-                    rowLocationInformation:rowLocationInformation, sibling: null, correspondingString: string_array[pointer]});
-                pointer = pointer + 1;
-                id = id +1;
+                if(colDendogram) {
+                    correspondingString = string_array[pointer];
+                    var horizontal = ((width / (columnNames.length * 2)) + ((width / columnNames.length) * columnsDrawnSoFar.length));
+                    var location = {vertical: 0, horizontal: horizontal};
+                    columnsDrawnSoFar.push(string_array[pointer]);
+                    var start = columnNames.indexOf(correspondingString);
+                    var columnRange = {start: start, end: null};
+                    table.push({
+                        column: string_array[pointer],
+                        location: location,
+                        correspondingString: correspondingString,
+                        children: null,
+                        sibling: null,
+                        columnRange: columnRange
+                    });
+                    elements.push(string_array[pointer]);
+                    last2Elements.push({
+                        column: string_array[pointer],
+                        location: location,
+                        correspondingString: correspondingString,
+                        children: null,
+                        sibling: null,
+                        columnRange: columnRange
+                    });
+                    pointer++;
+                }
             }
         }
         // Adding ID's for each object to be used later by the onClick and onHover function. (i dont understand ?)
@@ -668,7 +774,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
 
     }
 
-    function preLineObjects(table, links1)
+    function preLineObjects(table, links1, rotated)
     {
         var links1Counter = 0;
         for (var i in table)
@@ -677,16 +783,18 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             {
                 for (var j in table[i].children)
                 {
-                    links1[links1Counter].source.x = table[i].location.vertical;
-                    links1[links1Counter].source.y = table[i].location.horizontal;
-                    links1[links1Counter].target.x = table[i].children[j].location.vertical;
-                    links1[links1Counter].target.y = table[i].children[j].location.horizontal;
-                    links1[links1Counter].line_name = table[i].children[j].character;
-                    links1[links1Counter].siblingLineName = table[i].children[j].sibling.character;
-                    links1[links1Counter].rowRange = table[i].children[j].rowLocationInformation;
-                    links1[links1Counter].siblingRowRange = table[i].children[j].sibling.rowLocationInformation;
+                    links1[links1Counter].source.x = !rotated ? table[i].location.vertical : table[i].location.horizontal;
+                    links1[links1Counter].source.y = !rotated ? table[i].location.horizontal :  table[i].location.vertical;
+                    links1[links1Counter].target.x = !rotated ? table[i].children[j].location.vertical : table[i].children[j].location.horizontal;
+                    links1[links1Counter].target.y = !rotated ? table[i].children[j].location.horizontal : table[i].children[j].location.vertical;
+                    links1[links1Counter].line_name = !rotated ? table[i].children[j].character : table[i].children[j].correspondingString;
+                    links1[links1Counter].siblingLineName = !rotated ? table[i].children[j].sibling.character :table[i].children[j].sibling.correspondingString;
                     links1[links1Counter].correspondingString = table[i].children[j].correspondingString;
                     links1[links1Counter].siblingCorrespondingString = table[i].children[j].sibling.correspondingString;
+                    links1[links1Counter].rowRange = !rotated ? table[i].children[j].rowLocationInformation : null;
+                    links1[links1Counter].siblingRowRange = !rotated ? table[i].children[j].sibling.rowLocationInformation : null;
+                    links1[links1Counter].columnRange = !rotated ? null : table[i].children[j].columnRange;
+                    links1[links1Counter].siblingColumnRange = !rotated ? null : table[i].children[j].sibling.columnRange;
                     links1Counter ++;
                 }
             }
@@ -694,10 +802,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         return links1;
     }
 
-    function drawRowDendLines(dendrG, links1, table)
+    function drawDendogramLines(dendrG, links1, table)
     {
-        rowDendogramLines = dendrG.selectAll("polyline").data(links1); //GLOBAL
-        rowDendogramLines
+        var DendogramLines = dendrG.selectAll("polyline").data(links1); //GLOBAL
+        DendogramLines
             .enter().append("polyline")
             .attr("class", "link")
             .attr("stroke", "#A2A2A2")
@@ -719,13 +827,13 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 {
                     if(d.line_name.indexOf(links1[j].line_name) > -1 )
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","blue")
                             .attr("stroke-width", "2.5");
                     }
                     if(d.siblingLineName.indexOf(links1[j].line_name) > -1)
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","red")
                             .attr("stroke-width", "2.5");
                     }
@@ -740,27 +848,27 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 {
                     if(d.line_name.indexOf(links1[j].line_name) > -1 )
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","#A2A2A2")
                             .attr("stroke-width", "1.5");
                     }
                     if(d.siblingLineName.indexOf(links1[j].line_name) > -1 )
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","#A2A2A2")
                             .attr("stroke-width", "1.5");
                     }
                 }
 
             });
-        return rowDendogramLines;
+        return DendogramLines;
 
     }
 
     function dendogram(svg,rotated, width, height, padding,noOfCols,cluster_array, newickString,columnNames)
     {
-        debugger;
-        fakedata = {members:150, edgePar:{cols:""}, height: 30, children:[{members:150, edgePar:{cols:""},
+
+        var fakedata = {members:150, edgePar:{cols:""}, height: 30, children:[{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10},{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10}],counter:10} // CHANGE THIS 150 to the real value.    AND SHOULD THE HEIGHT STAY 30 ?
         // CHANGE THE NAME OF THE VARIABLE FAKE DATA INTO SOMETHING COOLER.
@@ -811,16 +919,16 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         newickString = newickString.replace(/\)/g," ) ");
         newickString = newickString.replace(/\,/g," , ");
 
-        var table = string_parser(newickString.split(" "), location_object_array,0,0,true,false,columnNames,[],width);
-        var links1 = preLineObjects(table, links1); // NOW DRAW THE LINES ACCORDING TO THE INFORMATION IN table.
-        rowDendogramLines = drawRowDendLines(dendrG, links1, table)
-
+        var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width);
+        links1 = preLineObjects(table, links1, rotated);
+        var DendogramLines = drawDendogramLines(dendrG,links1,table);
+        
         function draw(selection) {
             function elbow(d, i) {
 
-        // DENDOGRAM LABELS
+        // Draw DENDOGRAM LABELS
                 try{
-                    if(d.correspondingString.length  ==1)
+                    if(d.correspondingString.length  ==1 )
                     {
                         var text = dendrG.append("text");
                         var xPos = x(d.target.y);
@@ -845,24 +953,23 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 .attr("points", elbow);
         }
 
-
-
         // Dendogram transitions
-        controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function (_) {
-            var scaleBy = _.scale[rotated ? 0 : 1];
-            var translateBy = _.translate[rotated ? 0 : 1];
-            y.range([translateBy, height * scaleBy + translateBy]);
-            dendrG.selectAll("text").remove(); // REMOVE OLD LABELS
-            draw(rowDendogramLines.transition().duration(opts.anim_duration).ease("linear"));
-        });
+            controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function (_) {
+                var scaleBy = _.scale[rotated ? 0 : 1];
+                var translateBy = _.translate[rotated ? 0 : 1];
+                y.range([translateBy, height * scaleBy + translateBy]);
+                dendrG.selectAll("text").remove(); // REMOVE OLD LABELS
+                draw(DendogramLines.transition().duration(opts.anim_duration).ease("linear"));
+            });
+            draw(DendogramLines);
 
-        draw(rowDendogramLines);
-
-
+        if(rotated){
+            colDendLinesListner = DendogramLines;
+        }
+        else{
+            rowDendLinesListner = DendogramLines;
+        }
     }
-
-
-
 
     var dispatcher = d3.dispatch('hover', 'click');
 
@@ -883,12 +990,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         controller.highlight(null, null);
     }
 
-    return {
+    return [{
         on: function(type, listener) {
             dispatcher.on(type, listener);
             return this;
         }
-    };
-
-
+    }, rowDendLinesListner , colDendLinesListner];
 }

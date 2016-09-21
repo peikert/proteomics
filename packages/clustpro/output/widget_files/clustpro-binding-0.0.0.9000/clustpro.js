@@ -95,6 +95,4 @@ HTMLWidgets.widget({
             rowInformation:{startRow:startRow , endRow:cluster.length-1}});
         return cluster_change_rows;
     }
-
-
 });
