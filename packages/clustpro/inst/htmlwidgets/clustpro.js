@@ -34,30 +34,24 @@ HTMLWidgets.widget({
         debugger;
         var self = this;
         instance.lastValue = x;
-
         el.innerHTML = "";
         var merged = [];
         var dataMatrixIndex = 0;
         // coloring information.
-        for(var i=0; i < x.colors.data.length; i++)
-        {
-            for(var j=0; j<x.colors.data[i].length; j++)
-            {
+        for(var i=0; i < x.colors.data.length; i++){
+            for(var j=0; j<x.colors.data[i].length; j++){
                 merged.push({
                     label: x.matrix.data[dataMatrixIndex++].toString(),
                     color: this.hextorgb(x.colors.data[i][j])
                 });
             }
         }
-        if(newMerged == null)
-        {
+        if(newMerged == null){
             x.matrix.merged = merged;
         }
-        else
-        {
+        else {
             x.matrix.merged = newMerged;
         }
-
         // Preparing the needed data objects here:
         var location_object_array = []; // Document it's purpose here.
         var cluster_change_rows = []; // Document it's purpose here.
@@ -66,33 +60,22 @@ HTMLWidgets.widget({
         cluster_change_rows = this.clusterChangeInformation(cluster, cluster_change_rows);
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
-
-        
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
         var hm = heatMapObject[0];
         rowDendLinesListner = heatMapObject[1];
         colDendLinesListner = heatMapObject[2];
-
-
-        rowDendLinesListner.on("click", function(d,i)
-        {
-            console.log("you clicked a line");
-            console.log(i);
-            console.log(d);
-            self.refreshRowDendogram(d,el,x, rowNewickSting, colNewickString, instance);
-
-        });
-
-
-        colDendLinesListner.on("click",function (d,i)
-        {
-            console.log("you clicked a column dendogram line");
-            console.log(i);
-            console.log(d);
-            self.refreshColDendogram(d,el,x,rowNewickSting,colNewickString,instance);
-        });
-
-
+        rowDendLinesListner.on("click", function(d,i) {
+                console.log("you clicked a line");
+                console.log(i);
+                console.log(d);
+                self.refreshRowDendogram(d,el,x, rowNewickSting, colNewickString, instance);
+            });
+        colDendLinesListner.on("click",function (d,i) {
+                console.log("you clicked a column dendogram line");
+                console.log(i);
+                console.log(d);
+                self.refreshColDendogram(d,el,x,rowNewickSting,colNewickString,instance);
+            });
         },
 
 
@@ -123,32 +106,30 @@ HTMLWidgets.widget({
         debugger;
         var columnRangeClicked = d.columnRange;
         var siblingColumnRange = d.siblingColumnRange;
-
         if(columnRangeClicked.start < siblingColumnRange.start){
             x.matrix = this.columnMatrixSwap(x,columnRangeClicked,siblingColumnRange);
-            colNewickString = this.stringSwap(d,colNewickString); //refresh newick string.
-            x.dendnw_col[0] = colNewickString; //refresh newick string.
             x.matrix.cols = this.refreshColumns(x,columnRangeClicked,siblingColumnRange);
         }
         else{
-                //Handle the other case.
+            x.matrix = this.columnMatrixSwap(x,siblingColumnRange, columnRangeClicked);
+            x.matrix.cols = this.refreshColumns(x, siblingColumnRange, columnRangeClicked);
         }
+        colNewickString = this.stringSwap(d,colNewickString); //refresh newick string.
+        x.dendnw_col[0] = colNewickString; //refresh newick string.
         this.doRenderValue(el,x,rowNewickSting, colNewickString, instance, x.matrix.merged);
     },
 
 
-    // HELPER FUNCTIONS
+    // HELPER FUNCTIONS ------------
 
-    refreshColumns : function(x,columnRangeClicked, siblingColumnRange){
-        swap1 = x.matrix.cols.slice(columnRangeClicked.start, columnRangeClicked.end ==null ? columnRangeClicked.start+1 : columnRangeClicked.end +1 );
-        swap2 = x.matrix.cols.slice(siblingColumnRange.start, siblingColumnRange.end == null? siblingColumnRange.start+1 : siblingColumnRange.end +1 );
-        var columns = x.matrix.cols.slice(0,columnRangeClicked.start);
+    refreshColumns : function(x,columnRange1, columnRange2){
+        swap1 = x.matrix.cols.slice(columnRange1.start, columnRange1.end ==null ? columnRange1.start+1 : columnRange1.end +1);
+        swap2 = x.matrix.cols.slice(columnRange2.start, columnRange2.end == null? columnRange2.start+1 : columnRange2.end +1);
+        var columns = x.matrix.cols.slice(0,columnRange1.start);
         columns = columns.concat(swap2);
         columns = columns.concat(swap1);
-        if(siblingColumnRange.end == null)
-        {
-            if(columns.length < x.matrix.cols.length)
-            {
+        if(columnRange2.end == null) {
+            if(columns.length < x.matrix.cols.length) {
                 columns = columns.concat(x.matrix.cols.slice(columns.length,x.matrix.cols.length));
             }
             else {
@@ -156,46 +137,38 @@ HTMLWidgets.widget({
             }
         }
         else {
-            if (siblingColumnRange.end == x.matrix.cols.length - 1) {
+            if (columnRange2.end == x.matrix.cols.length - 1) {
                 // pass
             }
             else {
-                x.matrix.cols.slice(siblingColumnRange.end, x.matrix.cols.length);
+                x.matrix.cols.slice(columnRange2.end, x.matrix.cols.length);
             }
         }
         return  columns;
     },
 
-    columnMatrixSwap: function(x, columnRangeClicked,siblingColumnRange ){
-        for(var i=0; i<x.matrix.data.length; i=i+4)
-        {
-            columnstobeSwaped1 = x.matrix.data.slice(i+columnRangeClicked.start, columnRangeClicked.end ==null ? i+columnRangeClicked.start+1 : i+columnRangeClicked.end +1 );
-            columnstobeSwaped2 = x.matrix.data.slice(i+siblingColumnRange.start, siblingColumnRange.end == null? i+siblingColumnRange.start+1 : i+siblingColumnRange.end +1 );
-            mergecolumnstobeSwapped1 = x.matrix.merged.slice(i+columnRangeClicked.start, columnRangeClicked.end ==null ? i+columnRangeClicked.start+1 : i+columnRangeClicked.end +1 );
-            mergeColumnstoBeSwapped2 = x.matrix.merged.slice(i+siblingColumnRange.start, siblingColumnRange.end == null? i+siblingColumnRange.start+1 : i+siblingColumnRange.end +1 );
-
-            var newArray = x.matrix.data.slice(i,i+columnRangeClicked.start);
-            var newMergeArray = x.matrix.merged.slice(i,i+columnRangeClicked.start);
-
+    columnMatrixSwap: function(x, columnRange1, columnRange2 ){
+        for(var i=0; i<x.matrix.data.length; i=i+4){
+            columnstobeSwaped1 = x.matrix.data.slice(i+columnRange1.start, columnRange1.end ==null ? i+columnRange1.start+1 : i+columnRange1.end +1 );
+            columnstobeSwaped2 = x.matrix.data.slice(i+columnRange2.start, columnRange2.end == null? i+columnRange2.start+1 : i+columnRange2.end +1 );
+            mergecolumnstobeSwapped1 = x.matrix.merged.slice(i+columnRange1.start, columnRange1.end ==null ? i+columnRange1.start+1 : i+columnRange1.end +1 );
+            mergeColumnstoBeSwapped2 = x.matrix.merged.slice(i+columnRange2.start, columnRange2.end == null? i+columnRange2.start+1 : i+columnRange2.end +1 );
+            var newArray = x.matrix.data.slice(i,i+columnRange1.start);
+            var newMergeArray = x.matrix.merged.slice(i,i+columnRange1.start);
             newArray = newArray.concat(columnstobeSwaped2);
             newMergeArray = newMergeArray.concat(mergeColumnstoBeSwapped2);
-
             newArray = newArray.concat(columnstobeSwaped1);
             newMergeArray = newMergeArray.concat(mergecolumnstobeSwapped1);
-
-            newArray = newArray.concat(siblingColumnRange.end == null ? x.matrix.data.slice(siblingColumnRange.start+1,i+4) : x.matrix.data.slice(siblingColumnRange.end,i+4));
-            newMergeArray = newMergeArray.concat(siblingColumnRange.end == null ? x.matrix.merged.slice(i+siblingColumnRange.start+1,i+4) : x.matrix.merged.slice(i+siblingColumnRange.end,i+4));
-
+            newArray = newArray.concat(columnRange2.end == null ? x.matrix.data.slice(columnRange2.start+1,i+4) : x.matrix.data.slice(columnRange2.end,i+4));
+            newMergeArray = newMergeArray.concat(columnRange2.end == null ? x.matrix.merged.slice(i+columnRange2.start+1,i+4) : x.matrix.merged.slice(i+columnRange2.end,i+4));
             var newArraycounter = 0;
-            for(var j=i; j<i+4;j++)
-            {
+            for(var j=i; j<i+4;j++) {
                 x.matrix.data[j] =newArray[newArraycounter];
                 x.matrix.merged[j] = newMergeArray[newArraycounter];
                 newArraycounter++;
             }
         }
         return x.matrix;
-
     },
 
     stringSwap: function(d,newickString){
@@ -210,15 +183,13 @@ HTMLWidgets.widget({
 
     dataMatrixSwap: function(x,matrixDataArray_1, matrixDataArray_2, matrixMergeArray_1, matrixMergeArray_2, matrixDataCounter, matrixMergeCounter){
         // Can be made even more efficent with the help of array splicing and array concatination operations.
-        for(var i=0; i<matrixDataArray_1.length; i++)
-        {
+        for(var i=0; i<matrixDataArray_1.length; i++) {
             x.matrix.data[matrixDataCounter] = matrixDataArray_1[i];
             x.matrix.merged[matrixMergeCounter] = matrixMergeArray_1[i];
             matrixDataCounter++;
             matrixMergeCounter++;
         }
-        for(var i=0; i<matrixDataArray_2.length; i++)
-        {
+        for(var i=0; i<matrixDataArray_2.length; i++) {
             x.matrix.data[matrixDataCounter] = matrixDataArray_2[i];
             x.matrix.merged[matrixMergeCounter] = matrixMergeArray_2[i];
             matrixDataCounter++;

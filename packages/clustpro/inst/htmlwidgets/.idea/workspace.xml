@@ -21,30 +21,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/clustpro.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="133" column="40" selection-start-line="133" selection-start-column="40" selection-end-line="133" selection-end-column="40" />
+            <state relative-caret-position="28">
+              <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="217" column="84" selection-start-line="217" selection-start-column="84" selection-end-line="217" selection-end-column="84" />
+            <state relative-caret-position="331">
+              <caret line="561" column="26" selection-start-line="561" selection-start-column="13" selection-end-line="561" selection-end-column="26" />
               <folding>
                 <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-                <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-                <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -89,9 +87,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1312" />
-    <option name="width" value="1334" />
-    <option name="height" value="768" />
+    <option name="x" value="27" />
+    <option name="y" value="-3" />
+    <option name="width" value="1893" />
+    <option name="height" value="1083" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -216,10 +215,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="149469000" />
+    <option name="totallyTimeSpent" value="156083000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1312" y="0" width="1334" height="768" extended-state="6" />
+    <frame x="27" y="-3" width="1893" height="1083" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13886672" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
@@ -271,7 +270,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="9" />
+      <option name="time" value="10" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -286,9 +285,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -319,9 +316,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -352,9 +347,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -393,9 +386,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -442,9 +433,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -491,9 +480,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -532,9 +519,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -573,9 +558,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -606,9 +589,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -631,9 +612,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -656,9 +635,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -681,9 +658,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -714,9 +689,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -739,9 +712,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -764,9 +735,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -789,9 +758,7 @@
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -812,28 +779,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/clustpro.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="133" column="40" selection-start-line="133" selection-start-column="40" selection-end-line="133" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="217" column="84" selection-start-line="217" selection-start-column="84" selection-end-line="217" selection-end-column="84" />
+        <state relative-caret-position="331">
+          <caret line="561" column="26" selection-start-line="561" selection-start-column="13" selection-end-line="561" selection-end-column="26" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#string_parser#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#preLineObjects#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#drawDendogramLines#0;n#!!block;n#clustpro#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/clustpro.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="28">
+          <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
+          <folding />
         </state>
       </provider>
     </entry>
