@@ -14,30 +14,45 @@
 #' @import ctc
 #' @import jsonlite
 
+
+
+# test_package <- function(){
+#   graphic_type <<- "tif"
+#   br <- min(diff(c(0,2,4,6,8,10))/40)
+#   color_spectrum_unqiue_breaks(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
+#
+#   matrix <- iris[-ncol(iris)]
+#
+#   matrix <- as.data.frame(matrix(round(runif(4800*4, 0.1, 9.9),1),ncol=4,byrow=T))
+#   colnames(matrix) <- c('A','B','C','D')
+#   rownames(matrix) <- paste('gene_',c(1:nrow(matrix)))
+#
+#   return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
+# }
+
+
 #' @export
-test_package <- function(){
-  graphic_type <<- "tif"
-  br <- min(diff(c(0,2,4,6,8,10))/40)
-  color_spectrum_unqiue_breaks(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
-
-  matrix <- iris[-ncol(iris)]
-
-  matrix <- as.data.frame(matrix(round(runif(4800*4, 0.1, 9.9),1),ncol=4,byrow=T))
-  colnames(matrix) <- c('A','B','C','D')
-  rownames(matrix) <- paste('gene_',c(1:nrow(matrix)))
-
-  return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
-}
-
-
-#' @export
-clustpro <- function(width = NULL, height = NULL) {
+clustpro <- function(
+  matrix = matrix,
+  method = "kmeans",
+  min_k = 2,
+  max_k = 10,
+  fixed_k = -1,
+  width = NULL,
+  height = NULL
+  ) {
 
 
 
 
-  rs <- test_package()
-#  rs <- clustering(matrix,method = "kmeans")
+  #rs <- test_package()
+  rs <- clustering(
+    matrix,
+    method,
+    min_k,
+    max_k,
+    fixed_k
+    )
   # forward options using x
 
   # x = list(
@@ -143,7 +158,7 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
 findk_cmeans <- function(k) {
   tryCatch({
     cluster <- mfuzz(minimalSet, c = k, m = fp)$cluster
-    db_score <- index.DB(clustering_data, cluster, centrotypes = "centroids",
+    db_score <- index.DB(matrix, cluster, centrotypes = "centroids",
                          p = 2, q = 2)
     return(c(k, db_score$DB))
   }, warning = function(w) {
@@ -157,8 +172,8 @@ findk_cmeans <- function(k) {
 
 findk_kmeans <- function(k) {
   tryCatch({
-    cluster <- kmeans(clustering_data, k, iter.max = 1000)
-    db_score <- index.DB(clustering_data, cluster$cluster, centrotypes = "centroids",
+    cluster <- kmeans(matrix, k, iter.max = 1000)
+    db_score <- index.DB(matrix, cluster$cluster, centrotypes = "centroids",
                          p = 2, q = 2)
     return(c(k, db_score$DB))
   }, warning = function(w) {
@@ -170,14 +185,14 @@ findk_kmeans <- function(k) {
   })
 }
 
-get_best_k <- function(clustering_data, min_k, max_k, method) {
-  if (nrow(clustering_data) < max_k) {
-    max_k <- nrow(clustering_data)
-    print("max_k larger the rows in clustering_data.")
+get_best_k <- function(matrix, min_k, max_k, method) {
+  if (nrow(matrix) < max_k) {
+    max_k <- nrow(matrix)
+    print("max_k larger the rows in matrix.")
     print(paste("max_k was set to ", max_k, sep = ""))
   }
   iterations <<- max_k
-  clustering_data <<- clustering_data
+  matrix <<- matrix
 
 
   cl <- makeCluster(4, type = "SOCK")
@@ -185,13 +200,13 @@ get_best_k <- function(clustering_data, min_k, max_k, method) {
   switch(method,
          kmeans = {
            findk <<- findk_kmeans
-           clusterExport(cl, c("findk","kmeans", "index.DB","clustering_data"))
+           clusterExport(cl, c("findk","kmeans", "index.DB","matrix"))
          },
          cmeans = {
-           minimalSet <<- ExpressionSet(assayData = as.matrix(clustering_data))
+           minimalSet <<- ExpressionSet(assayData = as.matrix(matrix))
            fp <<- mestimate(minimalSet)
            findk <<- findk_cmeans
-           clusterExport(cl, c("findk", "mfuzz","cmeans", "index.DB", "minimalSet", "fp","clustering_data"))
+           clusterExport(cl, c("findk", "mfuzz","cmeans", "index.DB", "minimalSet", "fp","matrix"))
          })
 
   registerDoSNOW(cl)
@@ -206,22 +221,22 @@ get_best_k <- function(clustering_data, min_k, max_k, method) {
 
 }
 
-clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, method = "kmeans") {
-  # fixed_k=-1 clustering_data <- matrix
+clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "kmeans") {
+  # fixed_k=-1 matrix <- matrix
   #method = "cmeans"
   if(F){
-    clustering_data <- matrix
+    matrix <- matrix
     min_k = 2
     max_k = 100
     fixed_k = -1
     method = "kmeans"
   }
-  distributions_histograms(clustering_data, "distributions_histograms")
+  distributions_histograms(matrix, "distributions_histograms")
 
   if (fixed_k > 0) {
     k <- fixed_k
   } else {
-    db_list <- get_best_k(clustering_data, min_k, max_k, method)
+    db_list <- get_best_k(matrix, min_k, max_k, method)
     initialize_graphic(paste("db_index_ratio_div_ratio", sep = ""))
     plot(db_list, type = "b")
     dev.off()
@@ -232,13 +247,13 @@ clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, me
   cluster_rows <- T
 
   switch(method, kmeans = {
-    clustering_result <- kmeans(clustering_data, k, iter.max = 1000)
+    clustering_result <- kmeans(matrix, k, iter.max = 1000)
   }, cmeans = {
     clustering_result <- mfuzz(minimalSet, c = k, m = fp)
   })
 
   cluster <- clustering_result$cluster
-  df <- cbind(clustering_data,cluster)
+  df <- cbind(matrix,cluster)
 
   cluster_centers <- aggregate(df[,-ncol(df)],by=df['cluster'],FUN=median, na.rm=TRUE)
   rownames(cluster_centers) <- sapply(cluster_centers$cluster,as.character)
@@ -338,8 +353,8 @@ clustering <- function(clustering_data, min_k = 2, max_k = 100, fixed_k = -1, me
   #  plot(fit_cols, hang=-1)
   # # rect.hclust(fit2, 2, border="red")
   #  par(opar)
-  # clustering_data$cluster <- clustering_result[['cluster']]
-  # ordered_data <- clustering_data
+  # matrix$cluster <- clustering_result[['cluster']]
+  # ordered_data <- matrix
   # switch(method, kmeans = {
   #
   #   if (cluster_rows) {
