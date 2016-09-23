@@ -1,5 +1,4 @@
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
-    debugger;
     console.log(data);
     console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
 
@@ -467,9 +466,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         }
         layoutMouseTargets(mouseTargets);
 
-        if (rotated) {
+        if (false) {
             axisNodes.selectAll("text")
-                .attr("transform", "rotate(45),translate(6, 0)")
+                .attr("transform", "rotate(0),translate(6, 0)")
                 .style("text-anchor", "start");
         }
 

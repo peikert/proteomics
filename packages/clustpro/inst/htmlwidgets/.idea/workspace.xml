@@ -24,8 +24,8 @@
       <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/clustpro.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="28">
-              <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
+            <state relative-caret-position="338">
+              <caret line="48" column="37" selection-start-line="48" selection-start-column="37" selection-end-line="48" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -34,11 +34,10 @@
       <file leaf-file-name="clustpro.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="331">
-              <caret line="561" column="26" selection-start-line="561" selection-start-column="13" selection-end-line="561" selection-end-column="26" />
+            <state relative-caret-position="1696">
+              <caret line="486" column="78" selection-start-line="486" selection-start-column="78" selection-end-line="486" selection-end-column="78" />
               <folding>
                 <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-                <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
                 <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -89,8 +88,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="27" />
     <option name="y" value="-3" />
-    <option name="width" value="1893" />
-    <option name="height" value="1083" />
+    <option name="width" value="1253" />
+    <option name="height" value="1027" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -211,14 +210,15 @@
       <workItem from="1474125543083" duration="16067000" />
       <workItem from="1474290347644" duration="16225000" />
       <workItem from="1474412615919" duration="20265000" />
+      <workItem from="1474562051742" duration="9949000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="156083000" />
+    <option name="totallyTimeSpent" value="167798000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="27" y="-3" width="1893" height="1083" extended-state="6" />
+    <frame x="27" y="-3" width="1253" height="1027" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.13886672" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
@@ -281,7 +281,6 @@
           <caret line="154" column="53" selection-start-line="154" selection-start-column="53" selection-end-line="154" selection-end-column="53" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -312,7 +311,6 @@
           <caret line="222" column="100" selection-start-line="222" selection-start-column="90" selection-end-line="222" selection-end-column="100" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -343,7 +341,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -382,7 +379,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -429,7 +425,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -476,7 +471,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -515,7 +509,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -554,7 +547,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -585,7 +577,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -608,7 +599,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -631,7 +621,6 @@
           <caret line="16" column="74" selection-start-line="16" selection-start-column="74" selection-end-line="16" selection-end-column="74" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -654,7 +643,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -685,7 +673,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -708,7 +695,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -731,7 +717,6 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -754,7 +739,6 @@
           <caret line="154" column="53" selection-start-line="154" selection-start-column="53" selection-end-line="154" selection-end-column="53" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -781,11 +765,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/clustpro-0.0.1/clustpro.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="561" column="26" selection-start-line="561" selection-start-column="13" selection-end-line="561" selection-end-column="26" />
+        <state relative-caret-position="1696">
+          <caret line="486" column="78" selection-start-line="486" selection-start-column="78" selection-end-line="486" selection-end-column="78" />
           <folding>
             <element signature="n#!!block;n#colormap#0;n#!!block;n#clustpro#0" expanded="false" />
-            <element signature="n#!!block;n#axisLabels#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#edgeStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#maxChildStrokeWidth#0;n#!!block;n#clustpro#0" expanded="false" />
             <element signature="n#!!block;n#refineLocationObjectArray#0;n#!!block;n#clustpro#0" expanded="false" />
@@ -796,8 +779,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/clustpro.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="28">
-          <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
+        <state relative-caret-position="338">
+          <caret line="48" column="37" selection-start-line="48" selection-start-column="37" selection-end-line="48" selection-end-column="37" />
           <folding />
         </state>
       </provider>
