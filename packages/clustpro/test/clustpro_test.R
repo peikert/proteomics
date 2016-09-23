@@ -9,7 +9,7 @@ if(F){
   #devtools::reload()
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
- library(clustpro)
+library(clustpro)
 # library(htmlwidgets)
 # library(ggplot2)
 # library(pracma)

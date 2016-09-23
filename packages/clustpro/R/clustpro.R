@@ -21,6 +21,11 @@ test_package <- function(){
   color_spectrum_unqiue_breaks(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
 
   matrix <- iris[-ncol(iris)]
+
+  matrix <- as.data.frame(matrix(round(runif(4800*4, 0.1, 9.9),1),ncol=4,byrow=T))
+  colnames(matrix) <- c('A','B','C','D')
+  rownames(matrix) <- paste('gene_',c(1:nrow(matrix)))
+
   return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
 }
 

@@ -12,3 +12,4 @@ dependencies:
   version: 0.6.6
   src: htmlwidgets/lib/d3-tip
   script: index.js
+  
