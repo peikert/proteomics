@@ -4,6 +4,7 @@ HTMLWidgets.widget({
 
     initialize: function(el, width, height) {
         console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
+        debugger;
         return {
             lastTheme: null,
             lastValue: null
@@ -29,7 +30,6 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged){
-        debugger;
         var self = this;
         instance.lastValue = x;
         el.innerHTML = "";
@@ -137,7 +137,7 @@ HTMLWidgets.widget({
                 // pass
             }
             else {
-                x.matrix.cols.slice(columnRange2.end, x.matrix.cols.length);
+                columns = columns.concat(x.matrix.cols.slice(columnRange2.end+1, x.matrix.cols.length));
             }
         }
         return  columns;
