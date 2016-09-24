@@ -42,16 +42,13 @@ clustpro <- function(
   height = NULL
   ) {
 
-
-
-
   #rs <- test_package()
   rs <- clustering(
-    matrix,
-    method,
-    min_k,
-    max_k,
-    fixed_k
+    matrix = matrix,
+    method = method,
+    min_k = min_k,
+    max_k = max_k,
+    fixed_k = fixed_k
     )
   # forward options using x
 
