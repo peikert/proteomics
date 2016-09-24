@@ -1,7 +1,7 @@
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
     console.log(data);
     console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
-
+    debugger;
     // ==== BEGIN HELPERS =================================
 
     function htmlEscape(str) {

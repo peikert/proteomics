@@ -14,7 +14,6 @@ HTMLWidgets.widget({
     renderValue: function(el, x, instance) {
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
-        var colNewickString = x.dendnw_col[0];
         x.matrix.data = [].concat.apply([],x.matrix.data); // Flattening the data array.
         this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null);
     },
@@ -30,7 +29,7 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged){
-
+        debugger;
         var self = this;
         instance.lastValue = x;
         el.innerHTML = "";
@@ -171,8 +170,8 @@ HTMLWidgets.widget({
     stringSwap: function(d,newickString){
         var clickedString = d.correspondingString;
         var siblingString = d.siblingCorrespondingString;
-        newickString = newickString.replace(clickedString,"clicked");
-        newickString = newickString.replace(siblingString,"sibling");
+        newickString = clickedString.length == "1" ? newickString.search(clickedString +",") != -1 ? newickString.replace(clickedString+",","clicked,"): newickString.replace(clickedString+")","clicked)")  : newickString.replace(clickedString,"clicked");
+        newickString = siblingString.length == "1" ? newickString.search(siblingString +",") != -1 ? newickString.replace(siblingString+",","sibling,"): newickString.replace(siblingString+")","sibling)")  : newickString.replace(siblingString,"sibling");
         newickString = newickString.replace("clicked",siblingString);
         newickString = newickString.replace("sibling",clickedString);
         return newickString;
