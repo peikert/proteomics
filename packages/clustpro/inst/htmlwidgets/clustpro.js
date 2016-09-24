@@ -60,28 +60,6 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
-
-        // Saving the SVG
-        debugger;
-        var svg  = document.getElementsByClassName('dendrogram colDend');
-        var svg2  = document.getElementsByClassName('dendrogram rowDend');
-        var xml  = new XMLSerializer().serializeToString(svg[0]);
-        var xml2  = new XMLSerializer().serializeToString(svg2[0]);
-        var data = "data:image/svg+xml;base64," + btoa(xml);
-        var data2 = "data:image/svg+xml;base64," + btoa(xml2);
-        var img  = new Image();
-        var img2  = new Image();
-        img.setAttribute('src', data);
-        img2.setAttribute('src',data2);
-
-        var node = document.createElement("A");
-        var textnode = document.createTextNode("SAVE");
-        node.appendChild(textnode);
-        node.href = img.src;
-        document.getElementById('htmlwidget-1137').appendChild(node);
-        // document.getElementsByClassName('inner')[0].appendChild(img);
-        // document.getElementsByClassName('inner')[0].appendChild(img2);
-
         var hm = heatMapObject[0];
         rowDendLinesListner = heatMapObject[1];
         colDendLinesListner = heatMapObject[2];
