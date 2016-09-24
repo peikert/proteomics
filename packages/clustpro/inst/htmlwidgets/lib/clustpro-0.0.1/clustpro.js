@@ -493,7 +493,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             tAxisNodes.call(axis);
             // Set text-anchor on the non-transitioned node to prevent jumpiness
             // in RStudio Viewer pane
-            axisNodes.selectAll("text").style("text-anchor", "start");
+
+            /* Stop x-axis labels to change position while transforming */
+            // axisNodes.selectAll("text").style("text-anchor", "start");
             tAxisNodes.selectAll("g")
                 .style("opacity", function(d, i) {
                     if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
@@ -502,9 +504,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                         return 0;
                     }
                 });
-            tAxisNodes
-                .selectAll("text")
-                .style("text-anchor", "start");
+            /* Stop x-axis labels to change position while transforming */
+           // tAxisNodes
+           //     .selectAll("text")
+           //     .style("text-anchor", "start");
             mouseTargets.transition().duration(opts.anim_duration).ease('linear')
                 .call(layoutMouseTargets)
                 .style("opacity", function(d, i) {
