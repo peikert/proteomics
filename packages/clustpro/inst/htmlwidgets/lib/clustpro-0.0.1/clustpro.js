@@ -1,7 +1,6 @@
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
     console.log(data);
     console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
-
     // ==== BEGIN HELPERS =================================
 
     function htmlEscape(str) {
@@ -493,7 +492,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             tAxisNodes.call(axis);
             // Set text-anchor on the non-transitioned node to prevent jumpiness
             // in RStudio Viewer pane
-            axisNodes.selectAll("text").style("text-anchor", "start");
+
+            /* Stop x-axis labels to change position while transforming */
+            // axisNodes.selectAll("text").style("text-anchor", "start");
             tAxisNodes.selectAll("g")
                 .style("opacity", function(d, i) {
                     if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
@@ -502,9 +503,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                         return 0;
                     }
                 });
-            tAxisNodes
-                .selectAll("text")
-                .style("text-anchor", "start");
+            /* Stop x-axis labels to change position while transforming */
+           // tAxisNodes
+           //     .selectAll("text")
+           //     .style("text-anchor", "start");
             mouseTargets.transition().duration(opts.anim_duration).ease('linear')
                 .call(layoutMouseTargets)
                 .style("opacity", function(d, i) {
@@ -922,12 +924,12 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         links1 = preLineObjects(table, links1, rotated);
         var DendogramLines = drawDendogramLines(dendrG,links1,table);
         
-        function draw(selection) {
+        function draw(selection,rotated) {
             function elbow(d, i) {
 
         // Draw DENDOGRAM LABELS
                 try{
-                    if(d.correspondingString.length  ==1 )
+                    if(!rotated)
                     {
                         var text = dendrG.append("text");
                         var xPos = x(d.target.y);
@@ -958,9 +960,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 var translateBy = _.translate[rotated ? 0 : 1];
                 y.range([translateBy, height * scaleBy + translateBy]);
                 dendrG.selectAll("text").remove(); // REMOVE OLD LABELS
-                draw(DendogramLines.transition().duration(opts.anim_duration).ease("linear"));
+                draw(DendogramLines.transition().duration(opts.anim_duration).ease("linear"),rotated);
             });
-            draw(DendogramLines);
+            draw(DendogramLines,rotated);
 
         if(rotated){
             colDendLinesListner = DendogramLines;

@@ -4,6 +4,7 @@ HTMLWidgets.widget({
 
     initialize: function(el, width, height) {
         console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
+        debugger;
         return {
             lastTheme: null,
             lastValue: null
@@ -13,7 +14,6 @@ HTMLWidgets.widget({
 
     renderValue: function(el, x, instance) {
         var rowNewickString = x.dendnw_row[0];
-        var colNewickString = x.dendnw_col[0];
         var colNewickString = x.dendnw_col[0];
         x.matrix.data = [].concat.apply([],x.matrix.data); // Flattening the data array.
         this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null);
@@ -30,7 +30,6 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged){
-
         var self = this;
         instance.lastValue = x;
         el.innerHTML = "";
@@ -60,28 +59,6 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
-
-        // Saving the SVG
-        debugger;
-        var svg  = document.getElementsByClassName('dendrogram colDend');
-        var svg2  = document.getElementsByClassName('dendrogram rowDend');
-        var xml  = new XMLSerializer().serializeToString(svg[0]);
-        var xml2  = new XMLSerializer().serializeToString(svg2[0]);
-        var data = "data:image/svg+xml;base64," + btoa(xml);
-        var data2 = "data:image/svg+xml;base64," + btoa(xml2);
-        var img  = new Image();
-        var img2  = new Image();
-        img.setAttribute('src', data);
-        img2.setAttribute('src',data2);
-
-        var node = document.createElement("A");
-        var textnode = document.createTextNode("SAVE");
-        node.appendChild(textnode);
-        node.href = img.src;
-        document.getElementById('htmlwidget-1137').appendChild(node);
-        // document.getElementsByClassName('inner')[0].appendChild(img);
-        // document.getElementsByClassName('inner')[0].appendChild(img2);
-
         var hm = heatMapObject[0];
         rowDendLinesListner = heatMapObject[1];
         colDendLinesListner = heatMapObject[2];
@@ -160,7 +137,7 @@ HTMLWidgets.widget({
                 // pass
             }
             else {
-                x.matrix.cols.slice(columnRange2.end, x.matrix.cols.length);
+                columns = columns.concat(x.matrix.cols.slice(columnRange2.end+1, x.matrix.cols.length));
             }
         }
         return  columns;
@@ -193,8 +170,8 @@ HTMLWidgets.widget({
     stringSwap: function(d,newickString){
         var clickedString = d.correspondingString;
         var siblingString = d.siblingCorrespondingString;
-        newickString = newickString.replace(clickedString,"clicked");
-        newickString = newickString.replace(siblingString,"sibling");
+        newickString = clickedString.length == "1" ? newickString.search(clickedString +",") != -1 ? newickString.replace(clickedString+",","clicked,"): newickString.replace(clickedString+")","clicked)")  : newickString.replace(clickedString,"clicked");
+        newickString = siblingString.length == "1" ? newickString.search(siblingString +",") != -1 ? newickString.replace(siblingString+",","sibling,"): newickString.replace(siblingString+")","sibling)")  : newickString.replace(siblingString,"sibling");
         newickString = newickString.replace("clicked",siblingString);
         newickString = newickString.replace("sibling",clickedString);
         return newickString;
