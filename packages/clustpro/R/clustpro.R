@@ -13,6 +13,8 @@
 #' @import gplots
 #' @import ctc
 #' @import jsonlite
+#' @import foreach
+#' @import doParallel
 
 
 
@@ -33,7 +35,7 @@
 
 #' @export
 clustpro <- function(
-  matrix = matrix,
+  matrix,
   method = "kmeans",
   min_k = 2,
   max_k = 10,
@@ -41,14 +43,15 @@ clustpro <- function(
   width = NULL,
   height = NULL
   ) {
-
+  no_cores <- max(1, detectCores() - 1)
   #rs <- test_package()
   rs <- clustering(
     matrix = matrix,
     method = method,
     min_k = min_k,
     max_k = max_k,
-    fixed_k = fixed_k
+    fixed_k = fixed_k,
+    no_cores = no_cores
     )
   # forward options using x
 
@@ -58,7 +61,7 @@ clustpro <- function(
   #   matrix = rs$matrix[,colnames(rs$matrix)!='cluster'],
   #   owncluster=rs$matrix[,'cluster']
   # )
-   x = rs
+   x = rs$json
 
  # library(rjson)
   #print(x)
@@ -80,6 +83,7 @@ clustpro <- function(
                             )
   show(widget)
   saveWidget(widget, file=paste(getwd(),'widget.html',sep='/'))
+  return(rs$data)
 }
 
 #' Shiny bindings for clustpro
@@ -152,7 +156,7 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
   return(order_data)
 }
 
-findk_cmeans <- function(k) {
+findk_cmeans <- function(matrix, k, minimalSet, fp) {
   tryCatch({
     cluster <- mfuzz(minimalSet, c = k, m = fp)$cluster
     db_score <- index.DB(matrix, cluster, centrotypes = "centroids",
@@ -167,7 +171,7 @@ findk_cmeans <- function(k) {
   })
 }
 
-findk_kmeans <- function(k) {
+findk_kmeans <- function(matrix, k) {
   tryCatch({
     cluster <- kmeans(matrix, k, iter.max = 1000)
     db_score <- index.DB(matrix, cluster$cluster, centrotypes = "centroids",
@@ -182,43 +186,57 @@ findk_kmeans <- function(k) {
   })
 }
 
-get_best_k <- function(matrix, min_k, max_k, method) {
+get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
   if (nrow(matrix) < max_k) {
     max_k <- nrow(matrix)
     print("max_k larger the rows in matrix.")
     print(paste("max_k was set to ", max_k, sep = ""))
   }
-  iterations <<- max_k
-  matrix <<- matrix
+  iterations<- max_k
+  matrix<- matrix
 
 
-  cl <- makeCluster(4, type = "SOCK")
+  cl <- makeCluster(no_cores)
+  registerDoParallel(cl)
 
   switch(method,
          kmeans = {
-           findk <<- findk_kmeans
-           clusterExport(cl, c("findk","kmeans", "index.DB","matrix"))
+           findk <- findk_kmeans
+           clusterExport(cl, c("matrix"))
+           clusterEvalQ(cl, c(library(clusterSim),library(stats),library(clustpro)))
+           db_list <- t(foreach(k = c(min_k:iterations),
+                                .combine = "cbind",
+                                .export='findk'
+                                ) %dopar% {
+             findk_kmeans(matrix, k)
+           })
+
          },
          cmeans = {
-           minimalSet <<- ExpressionSet(assayData = as.matrix(matrix))
-           fp <<- mestimate(minimalSet)
-           findk <<- findk_cmeans
-           clusterExport(cl, c("findk", "mfuzz","cmeans", "index.DB", "minimalSet", "fp","matrix"))
+           minimalSet<- ExpressionSet(assayData = as.matrix(matrix))
+           fp <- mestimate(minimalSet)
+           findk <- findk_cmeans
+           clusterExport(cl, c("mfuzz", "index.DB", "minimalSet", "fp","matrix"))
+           clusterEvalQ(cl, c(library(clusterSim),library(Mfuzz),library(e1071),library(clustpro)))
+           db_list <- t(foreach(k = c(min_k:iterations),
+                                .combine = "cbind",
+                                .export='findk'
+                                ) %dopar% {
+             findk_cmeans(matrix, k, minimalSet, fp)
+           })
          })
 
-  registerDoSNOW(cl)
-  getDoParWorkers()
-  getDoParName()
-  getDoParVersion()
-  db_list <- t(foreach(k = c(min_k:iterations), .combine = "cbind") %dopar% {
-    findk(k)
-  })
+#  registerDoSNOW(cl)
+#  getDoParWorkers()
+#  getDoParName()
+#  getDoParVersion()
+
   stopCluster(cl)
   return(db_list)
 
 }
 
-clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "kmeans") {
+clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "kmeans",no_cores = 2) {
   # fixed_k=-1 matrix <- matrix
   #method = "cmeans"
   if(F){
@@ -227,13 +245,14 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
     max_k = 100
     fixed_k = -1
     method = "kmeans"
+    no_cores = 2
   }
   distributions_histograms(matrix, "distributions_histograms")
 
   if (fixed_k > 0) {
     k <- fixed_k
   } else {
-    db_list <- get_best_k(matrix, min_k, max_k, method)
+    db_list <- get_best_k(matrix, min_k, max_k, method, no_cores=no_cores)
     initialize_graphic(paste("db_index_ratio_div_ratio", sep = ""))
     plot(db_list, type = "b")
     dev.off()
@@ -343,7 +362,7 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
   json_payload = toJSON(payload, pretty = TRUE)
   write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
 
-  return(json_payload)
+  return(list(json=json_payload,data=clustering_result))
   #  opar <- par(mfrow = c(1, 2))
   #  plot(fit_row,  hang=-1)
   # # rect.hclust(fit1, 2, border="red")

@@ -1,34 +1,24 @@
 #setwd("D:/git/proteomics/packages)
-install.packages('devtools')
-source("https://bioconductor.org/biocLite.R")
-biocLite("Biobase")
-biocLite("Mfuzz")
-biocLite("ctc")
-biocLite("roxygen2")
+# install.packages('devtools')
+# source("https://bioconductor.org/biocLite.R")
+# biocLite("Biobase")
+# biocLite("Mfuzz")
+# biocLite("ctc")
+# biocLite("roxygen2")
 
 #devtools::create("clustpro")
 if(F){
   library(devtools)
-  setwd("C:/Users/cpeikert/Documents/proteomics/packages/clustpro")
-#  setwd("D:/git/proteomics/packages/clustpro")
+#setwd("C:/Users/cpeikert/Documents/proteomics/packages/clustpro")
+  setwd("D:/git/proteomics/packages/clustpro")
 # devtools::check()
   devtools::document()
   devtools::install()
   #devtools::reload()
 }
-setwd("C:/Users/cpeikert/Documents/proteomics/packages/clustpro/output")
+setwd("D:/git/proteomics/packages/clustpro/output")
 library(clustpro)
-# library(htmlwidgets)
-# library(ggplot2)
-# library(pracma)
-# library(Biobase)
-# library(Mfuzz)
-# library(clusterSim)
-# library(doSNOW)
-# library(pheatmap)
-# library(gplots)
-# library(ctc)
-# library(jsonlite)
+
 
 
 graphic_type <<- "tif"
@@ -46,8 +36,4 @@ matrix <- iris[-ncol(iris)]
 # rownames(matrix) <- paste('gene_',c(1:nrow(matrix)))
 
 
-clustpro(matrix=matrix,
-         method = "kmeans",
-         min_k = 2,
-         max_k = 10
-         )
+data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10)
