@@ -929,8 +929,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
 
         // Draw DENDOGRAM LABELS
                 try{
-                    if(!rotated)
+                    if(!rotated && d.correspondingString.length  ==1)
                     {
+
                         var text = dendrG.append("text");
                         var xPos = x(d.target.y);
                         var yPos = y(d.target.x);
