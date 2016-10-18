@@ -61,7 +61,7 @@ clustpro <- function(
   #   matrix = rs$matrix[,colnames(rs$matrix)!='cluster'],
   #   owncluster=rs$matrix[,'cluster']
   # )
-   x = rs$json
+  rs_json <- rs$json
 
  # library(rjson)
   #print(x)
@@ -75,7 +75,7 @@ clustpro <- function(
   # )
 
   widget <- htmlwidgets::createWidget('clustpro',
-                            rs,
+                            rs_json,
                             width = width,
                             height = height,
                             sizingPolicy = sizingPolicy(browser.fill = TRUE
