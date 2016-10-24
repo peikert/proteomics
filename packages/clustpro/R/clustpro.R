@@ -134,7 +134,7 @@ distributions_histograms <- function(data, title) {
 #  rvr_max <- ceiling(max(data, na.rm = TRUE))
   for (i in 1:ncol(data)) {
     x <- data[, i, drop = FALSE]
-    h <- histss(x[, 1], n = (nrow(data)/10), plotting = FALSE)
+    h <- histss(x[, 1], n = round(nrow(data)/10), plotting = FALSE)
     title_add <- i
     if (!is.null(colnames(data)))
       title_add <- colnames(data)[i]
