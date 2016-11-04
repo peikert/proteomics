@@ -59,6 +59,81 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
+        // Save the SVGs here.
+        debugger;
+        // STEPS:
+        // 1)  Generate a drop down menu or a button that gives the option to save the svg in different
+        //      formats. At the moment i am only going to create a button  (IN PROGRESS)
+        // Add multiple options here.
+
+        iframe = document.createElement("iframe");
+        iframe.id = "my_iframe";
+        iframe.style = "display:none;";
+        document.getElementById("htmlwidget-1d9f9b9fdca3023baa83").appendChild(iframe);
+
+
+        a = document.createElement("a");
+        a.href = "www.google.com";
+        a.download = "";
+        a.id = "download";
+
+        iframe2 = document.createElement("iframe");
+        iframe2.appendChild(a);
+
+        option = new Option("testing");
+        option.appendChild(a);
+
+
+        select = document.createElement("select");
+        select.options.add(new Option("Saving Options",0));
+        select.options.add(new Option("Save RowDend SVG",1));
+        select.options.add(new Option("Save ColDend SVG",2));
+        select.options.add(new Option("Save ColorMap SVG",3));
+        select.options.add(new Option("Save as PNG",4));
+        select.options.add(option);
+
+
+        select.id = "selectionbox";
+        select.onchange = function (value){
+            debugger;
+            if(value.srcElement.value == 1){
+                svgString = "dendrogram rowDend";
+                var url = self.saveSvg(svgString);
+                var win = window.open(url, "_blank");
+                win.focus();
+            }
+            else if (value.srcElement.value == 2){
+                svgString = "dendrogram colDend";
+                var url = self.saveSvg(svgString);
+                var win = window.open(url, "_blank");
+                win.focus();
+            }
+            else if (value.srcElement.value == 3){
+                svgString = "colormap";
+                var url = self.saveSvg(svgString);
+                var win = window.open(url, "_blank");
+                win.focus();
+            }
+        };
+        document.getElementById("htmlwidget-1d9f9b9fdca3023baa83").appendChild(select);
+        // 2)   Just try to save the SVGs somewhere.
+        //              - First try to do it without any external libraries. If
+        //                that don't work out then try out some libraries.
+        //              - Take a look into FileSaver.js if nothing is working out.
+
+        // 3)   Save the SVGs as other file formats (jpeg, png etc).
+        // 4)   Enjoy the new feature.
+
+        var html = d3.select("svg") // will just select a random svg element. currently it is selecting column dendogram
+            .attr("version", 1.1)
+            .attr("xmlns", "http://www.w3.org/2000/svg")
+            .node().parentNode.innerHTML;
+        var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+        var img = '<img src="'+imgsrc+'">';
+        d3.select("#svgdataurl").html(img);
+        debugger;
+
+
         var hm = heatMapObject[0];
         rowDendLinesListner = heatMapObject[1];
         colDendLinesListner = heatMapObject[2];
@@ -76,6 +151,22 @@ HTMLWidgets.widget({
             });
         },
 
+    saveSvg: function(svgString){
+        var svg = document.getElementsByClassName(svgString)[0];
+        var serializer = new XMLSerializer();
+        var source = serializer.serializeToString(svg);
+        if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+            source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+        }
+        if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
+            source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+        }
+        // source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+        source = '<?xml version="1.0"?>\r\n' + '<?xml-stylesheet href="lib/clustpro-0.0.1/./clustpro.css" type="text/css"?>\r\n' + source;
+        var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+        return url;
+
+    },
 
     refreshRowDendogram: function(d,el,x,rowNewickSting, colNewickString,instance){
         var clusterSwapArray_1 =x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow+1);
