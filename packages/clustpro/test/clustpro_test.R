@@ -5,9 +5,10 @@
 # biocLite("Mfuzz")
 # biocLite("ctc")
 # biocLite("roxygen2")
+# install.packages('ggplot2')
 
 #devtools::create("clustpro")
-if(F){
+if(T){
   library(devtools)
 #setwd("C:/Users/cpeikert/Documents/proteomics/packages/clustpro")
   setwd("D:/git/proteomics/packages/clustpro")
@@ -29,9 +30,21 @@ matrix <- iris[-ncol(iris)]
 #
 
 
+
+
+#########
+
 test_data = read.csv('D:/git/proteomics/packages/clustpro/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
-#head(test_data)
+rownames(test_data) <- test_data[,1]
+test_data[,1] <- NULL
+min(test_data)
+max(test_data)
+br <- min(diff(c(-1.1,-0.5,-0.1,0.1,0.5,1.1))/40)
+color_spectrum_unqiue_breaks(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
 matrix <- test_data
+matrix <- rbind(matrix,matrix)
+matrix <- rbind(matrix,matrix)
+#########
 # matrix <- as.data.frame(matrix(round(runif(400, 0.1, 9.9),1),ncol=4,byrow=T))
 # matrix <- as.data.frame(matrix(round(runif(4800, 0.1, 9.9),1),ncol=4,byrow=T))
 # matrix <- as.data.frame(matrix(round(runif(4800*4, 0.1, 9.9),1),ncol=4,byrow=T))
@@ -40,4 +53,6 @@ matrix <- test_data
 # rownames(matrix) <- paste('gene_',c(1:nrow(matrix)))
 
 
-data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10)
+# data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10)
+data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = 25)
+#names(data2)

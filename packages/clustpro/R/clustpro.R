@@ -83,7 +83,13 @@ clustpro <- function(
                             )
   show(widget)
   saveWidget(widget, file=paste(getwd(),'widget.html',sep='/'))
-  return(rs$data)
+  return(list(datatable = rs$data,
+              clustering = rs$cobject,
+              cluster_centers = rs$cluster_centers,
+              col_dend_hclust=rs$col_dend_hclust,
+              row_dend_hclust=rs$row_dend_hclust
+              )
+         )
 }
 
 #' Shiny bindings for clustpro
@@ -211,28 +217,31 @@ get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
              findk_kmeans(matrix, k)
            })
 
+           stopCluster(cl)
+
+           return(list(db_list=db_list))
+
          },
          cmeans = {
-           minimalSet<- ExpressionSet(assayData = as.matrix(matrix))
+           message('here 1')
+           minimalSet <- ExpressionSet(assayData = as.matrix(matrix))
            fp <- mestimate(minimalSet)
            findk <- findk_cmeans
-           clusterExport(cl, c("mfuzz", "index.DB", "minimalSet", "fp","matrix"))
-           clusterEvalQ(cl, c(library(clusterSim),library(Mfuzz),library(e1071),library(clustpro)))
+           message('here 2')
+       ##    clusterExport(cl, c("mfuzz", "index.DB", "minimalSet", "fp","matrix"))
+           clusterEvalQ(cl, c(library('clusterSim'),library('Mfuzz'),library('e1071'),library('clustpro'),library('Biobase')))
            db_list <- t(foreach(k = c(min_k:iterations),
                                 .combine = "cbind",
-                                .export='findk'
+                                .export=c('findk',"mfuzz", "index.DB", "minimalSet", "fp","matrix")
                                 ) %dopar% {
              findk_cmeans(matrix, k, minimalSet, fp)
            })
+          message('here 3')
+          stopCluster(cl)
+
+          return(list(db_list=db_list, minimalSet=minimalSet,fp=fp))
          })
 
-#  registerDoSNOW(cl)
-#  getDoParWorkers()
-#  getDoParName()
-#  getDoParVersion()
-
-  stopCluster(cl)
-  return(db_list)
 
 }
 
@@ -252,7 +261,12 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
   if (fixed_k > 0) {
     k <- fixed_k
   } else {
-    db_list <- get_best_k(matrix, min_k, max_k, method, no_cores=no_cores)
+    rv <- get_best_k(matrix, min_k, max_k, method, no_cores=no_cores)
+    db_list <- rv$db_list
+    if(method=='cmeans'){
+    minimalSet <- rv$minimalSet
+    fp <- rv$fp
+    }
     initialize_graphic(paste("db_index_ratio_div_ratio", sep = ""))
     plot(db_list, type = "b")
     dev.off()
@@ -279,16 +293,18 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
   d_rows <- dist(cluster_centers, method = "euclidean") # distance matrix
   d_cols <- dist(t(cluster_centers), method = "euclidean") # distance matrix
 
-  row_dend <- hclust(d_rows, method="ward.D2")
-  col_dend <- hclust(d_cols, method="ward.D2")
+  row_dend_hclust <- hclust(d_rows, method="ward.D2")
+  col_dend_hclust <- hclust(d_cols, method="ward.D2")
 
-  col_dend_nw <- hc2Newick(col_dend)
+ # cluster_centers <-cluster_centers[row_dend_hclust$order,col_dend_hclust$order]
+
+  col_dend_nw <- hc2Newick(col_dend_hclust)
   col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*","", col_dend_nw)
 
-  row_dend_nw <- hc2Newick(row_dend)
+  row_dend_nw <- hc2Newick(row_dend_hclust)
   row_dend_nw <- gsub(":\\d+\\.{0,1}\\d*","", row_dend_nw)
-  col_dend <- as.dendrogram(col_dend)
-  row_dend <- as.dendrogram(row_dend)
+  col_dend <- as.dendrogram(col_dend_hclust)
+  row_dend <- as.dendrogram(row_dend_hclust)
 
   ordered_df <- NULL
   if(class(row_dend)=="dendrogram"){
@@ -362,7 +378,7 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
   json_payload = toJSON(payload, pretty = TRUE)
   write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
 
-  return(list(json=json_payload,data=clustering_result))
+  return(list(json=json_payload,data=ordered_df, cobject = clustering_result, cluster_centers = cluster_centers,col_dend_hclust=col_dend_hclust,row_dend_hclust=row_dend_hclust))
   #  opar <- par(mfrow = c(1, 2))
   #  plot(fit_row,  hang=-1)
   # # rect.hclust(fit1, 2, border="red")
