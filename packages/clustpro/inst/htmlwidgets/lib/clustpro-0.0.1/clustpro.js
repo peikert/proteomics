@@ -558,6 +558,23 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         return location_object_array;
     }
 
+    function childrenArrayFinder(children_array_object, rotated){
+        // A Recursive function that retruns the children of a line object in an array form.
+        var childrenArray = [];
+        // for each element in the childrern array
+        // if the element in focus have no children then push it in the children Array
+        // if it does, go into one level deep.\
+        if(children_array_object.children == null){
+            childrenArray.push(!rotated ? children_array_object.character : children_array_object.column);
+        }
+        else {
+            for (i in children_array_object.children) {
+                result = childrenArrayFinder(children_array_object.children[i], rotated);
+                childrenArray = childrenArray.concat(result);
+            }
+        }
+        return childrenArray;
+    }
     // ------------ End of Helper functions ------------- //
 
     function string_parser(string_array, location_object_array, pointer, id, colDendogram,
@@ -652,7 +669,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     // Find out how many characters does the string have, that way, we will be able to find the horizontal location of the
                     // object.
                     correspondingString = correspondingString + string_array[pointer];
-                    var horizontal = (new_character.length - 1) * 3;
+                    var horizontal = (new_character.length - 1) * 1;    // Intellegently calculate this number
                     var location = {horizontal: horizontal, vertical: mid_point};
                     var rowStart = last2Elements[0].rowLocationInformation.startRow;
                     var rowEnd = last2Elements[1].rowLocationInformation.endRow;
@@ -677,7 +694,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     }
                     correspondingString = "(" + last2Elements[0].correspondingString +","+last2Elements[1].correspondingString+")";
                     var horizontal = sum/2;
-                    var vertical = (elements.length-1)*8;
+                    var vertical = (elements.length-1)*5;    // Intellegently calculate this number
                     var location={vertical:vertical, horizontal:horizontal};
                     //Finding the column range
                     var colRangeArray = [];
@@ -796,6 +813,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     links1[links1Counter].siblingRowRange = !rotated ? table[i].children[j].sibling.rowLocationInformation : null;
                     links1[links1Counter].columnRange = !rotated ? null : table[i].children[j].columnRange;
                     links1[links1Counter].siblingColumnRange = !rotated ? null : table[i].children[j].sibling.columnRange;
+                    links1[links1Counter].correspondingChildrenArray = childrenArrayFinder(table[i].children[j], rotated);
                     links1Counter ++;
                 }
             }
@@ -817,6 +835,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 return pattern.join(",");
             })
             .on("mouseover",function(d,i){
+                debugger;
                 console.log(i);
                 console.log(d);
                 d3.select(this)
@@ -824,21 +843,56 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     .style("stroke", "blue")
                     .attr("stroke-width", "2.5");
                 // Turn all the children Blue.
-                for(var j=0;j<table.length;j++)
-                {
-                    if(d.line_name.indexOf(links1[j].line_name) > -1 )
+                var sibling_children_array=[];
+                for(var j=0;j< table.length;j++)
+                {   // FOR ALL THR LINES
+                    // children of d must be blue.
+                    // color all the children elements of d
+                    // color all the lines that contains the children elements of d
+                    if(d.correspondingChildrenArray.indexOf(links1[j].line_name) > -1)
                     {
+                        // Color all the children elements of d.
                         d3.select(DendogramLines[0][j])
                             .style("stroke","blue")
                             .attr("stroke-width", "2.5");
                     }
-                    if(d.siblingLineName.indexOf(links1[j].line_name) > -1)
+                    // Color all the lines which contain a child contained in d.
+                    for(var k in links1[j].correspondingChildrenArray){
+                        if(d.correspondingChildrenArray.indexOf(links1[j].correspondingChildrenArray[k]) > -1  &&
+                            d.line_name.length > links1[j].line_name.length ){
+                            d3.select(DendogramLines[0][j])
+                                .style("stroke","blue")
+                                .attr("stroke-width", "2.5");
+                        }
+                    }
+                    // Exact sibling line to red.
+                    if(d.siblingLineName == links1[j].line_name
+                        // && links1[j].correspondingChildrenArray have no child elements that are also in d.correspondingChildrenArray
+                       )
                     {
+                        // CHange the sibling dendogram to red.
                         d3.select(DendogramLines[0][j])
                             .style("stroke","red")
                             .attr("stroke-width", "2.5");
+                        // Get the children array of this line
+                        sibling_children_array = links1[j].correspondingChildrenArray;
                     }
                 }
+                for(var j=0;j< table.length;j++){
+                    for(var k in links1[j].correspondingChildrenArray)
+                    {
+                        //THIS THING IS NOT WORKING :(
+                        // This condition is never becoming true.
+                        if(sibling_children_array.indexOf(links1[j].correspondingChildrenArray[k]) > -1  &&
+                            d.siblingLineName.length >= links1[j].line_name.length ){
+                            d3.select(DendogramLines[0][j])
+                                .style("stroke","red")
+                                .attr("stroke-width", "2.5");
+                        }
+                    }
+                }
+
+
             })
             .on("mouseout", function(d,i){
                 d3.select(this)
@@ -868,7 +922,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
 
     function dendogram(svg,rotated, width, height, padding,noOfCols,cluster_array, newickString,columnNames)
     {
-
+        debugger;
         var fakedata = {members:150, edgePar:{cols:""}, height: 30, children:[{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10},{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10}],counter:10} // CHANGE THIS 150 to the real value.    AND SHOULD THE HEIGHT STAY 30 ?
@@ -929,7 +983,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
 
         // Draw DENDOGRAM LABELS
                 try{
-                    if(!rotated && d.correspondingString.length  ==1)
+                    if(!rotated && d.correspondingString.length  <3)
                     {
 
                         var text = dendrG.append("text");

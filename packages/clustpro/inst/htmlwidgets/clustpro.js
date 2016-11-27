@@ -59,38 +59,21 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
+
+
         // Save the SVGs here.
         debugger;
         // STEPS:
         // 1)  Generate a drop down menu or a button that gives the option to save the svg in different
         //      formats. At the moment i am only going to create a button  (IN PROGRESS)
         // Add multiple options here.
-
-        iframe = document.createElement("iframe");
-        iframe.id = "my_iframe";
-        iframe.style = "display:none;";
-        document.getElementById("htmlwidget-1d9f9b9fdca3023baa83").appendChild(iframe);
-
-
-        a = document.createElement("a");
-        a.href = "www.google.com";
-        a.download = "";
-        a.id = "download";
-
-        iframe2 = document.createElement("iframe");
-        iframe2.appendChild(a);
-
-        option = new Option("testing");
-        option.appendChild(a);
-
-
         select = document.createElement("select");
         select.options.add(new Option("Saving Options",0));
         select.options.add(new Option("Save RowDend SVG",1));
         select.options.add(new Option("Save ColDend SVG",2));
         select.options.add(new Option("Save ColorMap SVG",3));
         select.options.add(new Option("Save as PNG",4));
-        select.options.add(option);
+        select.options.add(new Option("Testing", 5));
 
 
         select.id = "selectionbox";
@@ -120,19 +103,8 @@ HTMLWidgets.widget({
         //              - First try to do it without any external libraries. If
         //                that don't work out then try out some libraries.
         //              - Take a look into FileSaver.js if nothing is working out.
-
         // 3)   Save the SVGs as other file formats (jpeg, png etc).
         // 4)   Enjoy the new feature.
-
-        var html = d3.select("svg") // will just select a random svg element. currently it is selecting column dendogram
-            .attr("version", 1.1)
-            .attr("xmlns", "http://www.w3.org/2000/svg")
-            .node().parentNode.innerHTML;
-        var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-        var img = '<img src="'+imgsrc+'">';
-        d3.select("#svgdataurl").html(img);
-        debugger;
-
 
         var hm = heatMapObject[0];
         rowDendLinesListner = heatMapObject[1];
@@ -150,7 +122,9 @@ HTMLWidgets.widget({
                 self.refreshColDendogram(d,el,x,rowNewickSting,colNewickString,instance);
             });
         },
-
+    doSomething: function(){
+        console.log("you clicked a button");
+    },
     saveSvg: function(svgString){
         var svg = document.getElementsByClassName(svgString)[0];
         var serializer = new XMLSerializer();
@@ -297,7 +271,6 @@ HTMLWidgets.widget({
             ownClusterCounter++;
         }
         return x.clusters;
-
     },
 
     hextorgb: function(hex){

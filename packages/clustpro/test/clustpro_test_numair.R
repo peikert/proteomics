@@ -43,7 +43,7 @@ br <- min(diff(c(-1.1,-0.5,-0.1,0.1,0.5,1.1))/40)
 color_spectrum_unqiue_breaks(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
 matrix <- test_data
 matrix <- rbind(matrix,matrix)
-matrix <- rbind(matrix,matrix)
+# matrix <- rbind(matrix,matrix)
 #########
 # matrix <- as.data.frame(matrix(round(runif(400, 0.1, 9.9),1),ncol=4,byrow=T))
 # matrix <- as.data.frame(matrix(round(runif(4800, 0.1, 9.9),1),ncol=4,byrow=T))
