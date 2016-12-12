@@ -42,7 +42,7 @@ max(test_data)
 br <- min(diff(c(-1.1,-0.5,-0.1,0.1,0.5,1.1))/40)
 color_spectrum_unqiue_breaks(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
 matrix <- test_data
-matrix <- rbind(matrix,matrix)
+#matrix <- rbind(matrix,matrix)
 # matrix <- rbind(matrix,matrix)
 #########
 # matrix <- as.data.frame(matrix(round(runif(400, 0.1, 9.9),1),ncol=4,byrow=T))
@@ -54,5 +54,5 @@ matrix <- rbind(matrix,matrix)
 
 
 # data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10)
-data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = 25)
+data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = 20)
 #names(data2)

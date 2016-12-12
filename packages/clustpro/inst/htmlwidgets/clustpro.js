@@ -9,27 +9,33 @@ HTMLWidgets.widget({
             lastTheme: null,
             lastValue: null
         };
-
     },
-
     renderValue: function(el, x, instance) {
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
         x.matrix.data = [].concat.apply([],x.matrix.data); // Flattening the data array.
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false);
     },
-
     resize: function(el, width, height, instance) {
         d3.select(el).select("svg")
             .attr("width", width)
             .attr("height", height);
 //
         instance.force.size([width, height]).resume();
-        this.doRenderValue(el, instance.lastValue, instance);
+        this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
 
 
-    doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged){
+    doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged,scrollable){
+
+        { // This should be done when new values are given by the user.
+            // document.getElementById(el.id).style.height = "1000px"; //experimental value
+            // document.getElementById(el.id).style.width = "700px"; //experimental value
+            // document.getElementsByTagName("body")[0].style.overflow = "scroll"; // Expreimental Value
+        }
+
+        // el.clientWidth = 1000;  //experimental values
+        if(scrollable){document.getElementsByTagName("body")[0].style.overflow = "scroll";}
         var self = this;
         instance.lastValue = x;
         el.innerHTML = "";
@@ -37,7 +43,7 @@ HTMLWidgets.widget({
         var dataMatrixIndex = 0;
         // coloring information.
         for(var i=0; i < x.colors.data.length; i++){
-            for(var j=0; j<x.colors.data[i].length; j++){
+            for(var j=0; j < x.colors.data[i].length; j++){
                 merged.push({
                     label: x.matrix.data[dataMatrixIndex++].toString(),
                     color: this.hextorgb(x.colors.data[i][j])
@@ -74,6 +80,8 @@ HTMLWidgets.widget({
         select.options.add(new Option("Save ColorMap SVG",3));
         select.options.add(new Option("Save as PNG",4));
         select.options.add(new Option("Testing", 5));
+        select.options.add(new Option("MAKE IT SCROLLABLE", 6));
+        select.options.add(new Option("Original Size", 7));
 
 
         select.id = "selectionbox";
@@ -96,6 +104,24 @@ HTMLWidgets.widget({
                 var url = self.saveSvg(svgString);
                 var win = window.open(url, "_blank");
                 win.focus();
+            }
+            else if (value.srcElement.value == 6){
+                debugger;
+                // Making scrollable
+                var new_html_widget = el;
+                new_html_widget.style.width = "1600px";
+                new_html_widget.style.height = "2000px";
+                x.options.yaxis_width[0] = 220;
+                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+            }
+            else if (value.srcElement.value == 7){
+                debugger;
+                // Going back to original
+                var old_html_widget = el;
+                old_html_widget.style.width = "100%";
+                old_html_widget.style.height = "100%";
+                x.options.yaxis_width[0] = 120;
+                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false);
             }
         };
         document.getElementById("htmlwidget-1d9f9b9fdca3023baa83").appendChild(select);
@@ -161,7 +187,7 @@ HTMLWidgets.widget({
                 this.dataMatrixSwap(x, matrixDataArray_2, matrixDataArray_1, matrixMergeArray_2, matrixMergeArray_1, matrixDataCounter, matrixMergeCounter); // If the line clicked is the upper sibling.
         rowNewickSting = this.stringSwap(d,rowNewickSting); //refresh newick string.
         x.dendnw_row[0] = rowNewickSting;
-        this.doRenderValue(el,x,rowNewickSting,colNewickString,instance, x.matrix.merged);
+        this.doRenderValue(el,x,rowNewickSting,colNewickString,instance, x.matrix.merged, false);
     },
 
     refreshColDendogram: function(d,el,x,rowNewickSting, colNewickString, instance){
@@ -177,7 +203,7 @@ HTMLWidgets.widget({
         }
         colNewickString = this.stringSwap(d,colNewickString); //refresh newick string.
         x.dendnw_col[0] = colNewickString; //refresh newick string.
-        this.doRenderValue(el,x,rowNewickSting, colNewickString, instance, x.matrix.merged);
+        this.doRenderValue(el,x,rowNewickSting, colNewickString, instance, x.matrix.merged, false);
     },
 
 

@@ -1,8 +1,6 @@
-function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster){
-    debugger;
+function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
     console.log(data);
-    console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
-
+    console.log("Last Updated: December 05th [13:55] (numair.mansur@gmail.com)");
     // ==== BEGIN HELPERS =================================
 
     function htmlEscape(str) {
@@ -221,11 +219,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
     var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
                 opts.axis_padding,  /*no of cols*/ data.matrix.cols.length, cluster, data.dendnw_row[0], columnNames);
-
      var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
                 opts.axis_padding, data.matrix.cols.length , cluster, data.dendnw_col[0], columnNames);
-    var a = 10;
-
     function colormap(svg, data, width, height) {
         // Check for no data
         if (data.length === 0)
@@ -402,6 +397,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     }
 
     function axisLabels(svg, data, rotated, width, height, padding) {
+        debugger;
         svg = svg.append('g');
 
         // The data variable is either cluster info, or a flat list of names.
@@ -430,10 +426,17 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var axisNodes = svg.append("g")
             .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
             .call(axis);
-        var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']
-            || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
-        axisNodes.selectAll("text").style("font-size", fontSize);
+        var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']  || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
+        //axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
 
+        axisNodes.selectAll("text").style("font-size", function(d,i){
+                                                        if(d.length <=15){return 15;}
+                                                        else if (d.length >15 && d.length <=20){return 11;}
+                                                        else if(d.length == 21 || d.length == 22){return 10;}
+                                                        else if (d.length >23 && d.length <=25){return 9;}
+                                                        else {return 7;}
+                                                        }); // New font value
+                                                            // Calculated on the basis of text length
         var mouseTargets = svg.append("g")
             .selectAll("g").data(leaves);
         mouseTargets
@@ -467,9 +470,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         }
         layoutMouseTargets(mouseTargets);
 
-        if (rotated) {
+        if (false) {
             axisNodes.selectAll("text")
-                .attr("transform", "rotate(45),translate(6, 0)")
+                .attr("transform", "rotate(0),translate(6, 0)")
                 .style("text-anchor", "start");
         }
 
@@ -494,7 +497,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             tAxisNodes.call(axis);
             // Set text-anchor on the non-transitioned node to prevent jumpiness
             // in RStudio Viewer pane
-            axisNodes.selectAll("text").style("text-anchor", "start");
+
+            /* Stop x-axis labels to change position while transforming */
+            // axisNodes.selectAll("text").style("text-anchor", "start");
             tAxisNodes.selectAll("g")
                 .style("opacity", function(d, i) {
                     if (i >= _.extent[0][dim] && i < _.extent[1][dim]) {
@@ -503,9 +508,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                         return 0;
                     }
                 });
-            tAxisNodes
-                .selectAll("text")
-                .style("text-anchor", "start");
+            /* Stop x-axis labels to change position while transforming */
+           // tAxisNodes
+           //     .selectAll("text")
+           //     .style("text-anchor", "start");
             mouseTargets.transition().duration(opts.anim_duration).ease('linear')
                 .call(layoutMouseTargets)
                 .style("opacity", function(d, i) {
@@ -555,23 +561,77 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             location_object_array[i].begin = location_object_array[i-1].end;
         }
         return location_object_array;
-
     }
+
+    function childrenArrayFinder(children_array_object, rotated){
+        // A Recursive function that retruns the children of a line object in an array form.
+        var childrenArray = [];
+        // for each element in the childrern array
+        // if the element in focus have no children then push it in the children Array
+        // if it does, go into one level deep.\
+        if(children_array_object.children == null){
+            childrenArray.push(!rotated ? children_array_object.character : children_array_object.column);
+        }
+        else {
+            for (i in children_array_object.children) {
+                result = childrenArrayFinder(children_array_object.children[i], rotated);
+                childrenArray = childrenArray.concat(result);
+            }
+        }
+        return childrenArray;
+    }
+
+    function characterLength(string_array){
+        var length=0;
+        for(i in string_array)
+        {
+            if(string_array[i] !="" &&
+                string_array[i] != "(" &&
+                string_array[i] != ")" &&
+                string_array[i] !="," &&
+                string_array[i] != ";")
+            {
+                length = string_array[i].length + length;
+            }
+        }
+        return length;
+    }
+
+    function maxDepth(string_array, pointer, depth, maxdepth){
+        while(pointer < string_array.length){
+            if(string_array[pointer] == "("){
+                result = maxDepth(string_array, pointer+1, depth+1,maxdepth);
+                pointer = result[1];
+                maxdepth = result[2];
+                if(result[0] > maxdepth){
+                    maxdepth = result[0];
+                }
+            }
+            else if(string_array[pointer] == ")"){
+                return [depth,pointer+1,maxdepth];
+            }
+            else{
+                pointer++;
+            }
+        }
+        return maxdepth;
+    }
+
 
     // ------------ End of Helper functions ------------- //
 
     function string_parser(string_array, location_object_array, pointer, id, colDendogram,
-                           /*col dendogram arguments*/ columnNames, columnsDrawnSoFar, width)
+                           /*col dendogram arguments*/ columnNames, columnsDrawnSoFar, width, totalCharacterLength, depth, maxdepth)
     {
         var table = [];
         var elements = [];
         var last2Elements=[];
-        var correspondingString ="(";
+        var correspondingString = !colDendogram ? "(" : "";
         while (pointer < string_array.length)
         {
             if (string_array[pointer] == "(")
             {
-                result = string_parser(string_array, location_object_array, pointer+1, id, colDendogram, columnNames, columnsDrawnSoFar, width);
+                result = string_parser(string_array, location_object_array, pointer+1, id, colDendogram, columnNames, columnsDrawnSoFar, width, totalCharacterLength,depth +1, maxdepth);
                 if(!colDendogram){
                     sub_table = result[0];
                     pointer = result[1];
@@ -582,7 +642,6 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     last2Elements.push(sub_table[sub_table.length - 1]);
                 }
                 if(colDendogram){
-                    result = string_parser(string_array, location_object_array, pointer+1, id, colDendogram, columnNames, columnsDrawnSoFar, width);
                     sub_table = result[0];
                     pointer = result[1];
                     columnsDrawnSoFar = result[2]; // ADD THIS.
@@ -649,11 +708,17 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                             children.push(last2Elements[j]);
                         }
                     }
-                    mid_point = sum / 2;
+                    var mid_point = sum / 2;
                     // Find out how many characters does the string have, that way, we will be able to find the horizontal location of the
                     // object.
                     correspondingString = correspondingString + string_array[pointer];
-                    var horizontal = (new_character.length - 1) * 3;
+                    // var horizontal = (new_character.length - 1 ) * (20 / totalCharacterLength); // CURRENT WORKING ONE
+                    // var horizontal = (new_character.length - 1) * 1 ;    // Intelligently calculate this number
+
+
+                    var horizontal = 20 - ((20/maxdepth) * depth);  //Expreimental value
+
+
                     var location = {horizontal: horizontal, vertical: mid_point};
                     var rowStart = last2Elements[0].rowLocationInformation.startRow;
                     var rowEnd = last2Elements[1].rowLocationInformation.endRow;
@@ -678,7 +743,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     }
                     correspondingString = "(" + last2Elements[0].correspondingString +","+last2Elements[1].correspondingString+")";
                     var horizontal = sum/2;
-                    var vertical = (elements.length-1)*8;
+                    var vertical = (elements.length-1)*5;    // Intellegently calculate this number
                     var location={vertical:vertical, horizontal:horizontal};
                     //Finding the column range
                     var colRangeArray = [];
@@ -776,7 +841,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
 
     }
 
-    function preLineObjects(table, links1)
+    function preLineObjects(table, links1, rotated)
     {
         var links1Counter = 0;
         for (var i in table)
@@ -785,16 +850,19 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             {
                 for (var j in table[i].children)
                 {
-                    links1[links1Counter].source.x = table[i].location.vertical;
-                    links1[links1Counter].source.y = table[i].location.horizontal;
-                    links1[links1Counter].target.x = table[i].children[j].location.vertical;
-                    links1[links1Counter].target.y = table[i].children[j].location.horizontal;
-                    links1[links1Counter].line_name = table[i].children[j].character;
-                    links1[links1Counter].siblingLineName = table[i].children[j].sibling.character;
-                    links1[links1Counter].rowRange = table[i].children[j].rowLocationInformation;
-                    links1[links1Counter].siblingRowRange = table[i].children[j].sibling.rowLocationInformation;
+                    links1[links1Counter].source.x = !rotated ? table[i].location.vertical : table[i].location.horizontal;
+                    links1[links1Counter].source.y = !rotated ? table[i].location.horizontal :  table[i].location.vertical;
+                    links1[links1Counter].target.x = !rotated ? table[i].children[j].location.vertical : table[i].children[j].location.horizontal;
+                    links1[links1Counter].target.y = !rotated ? table[i].children[j].location.horizontal : table[i].children[j].location.vertical;
+                    links1[links1Counter].line_name = !rotated ? table[i].children[j].character : table[i].children[j].correspondingString;
+                    links1[links1Counter].siblingLineName = !rotated ? table[i].children[j].sibling.character :table[i].children[j].sibling.correspondingString;
                     links1[links1Counter].correspondingString = table[i].children[j].correspondingString;
                     links1[links1Counter].siblingCorrespondingString = table[i].children[j].sibling.correspondingString;
+                    links1[links1Counter].rowRange = !rotated ? table[i].children[j].rowLocationInformation : null;
+                    links1[links1Counter].siblingRowRange = !rotated ? table[i].children[j].sibling.rowLocationInformation : null;
+                    links1[links1Counter].columnRange = !rotated ? null : table[i].children[j].columnRange;
+                    links1[links1Counter].siblingColumnRange = !rotated ? null : table[i].children[j].sibling.columnRange;
+                    links1[links1Counter].correspondingChildrenArray = childrenArrayFinder(table[i].children[j], rotated);
                     links1Counter ++;
                 }
             }
@@ -802,10 +870,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         return links1;
     }
 
-    function drawRowDendLines(dendrG, links1, table)
+    function drawDendogramLines(dendrG, links1, table)
     {
-        var rowDendogramLines = dendrG.selectAll("polyline").data(links1); //GLOBAL
-        rowDendogramLines
+        var DendogramLines = dendrG.selectAll("polyline").data(links1); //GLOBAL
+        DendogramLines
             .enter().append("polyline")
             .attr("class", "link")
             .attr("stroke", "#A2A2A2")
@@ -816,6 +884,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 return pattern.join(",");
             })
             .on("mouseover",function(d,i){
+                debugger;
                 console.log(i);
                 console.log(d);
                 d3.select(this)
@@ -823,21 +892,56 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     .style("stroke", "blue")
                     .attr("stroke-width", "2.5");
                 // Turn all the children Blue.
-                for(var j=0;j<table.length;j++)
-                {
-                    if(d.line_name.indexOf(links1[j].line_name) > -1 )
+                var sibling_children_array=[];
+                for(var j=0;j< table.length;j++)
+                {   // FOR ALL THR LINES
+                    // children of d must be blue.
+                    // color all the children elements of d
+                    // color all the lines that contains the children elements of d
+                    if(d.correspondingChildrenArray.indexOf(links1[j].line_name) > -1)
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        // Color all the children elements of d.
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","blue")
                             .attr("stroke-width", "2.5");
                     }
-                    if(d.siblingLineName.indexOf(links1[j].line_name) > -1)
+                    // Color all the lines which contain a child contained in d.
+                    for(var k in links1[j].correspondingChildrenArray){
+                        if(d.correspondingChildrenArray.indexOf(links1[j].correspondingChildrenArray[k]) > -1  &&
+                            d.line_name.length > links1[j].line_name.length ){
+                            d3.select(DendogramLines[0][j])
+                                .style("stroke","blue")
+                                .attr("stroke-width", "2.5");
+                        }
+                    }
+                    // Exact sibling line to red.
+                    if(d.siblingLineName == links1[j].line_name
+                        // && links1[j].correspondingChildrenArray have no child elements that are also in d.correspondingChildrenArray
+                       )
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        // CHange the sibling dendogram to red.
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","red")
                             .attr("stroke-width", "2.5");
+                        // Get the children array of this line
+                        sibling_children_array = links1[j].correspondingChildrenArray;
                     }
                 }
+                for(var j=0;j< table.length;j++){
+                    for(var k in links1[j].correspondingChildrenArray)
+                    {
+                        //THIS THING IS NOT WORKING :(
+                        // This condition is never becoming true.
+                        if(sibling_children_array.indexOf(links1[j].correspondingChildrenArray[k]) > -1  &&
+                            d.siblingLineName.length >= links1[j].line_name.length ){
+                            d3.select(DendogramLines[0][j])
+                                .style("stroke","red")
+                                .attr("stroke-width", "2.5");
+                        }
+                    }
+                }
+
+
             })
             .on("mouseout", function(d,i){
                 d3.select(this)
@@ -848,27 +952,25 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 {
                     if(d.line_name.indexOf(links1[j].line_name) > -1 )
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","#A2A2A2")
                             .attr("stroke-width", "1.5");
                     }
                     if(d.siblingLineName.indexOf(links1[j].line_name) > -1 )
                     {
-                        d3.select(rowDendogramLines[0][j])
+                        d3.select(DendogramLines[0][j])
                             .style("stroke","#A2A2A2")
                             .attr("stroke-width", "1.5");
                     }
                 }
 
             });
-        return rowDendogramLines;
+        return DendogramLines;
 
     }
-
     function dendogram(svg,rotated, width, height, padding,noOfCols,cluster_array, newickString,columnNames)
     {
-        debugger;
-        fakedata = {members:150, edgePar:{cols:""}, height: 30, children:[{members:150, edgePar:{cols:""},
+        var fakedata = {members:150, edgePar:{cols:""}, height: 30, children:[{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10},{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10}],counter:10} // CHANGE THIS 150 to the real value.    AND SHOULD THE HEIGHT STAY 30 ?
         // CHANGE THE NAME OF THE VARIABLE FAKE DATA INTO SOMETHING COOLER.
@@ -919,20 +1021,22 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         newickString = newickString.replace(/\)/g," ) ");
         newickString = newickString.replace(/\,/g," , ");
 
-        var table = string_parser(newickString.split(" "), location_object_array,0,0,rotated,columnNames,[],width);
-        var links1 = preLineObjects(table, links1); // NOW DRAW THE LINES ACCORDING TO THE INFORMATION IN table.
-
-        var rowDendogramLines = drawRowDendLines(dendrG, links1, table);
-
-
-        function draw(selection) {
+        // Couont the number of characters in the newick String.
+        debugger;
+        totalCharacterLength = characterLength(newickString.split(" "));
+        maxdepth = maxDepth(newickString.split(" "),0,0,0);
+        var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength,0,maxdepth);
+        links1 = preLineObjects(table, links1, rotated);
+        var DendogramLines = drawDendogramLines(dendrG,links1,table);
+        
+        function draw(selection,rotated) {
             function elbow(d, i) {
 
         // Draw DENDOGRAM LABELS
                 try{
-                    debugger;
-                    if(d.correspondingString.length  ==1 )
+                    if(!rotated && d.correspondingString.length  <3)
                     {
+
                         var text = dendrG.append("text");
                         var xPos = x(d.target.y);
                         var yPos = y(d.target.x);
@@ -956,24 +1060,23 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 .attr("points", elbow);
         }
 
-
-
         // Dendogram transitions
-            
             controller.on('transform.dendr-' + (rotated ? 'x' : 'y'), function (_) {
                 var scaleBy = _.scale[rotated ? 0 : 1];
                 var translateBy = _.translate[rotated ? 0 : 1];
                 y.range([translateBy, height * scaleBy + translateBy]);
                 dendrG.selectAll("text").remove(); // REMOVE OLD LABELS
-                draw(rowDendogramLines.transition().duration(opts.anim_duration).ease("linear"));
+                draw(DendogramLines.transition().duration(opts.anim_duration).ease("linear"),rotated);
             });
+            draw(DendogramLines,rotated);
 
-            draw(rowDendogramLines);
-
+        if(rotated){
+            colDendLinesListner = DendogramLines;
+        }
+        else{
+            rowDendLinesListner = DendogramLines;
+        }
     }
-
-
-
 
     var dispatcher = d3.dispatch('hover', 'click');
 
@@ -994,12 +1097,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         controller.highlight(null, null);
     }
 
-    return {
+    return [{
         on: function(type, listener) {
             dispatcher.on(type, listener);
             return this;
         }
-    };
-
-
+    }, rowDendLinesListner , colDendLinesListner];
 }

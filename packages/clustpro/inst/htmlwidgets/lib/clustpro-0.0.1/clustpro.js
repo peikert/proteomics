@@ -1,6 +1,6 @@
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
     console.log(data);
-    console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
+    console.log("Last Updated: December 05th [13:55] (numair.mansur@gmail.com)");
     // ==== BEGIN HELPERS =================================
 
     function htmlEscape(str) {
@@ -136,6 +136,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     opts.link_color = opts.link_color || "#AAA";
     opts.xaxis_height = options.xaxis_height[0] || 80;
     opts.yaxis_width = options.yaxis_width[0] || 120;
+    opts.yaxis_width = options.yaxis_width[0] || 120;
     opts.axis_padding = options.axis_padding || 6;
     opts.show_grid = options.show_grid[0];
     if (typeof(opts.show_grid) === 'undefined') {
@@ -219,11 +220,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
     var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
                 opts.axis_padding,  /*no of cols*/ data.matrix.cols.length, cluster, data.dendnw_row[0], columnNames);
-
      var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
                 opts.axis_padding, data.matrix.cols.length , cluster, data.dendnw_col[0], columnNames);
-    var a = 10;
-
     function colormap(svg, data, width, height) {
         // Check for no data
         if (data.length === 0)
@@ -400,6 +398,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     }
 
     function axisLabels(svg, data, rotated, width, height, padding) {
+        debugger;
         svg = svg.append('g');
 
         // The data variable is either cluster info, or a flat list of names.
@@ -428,10 +427,17 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var axisNodes = svg.append("g")
             .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
             .call(axis);
-        var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']
-            || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
-        axisNodes.selectAll("text").style("font-size", fontSize);
+        var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']  || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
+        //axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
 
+        axisNodes.selectAll("text").style("font-size", function(d,i){
+                                                        if(d.length <=15){return 15;}
+                                                        else if (d.length >15 && d.length <=20){return 11;}
+                                                        else if(d.length == 21 || d.length == 22){return 10;}
+                                                        else if (d.length >23 && d.length <=25){return 9;}
+                                                        else {return 7;}
+                                                        }); // New font value
+                                                            // Calculated on the basis of text length
         var mouseTargets = svg.append("g")
             .selectAll("g").data(leaves);
         mouseTargets
@@ -575,10 +581,48 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         }
         return childrenArray;
     }
+
+    function characterLength(string_array){
+        var length=0;
+        for(i in string_array)
+        {
+            if(string_array[i] !="" &&
+                string_array[i] != "(" &&
+                string_array[i] != ")" &&
+                string_array[i] !="," &&
+                string_array[i] != ";")
+            {
+                length = string_array[i].length + length;
+            }
+        }
+        return length;
+    }
+
+    function maxDepth(string_array, pointer, depth, maxdepth){
+        while(pointer < string_array.length){
+            if(string_array[pointer] == "("){
+                result = maxDepth(string_array, pointer+1, depth+1,maxdepth);
+                pointer = result[1];
+                maxdepth = result[2];
+                if(result[0] > maxdepth){
+                    maxdepth = result[0];
+                }
+            }
+            else if(string_array[pointer] == ")"){
+                return [depth,pointer+1,maxdepth];
+            }
+            else{
+                pointer++;
+            }
+        }
+        return maxdepth;
+    }
+
+
     // ------------ End of Helper functions ------------- //
 
     function string_parser(string_array, location_object_array, pointer, id, colDendogram,
-                           /*col dendogram arguments*/ columnNames, columnsDrawnSoFar, width)
+                           /*col dendogram arguments*/ columnNames, columnsDrawnSoFar, width, totalCharacterLength, depth, maxdepth)
     {
         var table = [];
         var elements = [];
@@ -588,7 +632,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         {
             if (string_array[pointer] == "(")
             {
-                result = string_parser(string_array, location_object_array, pointer+1, id, colDendogram, columnNames, columnsDrawnSoFar, width);
+                result = string_parser(string_array, location_object_array, pointer+1, id, colDendogram, columnNames, columnsDrawnSoFar, width, totalCharacterLength,depth +1, maxdepth);
                 if(!colDendogram){
                     sub_table = result[0];
                     pointer = result[1];
@@ -669,7 +713,13 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     // Find out how many characters does the string have, that way, we will be able to find the horizontal location of the
                     // object.
                     correspondingString = correspondingString + string_array[pointer];
-                    var horizontal = (new_character.length - 1) * 1;    // Intellegently calculate this number
+                    // var horizontal = (new_character.length - 1 ) * (20 / totalCharacterLength); // CURRENT WORKING ONE
+                    // var horizontal = (new_character.length - 1) * 1 ;    // Intelligently calculate this number
+
+
+                    var horizontal = 20 - ((20/maxdepth) * depth);  //Expreimental value
+
+
                     var location = {horizontal: horizontal, vertical: mid_point};
                     var rowStart = last2Elements[0].rowLocationInformation.startRow;
                     var rowEnd = last2Elements[1].rowLocationInformation.endRow;
@@ -919,10 +969,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         return DendogramLines;
 
     }
-
     function dendogram(svg,rotated, width, height, padding,noOfCols,cluster_array, newickString,columnNames)
     {
-        debugger;
         var fakedata = {members:150, edgePar:{cols:""}, height: 30, children:[{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10},{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10}],counter:10} // CHANGE THIS 150 to the real value.    AND SHOULD THE HEIGHT STAY 30 ?
@@ -974,7 +1022,11 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         newickString = newickString.replace(/\)/g," ) ");
         newickString = newickString.replace(/\,/g," , ");
 
-        var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width);
+        // Couont the number of characters in the newick String.
+        debugger;
+        totalCharacterLength = characterLength(newickString.split(" "));
+        maxdepth = maxDepth(newickString.split(" "),0,0,0);
+        var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength,0,maxdepth);
         links1 = preLineObjects(table, links1, rotated);
         var DendogramLines = drawDendogramLines(dendrG,links1,table);
         
