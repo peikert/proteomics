@@ -715,7 +715,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     // var horizontal = (new_character.length - 1) * 1 ;    // Intelligently calculate this number
 
 
-                    var horizontal = 20 - ((20/maxdepth) * depth);  //Expreimental value
+                    var horizontal = 20 - ((20/maxdepth) * depth) + 3;  //Expreimental value
 
 
                     var location = {horizontal: horizontal, vertical: mid_point};
@@ -754,7 +754,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     }
                     var start= Math.min.apply(null,colRangeArray);
                     var end = Math.max.apply(null,colRangeArray);
-                    //
+
 
                     var columnRange = {start:start, end:end};
                     table.push({column: correspondingString, location:location, correspondingString: correspondingString, children:children, sibling: null, columnRange:columnRange});
@@ -784,7 +784,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                             rowLocationInformation = location_object_array[j].rowInformation;
                         }
                     }
-                    var location = {horizontal: 0, vertical: vertical};
+                    var location = {horizontal: 2, vertical: vertical};
                     table.push({
                         character: string_array[pointer],
                         location: location,
@@ -1033,14 +1033,23 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 try{
                     if(!rotated && d.correspondingString.length  <3)
                     {
-
                         var text = dendrG.append("text");
                         var xPos = x(d.target.y);
                         var yPos = y(d.target.x);
-                        text.attr("x",xPos-10)
-                            .attr("y",yPos-5)
-                            .text(d.correspondingString)
-                            .attr("fill","#7B7B7B");
+                        if(d.correspondingString.length == 1) {
+                            text.attr("x", xPos + 2)
+                                .attr("y", yPos + 5)
+                                .text(d.correspondingString)
+                                .attr("fill", "#7B7B7B")
+                                .style("font-size","14px");
+                        }
+                        else{ // IF string length is two, adjust the x-axis location accordingly
+                            text.attr("x", xPos - 1)
+                                .attr("y", yPos + 5)
+                                .text(d.correspondingString)
+                                .attr("fill", "#7B7B7B")
+                                .style("font-size","13px");
+                        }
                     }
                 }
                 catch(err)
