@@ -210,6 +210,7 @@ HTMLWidgets.widget({
     // HELPER FUNCTIONS ------------
 
     refreshColumns : function(x,columnRange1, columnRange2){
+        debugger;
         swap1 = x.matrix.cols.slice(columnRange1.start, columnRange1.end ==null ? columnRange1.start+1 : columnRange1.end +1);
         swap2 = x.matrix.cols.slice(columnRange2.start, columnRange2.end == null? columnRange2.start+1 : columnRange2.end +1);
         var columns = x.matrix.cols.slice(0,columnRange1.start);
@@ -235,10 +236,11 @@ HTMLWidgets.widget({
     },
 
     columnMatrixSwap: function(x, columnRange1, columnRange2 ){
-        for(var i=0; i<x.matrix.data.length; i=i+4){
-            columnstobeSwaped1 = x.matrix.data.slice(i+columnRange1.start, columnRange1.end ==null ? i+columnRange1.start+1 : i+columnRange1.end +1 );
-            columnstobeSwaped2 = x.matrix.data.slice(i+columnRange2.start, columnRange2.end == null? i+columnRange2.start+1 : i+columnRange2.end +1 );
-            mergecolumnstobeSwapped1 = x.matrix.merged.slice(i+columnRange1.start, columnRange1.end ==null ? i+columnRange1.start+1 : i+columnRange1.end +1 );
+        debugger;
+        for(var i=0; i< x.matrix.data.length; i= i+ x.matrix.cols.length){
+            columnstobeSwaped1 = x.matrix.data.slice(i+columnRange1.start, columnRange1.end == null ? i+columnRange1.start+1 : i+columnRange1.end +1 );
+            columnstobeSwaped2 = x.matrix.data.slice(i+columnRange2.start, columnRange2.end == null ? i+columnRange2.start+1 : i+columnRange2.end +1 );
+            mergecolumnstobeSwapped1 = x.matrix.merged.slice(i+columnRange1.start, columnRange1.end == null ? i+columnRange1.start+1 : i+columnRange1.end +1 );
             mergeColumnstoBeSwapped2 = x.matrix.merged.slice(i+columnRange2.start, columnRange2.end == null? i+columnRange2.start+1 : i+columnRange2.end +1 );
             var newArray = x.matrix.data.slice(i,i+columnRange1.start);
             var newMergeArray = x.matrix.merged.slice(i,i+columnRange1.start);
@@ -246,11 +248,11 @@ HTMLWidgets.widget({
             newMergeArray = newMergeArray.concat(mergeColumnstoBeSwapped2);
             newArray = newArray.concat(columnstobeSwaped1);
             newMergeArray = newMergeArray.concat(mergecolumnstobeSwapped1);
-            newArray = newArray.concat(columnRange2.end == null ? x.matrix.data.slice(columnRange2.start+1,i+4) : x.matrix.data.slice(columnRange2.end,i+4));
-            newMergeArray = newMergeArray.concat(columnRange2.end == null ? x.matrix.merged.slice(i+columnRange2.start+1,i+4) : x.matrix.merged.slice(i+columnRange2.end,i+4));
+            newArray = newArray.concat(columnRange2.end == null ? x.matrix.data.slice(columnRange2.start+1,i+x.matrix.cols.length) : x.matrix.data.slice(columnRange2.end + 1, i+x.matrix.cols.length));
+            newMergeArray = newMergeArray.concat(columnRange2.end == null ? x.matrix.merged.slice(i+columnRange2.start+1,i+x.matrix.cols.length) : x.matrix.merged.slice(i+columnRange2.end +1 , i+x.matrix.cols.length));
             var newArraycounter = 0;
-            for(var j=i; j<i+4;j++) {
-                x.matrix.data[j] =newArray[newArraycounter];
+            for(var j=i; j< i+x.matrix.cols.length; j++) {
+                x.matrix.data[j] = newArray[newArraycounter];
                 x.matrix.merged[j] = newMergeArray[newArraycounter];
                 newArraycounter++;
             }
@@ -261,8 +263,16 @@ HTMLWidgets.widget({
     stringSwap: function(d,newickString){
         var clickedString = d.correspondingString;
         var siblingString = d.siblingCorrespondingString;
-        newickString = clickedString.length == "1" ? newickString.search(clickedString +",") != -1 ? newickString.replace(clickedString+",","clicked,"): newickString.replace(clickedString+")","clicked)")  : newickString.replace(clickedString,"clicked");
-        newickString = siblingString.length == "1" ? newickString.search(siblingString +",") != -1 ? newickString.replace(siblingString+",","sibling,"): newickString.replace(siblingString+")","sibling)")  : newickString.replace(siblingString,"sibling");
+        newickString = newickString.replace("("+clickedString+",","(clicked,");
+        newickString = newickString.replace(","+clickedString+")",",clicked)");
+        newickString = newickString.replace("("+siblingString+",","(sibling,");
+        newickString = newickString.replace(","+siblingString+")",",sibling)");
+        if(clickedString.length != 1) {
+            newickString = newickString.replace(clickedString,"clicked");
+        }
+        if(siblingString.length != 1) {
+            newickString = newickString.replace(siblingString,"sibling");
+        }
         newickString = newickString.replace("clicked",siblingString);
         newickString = newickString.replace("sibling",clickedString);
         return newickString;

@@ -398,9 +398,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     }
 
     function axisLabels(svg, data, rotated, width, height, padding) {
-        debugger;
         svg = svg.append('g');
-
         // The data variable is either cluster info, or a flat list of names.
         // If the former, transform it to simply a list of names.
         var leaves;
@@ -885,7 +883,6 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 return pattern.join(",");
             })
             .on("mouseover",function(d,i){
-                debugger;
                 console.log(i);
                 console.log(d);
                 d3.select(this)
@@ -1023,7 +1020,6 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         newickString = newickString.replace(/\,/g," , ");
 
         // Couont the number of characters in the newick String.
-        debugger;
         totalCharacterLength = characterLength(newickString.split(" "));
         maxdepth = maxDepth(newickString.split(" "),0,0,0);
         var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength,0,maxdepth);
