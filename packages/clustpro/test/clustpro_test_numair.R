@@ -17,7 +17,7 @@ if(F){
   devtools::install()
   #devtools::reload()
 }
-setwd("/home/numair/Documents/proteomics/packages/clustpro/output")
+setwd("/home/numair/Videos/proteomics/packages/clustpro/output")
 library(clustpro)
 
 
@@ -34,7 +34,7 @@ matrix <- iris[-ncol(iris)]
 
 #########
 
-test_data = read.csv('/home/numair/Documents/proteomics/packages/clustpro/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+test_data = read.csv('/home/numair/Videos/proteomics/packages/clustpro/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
 rownames(test_data) <- test_data[,1]
 test_data[,1] <- NULL
 min(test_data)
