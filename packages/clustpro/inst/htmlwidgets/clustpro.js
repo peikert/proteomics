@@ -64,9 +64,10 @@ HTMLWidgets.widget({
         cluster_change_rows = this.clusterChangeInformation(cluster, cluster_change_rows);
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
+        // for(i in x.matrix.cols){x.matrix.cols[i] = "aaaaa"}
+        //for(i in x.matrix.cols){x.colors.cols[i] = "aaaaa"}
+        // x.dendnw_col[0] =  "((aaaaa,(aaaaa,aaaaa)),(aaaaa,(aaaaa,aaaaa)));"
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
-
-
         // Save the SVGs here.
         debugger;
         // STEPS:
@@ -75,10 +76,7 @@ HTMLWidgets.widget({
         // Add multiple options here.
         select = document.createElement("select");
         select.options.add(new Option("Saving Options",0));
-        select.options.add(new Option("Save RowDend SVG",1));
-        select.options.add(new Option("Save ColDend SVG",2));
-        select.options.add(new Option("Save ColorMap SVG",3));
-        select.options.add(new Option("Save as PNG",4));
+        select.options.add(new Option("Save as SVG",3));
         select.options.add(new Option("Testing", 5));
         select.options.add(new Option("MAKE IT SCROLLABLE", 6));
         select.options.add(new Option("Original Size", 7));
@@ -87,21 +85,8 @@ HTMLWidgets.widget({
         select.id = "selectionbox";
         select.onchange = function (value){
             debugger;
-            if(value.srcElement.value == 1){
-                svgString = "dendrogram rowDend";
-                var url = self.saveSvg(svgString);
-                var win = window.open(url, "_blank");
-                win.focus();
-            }
-            else if (value.srcElement.value == 2){
-                svgString = "dendrogram colDend";
-                var url = self.saveSvg(svgString);
-                var win = window.open(url, "_blank");
-                win.focus();
-            }
-            else if (value.srcElement.value == 3){
-                svgString = "colormap";
-                var url = self.saveSvg(svgString);
+            if (value.srcElement.value == 3){
+                var url = self.saveSvg();
                 var win = window.open(url, "_blank");
                 win.focus();
             }
@@ -151,10 +136,38 @@ HTMLWidgets.widget({
     doSomething: function(){
         console.log("you clicked a button");
     },
-    saveSvg: function(svgString){
-        var svg = document.getElementsByClassName(svgString)[0];
-        var serializer = new XMLSerializer();
-        var source = serializer.serializeToString(svg);
+
+    combineSVG: function(){
+    	debugger;
+    	// we need dendrogram rowDend + dendrogram colDend + colormap .
+    	// GET THERE THE ATTRIBUTES OF THE ROW DEND AND COLDEND AND COLOR MAP
+    	// BUT THE CHANCES ARE THEY ARE PRETTY GENEREAL
+    	// INSTEAD, I THINK I AM VERY SURE THAT THEY ARE GENERAL AND ALWAYS THE SAME.
+    	// RAW CODE FOR THE SVG ELEMENTS THAT WE NEED TO COMBINE.
+    	var rowDend = document.getElementsByClassName("rowDend")[0];
+    	rowDend.getElementsByTagName("g")[0].setAttribute("transform","translate(0,110)");
+    	rowDend = rowDend.innerHTML;
+
+    	var colDend = document.getElementsByClassName("dendrogram colDend")[0];
+    	colDend.getElementsByTagName("g")[0].setAttribute("transform","rotate(-90)  translate(0,216)");
+    	colDend = colDend.innerHTML;
+
+    	var colormap = document.getElementsByClassName("colormap")[0];
+    	colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
+    	// Do extensicve string manipulations here.
+    	var combinedSVG = rowDend + colDend + colormap;
+    	combinedSVG = '<?xml version="1.0"?>\r\n' +
+    				'<?xml-stylesheet href="lib/clustpro-0.0.1/./clustpro.css" type="text/css"?>\r\n' + 
+    				'<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" class="colormap" width="2000" height="1000" style="position: absolute; top: 0px; left: 0px; width: 1600px; height: 1000px;">\r\n' +
+    				'<defs> <style type="text/css"><![CDATA[ .link { fill: none; } ]]></style> </defs>' + // CSS for the dendogŕam
+                    combinedSVG + '</svg>';
+    	return combinedSVG;
+    },
+
+
+    saveSvg: function(){
+        debugger;
+        var source = this.combineSVG();
         if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
             source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
         }
@@ -162,10 +175,8 @@ HTMLWidgets.widget({
             source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
         }
         // source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-        source = '<?xml version="1.0"?>\r\n' + '<?xml-stylesheet href="lib/clustpro-0.0.1/./clustpro.css" type="text/css"?>\r\n' + source;
-        var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+        var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
         return url;
-
     },
 
     refreshRowDendogram: function(d,el,x,rowNewickSting, colNewickString,instance){

@@ -1,8 +1,8 @@
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
+    debugger;
     console.log(data);
     console.log("Last Updated: December 05th [13:55] (numair.mansur@gmail.com)");
     // ==== BEGIN HELPERS =================================
-
     function htmlEscape(str) {
         return (str+"").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
@@ -11,7 +11,6 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     // easy access to the absolute top/left/width/height of any individual
     // grid cell. Optionally, a single cell can be specified as a "fill"
     // cell, meaning it will take up any remaining width/height.
-    //
     // rows and cols are arrays that contain numeric pixel dimensions,
     // and up to one "*" value.s
     function GridSizer(widths, heights, /*optional*/ totalWidth, /*optional*/ totalHeight) {
@@ -79,9 +78,10 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             left: left
         }
     }
-
+    function xaxis_height_calculate(value){
+        return 120;
+    }
     // ==== END HELPERS ===================================
-
 
     var el = d3.select(selector);
 
@@ -134,7 +134,11 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     opts.xclust_height = options.xclust_height || opts.height * 0.12;
     opts.yclust_width = options.yclust_width || opts.width * 0.12;
     opts.link_color = opts.link_color || "#AAA";
-    opts.xaxis_height = options.xaxis_height[0] || 80;
+
+    // Change here
+    opts.xaxis_height = xaxis_height_calculate(2); // CHANGE THE HEIGHT OF THE X-AXIS FROM HERE.
+    // CALCULATE THE VALUE OF THE HEIGHT WITH A HELPER FUNCTION.
+
     opts.yaxis_width = options.yaxis_width[0] || 120;
     opts.yaxis_width = options.yaxis_width[0] || 120;
     opts.axis_padding = options.axis_padding || 6;
@@ -169,6 +173,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     var rowDendBounds = gridSizer.getCellBounds(0, 1);
     var yaxisBounds = gridSizer.getCellBounds(2, 1);
     var xaxisBounds = gridSizer.getCellBounds(1, 2);
+    xaxisBounds.height= 200;
 
     function cssify(styles) {
         return {
@@ -436,6 +441,15 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                                                         else {return 7;}
                                                         }); // New font value
                                                             // Calculated on the basis of text length
+        axisNodes.selectAll("text").style("fill","#6F6F6F");
+        // First find the maximum length,
+        // If the maximum length is greater then 25, then rotate.
+        var maxLength = 0;
+        for(i in data){data[i].length > maxLength ? maxLength = data[i].length : maxLength = maxLength}
+        axisNodes.selectAll("text").
+                                    attr("transform", rotated ?
+                                                                maxLength >25 ? "rotate(45), translate(70,0)" : "rotate(0)"
+                                                                : "rotate(0)");
         var mouseTargets = svg.append("g")
             .selectAll("g").data(leaves);
         mouseTargets
@@ -525,7 +539,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     }
 
 
-    // ------------ HELPER FUNCTIONS ------------- //
+    // ------------ HELPER FUNCTIONS for Dendogram------------- //
 
 
     function edgeStrokeWidth(node) {
