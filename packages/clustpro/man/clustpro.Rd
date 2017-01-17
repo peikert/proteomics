@@ -5,7 +5,7 @@
 \title{<Add Title>}
 \usage{
 clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = -1,
-  width = NULL, height = NULL)
+  tooltip = NULL, save_widget = TRUE, width = NULL, height = NULL)
 }
 \description{
 <Add Description>

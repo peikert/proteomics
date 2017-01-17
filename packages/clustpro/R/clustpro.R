@@ -40,6 +40,8 @@ clustpro <- function(
   min_k = 2,
   max_k = 10,
   fixed_k = -1,
+  tooltip = NULL,
+  save_widget = TRUE,
   width = NULL,
   height = NULL
   ) {
@@ -61,7 +63,12 @@ clustpro <- function(
   #   matrix = rs$matrix[,colnames(rs$matrix)!='cluster'],
   #   owncluster=rs$matrix[,'cluster']
   # )
-  rs_json <- rs$json
+  payload <- rs$payload
+  payload[['tooltip']] <- tooltip
+
+  json_payload = toJSON(payload, pretty = TRUE)
+  write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
+ # rs_json <- rs$json
 
  # library(rjson)
   #print(x)
@@ -75,14 +82,16 @@ clustpro <- function(
   # )
 
   widget <- htmlwidgets::createWidget('clustpro',
-                            rs_json,
+                            json_payload,
                             width = width,
                             height = height,
                             sizingPolicy = sizingPolicy(browser.fill = TRUE
                                                         )
                             )
   show(widget)
+  if(save_widget){
   saveWidget(widget, file=paste(getwd(),'widget.html',sep='/'))
+  }
   return(list(datatable = rs$data,
               clustering = rs$cobject,
               cluster_centers = rs$cluster_centers,
@@ -256,7 +265,7 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
     method = "kmeans"
     no_cores = 2
   }
-  distributions_histograms(matrix, "distributions_histograms")
+#  distributions_histograms(matrix, "distributions_histograms")
 
   if (fixed_k > 0) {
     k <- fixed_k
@@ -373,12 +382,14 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
   if(!is.null(color_matrix)){
     payload <- c(payload, list(colors=list(data = as.matrix(color_matrix), rows=rownames(color_matrix), cols=colnames(color_matrix), dim = dim(color_matrix))))
   }
-
-
   json_payload = toJSON(payload, pretty = TRUE)
   write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
 
-  return(list(json=json_payload,data=ordered_df, cobject = clustering_result, cluster_centers = cluster_centers,col_dend_hclust=col_dend_hclust,row_dend_hclust=row_dend_hclust))
+
+  # json_payload = toJSON(payload, pretty = TRUE)
+  # write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
+
+  return(list(payload=payload,data=ordered_df, cobject = clustering_result, cluster_centers = cluster_centers,col_dend_hclust=col_dend_hclust,row_dend_hclust=row_dend_hclust))
   #  opar <- par(mfrow = c(1, 2))
   #  plot(fit_row,  hang=-1)
   # # rect.hclust(fit1, 2, border="red")

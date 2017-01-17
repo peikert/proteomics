@@ -8,7 +8,7 @@
 # install.packages('ggplot2')
 
 #devtools::create("clustpro")
-if(T){
+if(F){
   library(devtools)
 #setwd("C:/Users/cpeikert/Documents/proteomics/packages/clustpro")
   setwd("D:/git/proteomics/packages/clustpro")
@@ -18,8 +18,9 @@ if(T){
   #devtools::reload()
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
-library(clustpro)
-
+library("clustpro")
+# unload("D:/git/proteomics/packages/clustpro")
+#remove.packages('clustpro')
 
 
 graphic_type <<- "tif"
@@ -42,8 +43,8 @@ max(test_data)
 br <- min(diff(c(-1.1,-0.5,-0.1,0.1,0.5,1.1))/40)
 color_spectrum_unqiue_breaks(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
 matrix <- test_data
-matrix <- rbind(matrix,matrix)
-matrix <- rbind(matrix,matrix)
+# matrix <- rbind(matrix,matrix)
+# matrix <- rbind(matrix,matrix)
 #########
 # matrix <- as.data.frame(matrix(round(runif(400, 0.1, 9.9),1),ncol=4,byrow=T))
 # matrix <- as.data.frame(matrix(round(runif(4800, 0.1, 9.9),1),ncol=4,byrow=T))
@@ -54,5 +55,19 @@ matrix <- rbind(matrix,matrix)
 
 
 # data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10)
-data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = 25)
+
+get_first_split_element <- function(x,split){
+  return(sub('\\s+$', '',unlist(strsplit(x, split))[1]))
+}
+
+info_list <- list()
+info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
+info_list[['description']] <- rep('no description', nrow(matrix))
+data2 <- clustpro(matrix=matrix,
+                  method = "kmeans",
+                  min_k = 2,
+                  max_k = 10,
+                  fixed_k = 25,
+                  tooltip = info_list
+                  )
 #names(data2)
