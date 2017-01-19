@@ -2,12 +2,22 @@
 % Please edit documentation in R/clustpro.R
 \name{clustpro}
 \alias{clustpro}
-\title{<Add Title>}
+\title{title: "clustpro - a cluster analysis package"
+author: "Christian Peikert and Muhammad Numair Mansur"
+version: 0.01b
+date: "19. Januar 2017"
+<Add Description>}
 \usage{
 clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = -1,
-  tooltip = NULL, save_widget = TRUE, width = NULL, height = NULL)
+  perform_clustering = TRUE, cluster_ids = NULL, rows = TRUE,
+  cols = TRUE, tooltip = NULL, save_widget = TRUE, width = NULL,
+  height = NULL, export_dir = NA, export_type = "svg")
 }
 \description{
+title: "clustpro - a cluster analysis package"
+author: "Christian Peikert and Muhammad Numair Mansur"
+version: 0.01b
+date: "19. Januar 2017"
 <Add Description>
 }
 

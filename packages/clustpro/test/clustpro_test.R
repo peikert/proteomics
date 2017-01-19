@@ -63,11 +63,53 @@ get_first_split_element <- function(x,split){
 info_list <- list()
 info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
 info_list[['description']] <- rep('no description', nrow(matrix))
+
+# first run this:    perform clustpro with clustering
+
 data2 <- clustpro(matrix=matrix,
                   method = "kmeans",
                   min_k = 2,
                   max_k = 10,
                   fixed_k = 25,
-                  tooltip = info_list
+                  tooltip = info_list,
+                  cols = TRUE,
+                  rows = FALSE,
+                  export_dir = "D://test",
+                  export_type = 'svg'
                   )
-#names(data2)
+
+
+
+data2 <- clustpro(matrix=matrix,
+                  method = "kmeans",
+                  min_k = 2,
+                  max_k = 10,
+                  fixed_k = 25,
+                  tooltip = info_list,
+                  cols = FALSE,
+                  rows = TRUE
+)
+
+
+
+# second  run this:    use clustering results from clustpro to perform clustpro without clustering
+
+cluster_ids <- as.vector(data2$cobject$cluster)
+data2$col_dend_hclust
+df_matrix <- data2$datatable
+df_matrix$cluster <- cluster_ids
+col_dend <- as.dendrogram(data2$col_dend_hclust)
+
+if(class(col_dend)=="dendrogram"){
+  df_matrix <- df_matrix[,c(order.dendrogram(col_dend),ncol(df_matrix))]
+}
+
+
+nrow(df_matrix)
+clustpro(matrix = df_matrix[,-ncol(df_matrix)],
+         cluster_ids = cluster_ids,
+        tooltip = info_list,
+   # cols = TRUE,
+   # rows = FALSE,
+         perform_clustering = FALSE)
+
