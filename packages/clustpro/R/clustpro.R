@@ -1,5 +1,7 @@
-#' <Add Title>
-#'
+#' title: "clustpro - a cluster analysis package"
+#' author: "Christian Peikert and Muhammad Numair Mansur"
+#' version: 0.01b
+#' date: "19. Januar 2017"
 #' <Add Description>
 #'
 #' @import htmlwidgets
@@ -40,9 +42,117 @@ clustpro <- function(
   min_k = 2,
   max_k = 10,
   fixed_k = -1,
+  perform_clustering = TRUE,
+  cluster_ids = NULL,
+  rows = TRUE,
+  cols = TRUE,
+  tooltip = NULL,
+  save_widget = TRUE,
   width = NULL,
-  height = NULL
+  height = NULL,
+  export_dir = NA,
+  export_type = 'svg'
   ) {
+
+
+  if(F){
+    library(htmlwidgets)
+    library(ggplot2)
+    library(pracma)
+    library(Biobase)
+    library(Mfuzz)
+    library(clusterSim)
+    library(doSNOW)
+    library(pheatmap)
+    library(gplots)
+    library(ctc)
+    library(jsonlite)
+    library(foreach)
+    library(doParallel)
+
+    matrix <- matrix
+    min_k = 2
+    max_k = 100
+    fixed_k = -1
+    method = "kmeans"
+    no_cores = 2
+    perform_clustering = TRUE
+    cluster_ids = NULL
+    tooltip = NULL
+    rows = FALSE
+    cols = TRUE
+  }
+  if(F){
+    matrix = matrix
+    col_dend_hclust = data2$col_dend_hclust
+    cluster_ids = cluster_ids
+    perform_clustering = FALSE
+    rows = FALSE
+    cols = TRUE
+  }
+
+  xaxis_height = 80
+  yaxis_width = 120
+  xaxis_font_size = NULL
+  yaxis_font_size = NULL
+  brush_color = "#0000FF"
+  show_grid = TRUE
+  anim_duration = 500
+
+  options <- NULL
+  options <- c(options, list(
+    xaxis_height = xaxis_height,
+    yaxis_width = yaxis_width,
+    xaxis_font_size = xaxis_font_size,
+    yaxis_font_size = yaxis_font_size,
+    brush_color = brush_color,
+    show_grid = show_grid,
+    anim_duration = anim_duration
+  ))
+
+  payload <- list(
+    options = options
+  )
+
+
+ # matrix = rs$matrix
+  clusters <- NULL
+  cluster_centers <- NULL
+  row_dend_nw <- NULL
+  col_dend_nw <- NULL
+  row_dend_hclust <- NULL
+  col_dend_hclust <- NULL
+  data <- NULL
+  cobject <- NULL
+
+
+  if(!perform_clustering){
+    clusters <- cluster_ids
+    cobject <- NA
+    row_dend_nw <- NULL
+    col_dend_nw <- NULL
+    row_dend <- NULL
+    col_dend <- NULL
+    if(!is.logical(rows) & class(rows)!='hclust'){
+      stop('row_dend is not of type hclust')
+    }
+    if(!is.logical(cols) & class(cols)!='hclust'){
+      stop('col_dend is not of type hclust')
+    }
+    if(is.null(cluster_ids) || class(cluster_ids)!='integer' || length(cluster_ids)!=nrow(matrix)){
+      stop('cluster_ids has to been a numeric vector of same length as the data matrix!')
+    }
+    if(!is.logical(rows) && !is.null(rows) && class(rows)=="hclust"){
+      row_dend_nw <- hc2Newick(rows)
+      row_dend_nw <- gsub(":\\d+\\.{0,1}\\d*","", row_dend_nw)
+      row_dend <- as.dendrogram(rows)
+    }
+    if(!is.logical(cols) && !is.null(cols) && class(cols)=="hclust"){
+      col_dend_nw <- hc2Newick(cols)
+      col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*","", col_dend_nw)
+      col_dend <- as.dendrogram(cols)
+    }
+  }else{
   no_cores <- max(1, detectCores() - 1)
   #rs <- test_package()
   rs <- clustering(
@@ -53,44 +163,88 @@ clustpro <- function(
     fixed_k = fixed_k,
     no_cores = no_cores
     )
-  # forward options using x
 
-  # x = list(
-  #   rows = rs$cluster[['dendnw_row']],
-  #   cols = rs$cluster[['dendnw_col']],
-  #   matrix = rs$matrix[,colnames(rs$matrix)!='cluster'],
-  #   owncluster=rs$matrix[,'cluster']
-  # )
-  rs_json <- rs$json
+ # matrix = rs$matrix
+  clusters = rs$clusters
+  cluster_centers = rs$cluster_centers
+  row_dend_nw = rs$dendnw_row_nw
+  col_dend_nw = rs$dendnw_col_nw
+  row_dend_hclust <- rs$row_dend_hclust
+  col_dend_hclust <- rs$col_dend_hclust
+  data = rs$data
+  cobject = rs$cobject
+  }
 
- # library(rjson)
-  #print(x)
+  ### color matrix ###
+  color_matrix <- as.data.frame(apply(matrix,c(1,2),get_color)) ## without id column
+  colnames(color_matrix) <- colnames(matrix)
+  rownames(color_matrix) <- rownames(matrix)
 
- # write(x, file = "data.txt")
+  #############
 
-  # pass the data and settings using 'x'
-  # x <- list(
-  #   data = data,
-  #   settings = settings
-  # )
+  payload[['matrix']] <- list(
+    data=as.matrix(matrix),
+    rows=rownames(matrix),
+    cols=colnames(matrix),
+    dim = dim(matrix)
+    )
 
+  payload[['clusters']] <- clusters
+
+
+  if((is.logical(rows) && rows && class(row_dend_nw) == "character")||class(rows)=='hclust'){
+    payload[['dendnw_row']] <- row_dend_nw
+  }else{
+    payload['dendnw_row'] <- NA
+  }
+  if((is.logical(cols) && cols && class(col_dend_nw) == "character")||class(cols)=='hclust'){
+    payload[['dendnw_col']] <- col_dend_nw
+  }else{
+    payload['dendnw_col'] <- NA
+  }
+
+
+  if (!is.null(color_matrix)) {
+    payload[['colors']] <-  list(
+        data = as.matrix(color_matrix),
+        rows = rownames(color_matrix),
+        cols = colnames(color_matrix),
+        dim = dim(color_matrix)
+      )
+  }else{
+    payload[['colors']] <- NA
+  }
+
+######
+  payload[['tooltip']] <- tooltip
+
+  payload[['export_dir']] <- export_dir
+  payload[['export_type']] <- export_type
+
+  json_payload = toJSON(payload, pretty = TRUE)
+  write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
+  write(data.frame(), file = "version_0.03a", ncolumns = 1, append = FALSE)
   widget <- htmlwidgets::createWidget('clustpro',
-                            rs_json,
+                            json_payload,
                             width = width,
                             height = height,
                             sizingPolicy = sizingPolicy(browser.fill = TRUE
                                                         )
                             )
   show(widget)
+  if(save_widget){
   saveWidget(widget, file=paste(getwd(),'widget.html',sep='/'))
-  return(list(datatable = rs$data,
-              clustering = rs$cobject,
-              cluster_centers = rs$cluster_centers,
-              col_dend_hclust=rs$col_dend_hclust,
-              row_dend_hclust=rs$row_dend_hclust
+  }
+  return(list(datatable = data,
+              cobject = cobject,
+              cluster_centers = cluster_centers,
+              col_dend_hclust = col_dend_hclust,
+              row_dend_hclust = row_dend_hclust
               )
          )
 }
+
+
 
 #' Shiny bindings for clustpro
 #'
@@ -208,18 +362,18 @@ get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
   switch(method,
          kmeans = {
            findk <- findk_kmeans
-           clusterExport(cl, c("matrix"))
+           clusterExport(cl, c("matrix","findk"))
            clusterEvalQ(cl, c(library(clusterSim),library(stats),library(clustpro)))
            db_list <- t(foreach(k = c(min_k:iterations),
-                                .combine = "cbind",
-                                .export='findk'
+                                .combine = "cbind"#,
+                              #  .export=c('findk')
                                 ) %dopar% {
-             findk_kmeans(matrix, k)
+             findk(matrix, k)
            })
 
            stopCluster(cl)
 
-           return(list(db_list=db_list))
+         return(list(db_list=db_list))
 
          },
          cmeans = {
@@ -229,23 +383,30 @@ get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
            findk <- findk_cmeans
            message('here 2')
        ##    clusterExport(cl, c("mfuzz", "index.DB", "minimalSet", "fp","matrix"))
+           clusterExport(cl, c("matrix","findk"))
            clusterEvalQ(cl, c(library('clusterSim'),library('Mfuzz'),library('e1071'),library('clustpro'),library('Biobase')))
            db_list <- t(foreach(k = c(min_k:iterations),
                                 .combine = "cbind",
-                                .export=c('findk',"mfuzz", "index.DB", "minimalSet", "fp","matrix")
+                                .export=c("mfuzz", "index.DB", "minimalSet", "fp")
                                 ) %dopar% {
-             findk_cmeans(matrix, k, minimalSet, fp)
+              findk(matrix, k, minimalSet, fp)
            })
           message('here 3')
           stopCluster(cl)
 
-          return(list(db_list=db_list, minimalSet=minimalSet,fp=fp))
+         return(list(db_list=db_list, minimalSet=minimalSet,fp=fp))
          })
 
 
 }
 
-clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "kmeans",no_cores = 2) {
+clustering <- function(matrix,
+                       min_k = 2,
+                       max_k = 100,
+                       fixed_k = -1,
+                       method = "kmeans",
+                       no_cores = 2
+                       ) {
   # fixed_k=-1 matrix <- matrix
   #method = "cmeans"
   if(F){
@@ -256,7 +417,7 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
     method = "kmeans"
     no_cores = 2
   }
-  distributions_histograms(matrix, "distributions_histograms")
+#  distributions_histograms(matrix, "distributions_histograms")
 
   if (fixed_k > 0) {
     k <- fixed_k
@@ -318,126 +479,41 @@ clustering <- function(matrix, min_k = 2, max_k = 100, fixed_k = -1, method = "k
     ordered_df <- ordered_df[,c(order.dendrogram(col_dend),ncol(ordered_df))]
   }
 
-
   ordered_df_wo_cluster <- ordered_df[colnames(ordered_df)[!colnames(ordered_df) %in% c('cluster')]]
   color_matrix <- as.data.frame(apply(ordered_df_wo_cluster,c(1,2),get_color)) ## without id column
   colnames(color_matrix) <- colnames(ordered_df_wo_cluster)
   rownames(color_matrix) <- rownames(ordered_df)
 
-  # ordered_df_wo_cluster,
-  # clusters = as.vector(unlist(ordered_df['cluster'])),
-  # dendrogram = "row",
-  # Rowv = TRUE ,
-  # Colv = TRUE,
-  # dendnw_row = row_dend_nw,
-  # dendnw_col = col_dend_nw,
-  #
-  # color_matrix
-
   #############
 
+  # matrix = list(
+  #               data= as.matrix(ordered_df_wo_cluster),
+  #               rows=rownames(ordered_df_wo_cluster),
+  #               cols=colnames(ordered_df_wo_cluster),
+  #               dim = dim(ordered_df_wo_cluster)
+  #               )
+  clusters = as.vector(unlist(ordered_df['cluster']))
+  # colors=list(
+  #             data = as.matrix(color_matrix),
+  #             rows=rownames(color_matrix),
+  #             cols=colnames(color_matrix),
+  #             dim = dim(color_matrix)
+  #             )
 
-  xaxis_height = 80
-  yaxis_width = 120
-  xaxis_font_size = NULL
-  yaxis_font_size = NULL
-  brush_color = "#0000FF"
-  show_grid = TRUE
-  anim_duration = 500
-
-  options <- NULL
-  options <- c(options, list(
-    xaxis_height = xaxis_height,
-    yaxis_width = yaxis_width,
-    xaxis_font_size = xaxis_font_size,
-    yaxis_font_size = yaxis_font_size,
-    brush_color = brush_color,
-    show_grid = show_grid,
-    anim_duration = anim_duration
-  ))
-
-  #############
-  payload <- list(
-    matrix = list(data=as.matrix(ordered_df_wo_cluster), rows=rownames(ordered_df_wo_cluster), cols=colnames(ordered_df_wo_cluster), dim = dim(ordered_df_wo_cluster)),
-    options = options,
-    clusters = as.vector(unlist(ordered_df['cluster']))
-  )
-
-  if(class(row_dend_nw)=="character"){
-    payload <- c(payload, list(dendnw_row = row_dend_nw))
-  }
-  if(class(col_dend_nw)=="character"){
-    payload <- c(payload, list(dendnw_col = col_dend_nw))
-  }
-
-  if(!is.null(color_matrix)){
-    payload <- c(payload, list(colors=list(data = as.matrix(color_matrix), rows=rownames(color_matrix), cols=colnames(color_matrix), dim = dim(color_matrix))))
-  }
-
-
-  json_payload = toJSON(payload, pretty = TRUE)
-  write(json_payload, file = "payload.json", ncolumns = 1, append = FALSE)
-
-  return(list(json=json_payload,data=ordered_df, cobject = clustering_result, cluster_centers = cluster_centers,col_dend_hclust=col_dend_hclust,row_dend_hclust=row_dend_hclust))
-  #  opar <- par(mfrow = c(1, 2))
-  #  plot(fit_row,  hang=-1)
-  # # rect.hclust(fit1, 2, border="red")
-  #  plot(fit_cols, hang=-1)
-  # # rect.hclust(fit2, 2, border="red")
-  #  par(opar)
-  # matrix$cluster <- clustering_result[['cluster']]
-  # ordered_data <- matrix
-  # switch(method, kmeans = {
-  #
-  #   if (cluster_rows) {
-  #     dendrogram_row <- as.dendrogram(fit_row)
-  #     row_dendrogram_order <- order.dendrogram(dendrogram_row)
-  #     ordered_data <- order_dataframe_by_list(ordered_data, row_dendrogram_order,
-  #                                             "cluster")
-  #     clustering_result$dendnw_row<- hc2Newick(fit_row, flat=TRUE)
-  #   }
-  #   if (cluster_cols) {
-  #     dendrogram_col <- as.dendrogram(fit_cols)
-  #     col_dendrogram_order <- order.dendrogram(dendrogram_col)
-  #     ordered_data[,1:(ncol(ordered_data)- 1)] <- ordered_data[, col_dendrogram_order]
-  #     clustering_result$dendnw_col<- hc2Newick(fit_col, flat=TRUE)
-  #   }
-  # })
-  #
-  # write.table(ordered_data, file = paste("clustering_means_k_", k,
-  #                                        ".txt", sep = ""), sep = "\t", col.names = NA)
-
-  #######
-
-  ### finding breaks for cluster blocks! Were should be insert a black line
-  # cluster_infos <- data.frame(cluster_number = unique(ordered_data$cluster))
-  # cluster_infos$amount <- table(ordered_data$cluster)[cluster_infos$cluster_number]
-  #
-  # h_space = c()
-  # h_pos = 1
-  # for (row_id in c(1:nrow(cluster_infos))) {
-  #   if (h_pos == 1)
-  #     h_space[h_pos] <- 0 else h_space[h_pos] <- (h_space[h_pos - 1] + cluster_infos[h_pos - 1, "amount"])
-  #     h_pos <- h_pos + 1
-  # }
-  # h_space <- h_space[c(2:length(h_space))]
-
-  #######
-
-
- # matrix <- as.matrix(ordered_data[,colnames(ordered_data)!='cluster'])
- # mat = matrix(c(4, 2, 3, 1), 2, 2, byrow = TRUE)
- # wid = lcm(c(3, 8))
- # hei = lcm(c(3, 12))
-  # initialize_graphic(paste("heatmap_mean_k_", k, "_ratio_div_ratio",sep = ""))
-  # heatmap.2(matrix, col = palette, breaks = colors, density.info = "none", dendrogram = "non",
-  #           Rowv = FALSE, Colv = FALSE, symkey = FALSE, cexRow = 1.5, cexCol = 1.5, trace = "none",
-  #           srtCol = 45, keysize = 2, rowsep = h_space, lmat = mat, lhei = hei, lwid = wid,
-  #           labRow = NA)
-  # # sepcolor='black', sepwidth=c(0.005,0.005),
-  # dev.off()
-
- ## return(list(matrix = ordered_data, cluster = clustering_result, k = k))
+  return(
+          list(
+              matrix = matrix,
+              clusters = clusters,
+              cluster_centers = cluster_centers,
+              dendnw_row_nw = row_dend_nw,
+              dendnw_col_nw = col_dend_nw,
+              col_dend_hclust = col_dend_hclust,
+              row_dend_hclust = row_dend_hclust,
+      #        color_matrix = colors,
+              data = ordered_df,
+              cobject = clustering_result
+              )
+         )
 }
 
 ###
