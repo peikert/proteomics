@@ -67,8 +67,6 @@ HTMLWidgets.widget({
         // for(i in x.matrix.cols){x.matrix.cols[i] = "aaaaa"}
         //for(i in x.matrix.cols){x.colors.cols[i] = "aaaaa"}
         // x.dendnw_col[0] =  "((aaaaa,(aaaaa,aaaaa)),(aaaaa,(aaaaa,aaaaa)));"
-        // x.dendnw_row = []; // testing the bug
-        x.dendnw_col = [];
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
         // Save the SVGs here.
         debugger;
