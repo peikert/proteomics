@@ -179,7 +179,7 @@ HTMLWidgets.widget({
     	var combinedSVG = rowDend + colDend + colormap;
     	combinedSVG = '<?xml version="1.0"?>\r\n' +
     				'<?xml-stylesheet href="lib/clustpro-0.0.1/./clustpro.css" type="text/css"?>\r\n' + 
-    				'<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" class="colormap" width="2000" height="1000" style="position: absolute; top: 0px; left: 0px; width: 1600px; height: 1000px;">\r\n' +
+    				'<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" class="colormap" width="2000" height="1000" style="position: absolute; top: 0px; left: 0px; width:1680px; height: 1000px;">\r\n' +
     				'<defs> <style type="text/css"><![CDATA[ .link { fill: none; } ]]></style> </defs>' + // CSS for the dendogŕam
                     combinedSVG + '</svg>';
     	return combinedSVG;
