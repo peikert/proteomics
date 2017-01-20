@@ -223,10 +223,17 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     columnNames = data.matrix.cols;
     var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
-    var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
+    if(data.dendnw_row.length != 0)
+        { var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
                 opts.axis_padding,  /*no of cols*/ data.matrix.cols.length, cluster, data.dendnw_row[0], columnNames);
-     var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
+        }
+    
+    if(data.dendnw_col.length != 0)
+        {   var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
                 opts.axis_padding, data.matrix.cols.length , cluster, data.dendnw_col[0], columnNames);
+        }
+    
+
     function colormap(svg, data, width, height) {
         // Check for no data
         if (data.length === 0)

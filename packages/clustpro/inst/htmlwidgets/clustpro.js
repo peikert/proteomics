@@ -67,12 +67,14 @@ HTMLWidgets.widget({
         // for(i in x.matrix.cols){x.matrix.cols[i] = "aaaaa"}
         //for(i in x.matrix.cols){x.colors.cols[i] = "aaaaa"}
         // x.dendnw_col[0] =  "((aaaaa,(aaaaa,aaaaa)),(aaaaa,(aaaaa,aaaaa)));"
+        // x.dendnw_row = []; // testing the bug
+        x.dendnw_col = [];
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
         // Save the SVGs here.
         debugger;
         // STEPS:
         // 1)  Generate a drop down menu or a button that gives the option to save the svg in different
-        //      formats. At the moment i am only going to create a button  (IN PROGRESS)
+        //     formats. At the moment i am only going to create a button  (IN PROGRESS)
         // Add multiple options here.
         select = document.createElement("select");
         select.options.add(new Option("Saving Options",0));
@@ -118,20 +120,27 @@ HTMLWidgets.widget({
         // 4)   Enjoy the new feature.
 
         var hm = heatMapObject[0];
-        rowDendLinesListner = heatMapObject[1];
-        colDendLinesListner = heatMapObject[2];
-        rowDendLinesListner.on("click", function(d,i) {
+        if(x.dendnw_row.length != 0){ // if row dendogram information is provided.
+      		rowDendLinesListner = heatMapObject[1];
+        	rowDendLinesListner.on("click", function(d,i) {
                 console.log("you clicked a line");
                 console.log(i);
                 console.log(d);
                 self.refreshRowDendogram(d,el,x, rowNewickSting, colNewickString, instance);
-            });
-        colDendLinesListner.on("click",function (d,i) {
+            	});
+        }
+
+
+        if(x.dendnw_col.length != 0){ // If column dendogram information is provided.
+        	colDendLinesListner = heatMapObject[2];
+        	colDendLinesListner.on("click",function (d,i) {
                 console.log("you clicked a column dendogram line");
                 console.log(i);
                 console.log(d);
                 self.refreshColDendogram(d,el,x,rowNewickSting,colNewickString,instance);
-            });
+            	});
+        }
+
         },
     doSomething: function(){
         console.log("you clicked a button");
@@ -144,13 +153,27 @@ HTMLWidgets.widget({
     	// BUT THE CHANCES ARE THEY ARE PRETTY GENEREAL
     	// INSTEAD, I THINK I AM VERY SURE THAT THEY ARE GENERAL AND ALWAYS THE SAME.
     	// RAW CODE FOR THE SVG ELEMENTS THAT WE NEED TO COMBINE.
-    	var rowDend = document.getElementsByClassName("rowDend")[0];
-    	rowDend.getElementsByTagName("g")[0].setAttribute("transform","translate(0,110)");
-    	rowDend = rowDend.innerHTML;
 
+    	var rowDend = document.getElementsByClassName("rowDend")[0];
+    	if(rowDend.getElementsByTagName("g")[0] != undefined)
+    	{
+    		rowDend.getElementsByTagName("g")[0].setAttribute("transform","translate(0,110)");
+    		rowDend = rowDend.innerHTML;
+    	}
+    	else 
+    	{
+    		rowDend = "";
+    	}
+    	
     	var colDend = document.getElementsByClassName("dendrogram colDend")[0];
-    	colDend.getElementsByTagName("g")[0].setAttribute("transform","rotate(-90)  translate(0,216)");
-    	colDend = colDend.innerHTML;
+    	if(colDend.getElementsByTagName("g")[0] != undefined){
+    		colDend.getElementsByTagName("g")[0].setAttribute("transform","rotate(-90)  translate(0,216)");
+    		colDend = colDend.innerHTML;
+    	}
+    	else
+    	{
+    		colDend = "";
+    	}
 
     	var colormap = document.getElementsByClassName("colormap")[0];
     	colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
