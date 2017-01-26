@@ -6,8 +6,8 @@ dependencies:
 - name: clustpro
   version: 0.0.1
   src: htmlwidgets/lib/clustpro-0.0.1
-  script: ./clustpro.js
-  stylesheet: ./clustpro.css
+  script: clustpro.js
+  stylesheet: clustpro.css
 - name: d3-tip
   version: 0.6.6
   src: htmlwidgets/lib/d3-tip

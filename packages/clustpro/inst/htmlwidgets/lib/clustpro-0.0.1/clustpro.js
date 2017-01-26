@@ -192,8 +192,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var colDend = inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
         var rowDend = inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
         var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
-        var xaxis = inner.append("svg").classed("axis xaxis", true).style(cssify(xaxisBounds));
-        var yaxis = inner.append("svg").classed("axis yaxis", true).style(cssify(yaxisBounds));
+        var xaxis = inner.append("svg").attr("id","xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
+        var yaxis = inner.append("svg").attr("id","yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
 
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
         // QtWebkit viewer won't allow svg elements to overflow:visible.
@@ -249,12 +249,14 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var x = d3.scale.linear().domain([0, cols]).range([0, width]);
         var y = d3.scale.linear().domain([0, rows]).range([0, height]);
         var tip = d3.tip() //HTML of the tip
-            .attr('class', 'd3heatmap-tip')
+            .attr('class', 'clustpro-tip')
             .html(function(d, i) {
                 return "<table>" +
                     "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
                     "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
                     "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>" +
+                    "<tr><th align=\"right\">Link</th><td>" +"~~ not available ~~" + "</td></tr>" +
+                    "<tr><th align=\"right\">Description</th><td>" + "~~ not available ~~" + "</td></tr>" +
                     "</table>";
             })
             .direction("se")
@@ -402,6 +404,18 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 controller.datapoint_hover(null);
             });
 
+
+            brushG.select("rect.background")
+            .on("dblclick", function(d,i) {
+                debugger;
+                // figure out a way to put connect it with X data element and 
+                // get the link at this point.
+                console.log(d);
+                console.log(i);
+                console.log("you clicked on a box");
+                window.open("http://numairmansur.github.io/");
+            });
+
         controller.on('highlight.datapt', function(hl) {
             rect.classed('highlight', function(d, i) {
                 return (this.rowIndex === hl.y) || (this.colIndex === hl.x);
@@ -414,6 +428,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         // The data variable is either cluster info, or a flat list of names.
         // If the former, transform it to simply a list of names.
         var leaves;
+
         if (data.children) {
             leaves = d3.layout.cluster().nodes(data)
                 .filter(function(x) { return !x.children; })
@@ -426,6 +441,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var scale = d3.scale.ordinal()
             .domain(leaves)
             .rangeBands([0, rotated ? width : height]);
+
         var axis = d3.svg.axis()
             .scale(scale)
             .orient(rotated ? "bottom" : "right")
@@ -437,6 +453,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var axisNodes = svg.append("g")
             .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
             .call(axis);
+
         var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']  || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
         //axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
 
@@ -1005,17 +1022,23 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             .separation(function(a, b) { return 1; })
             .size([rotated ? width : height, NaN]);
         var transform = "translate(1,0)";
+        var id = "rowDend";
+
         if (rotated) {
             // Flip dendrogram vertically
             x.range([topLineWidth/2, -height+padding+2]);
             // Rotate
             transform = "rotate(-90) translate(-2,0)";
+            id = "coldDend";
         }
+
         var dendrG = svg
+            .attr("id",id)
             .attr("width", width)
             .attr("height", height)
             .append("g")
             .attr("transform", transform);
+
 
         var testnodes = cluster.nodes(fakedata);
         var testlinks = cluster.links(testnodes);

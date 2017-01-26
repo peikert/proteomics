@@ -24,9 +24,7 @@ HTMLWidgets.widget({
         instance.force.size([width, height]).resume();
         this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
-
-
-    doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged,scrollable){
+    doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable){
 
         { // This should be done when new values are given by the user.
             // document.getElementById(el.id).style.height = "1000px"; //experimental value
@@ -68,12 +66,13 @@ HTMLWidgets.widget({
         //for(i in x.matrix.cols){x.colors.cols[i] = "aaaaa"}
         // x.dendnw_col[0] =  "((aaaaa,(aaaaa,aaaaa)),(aaaaa,(aaaaa,aaaaa)));"
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
-        // Save the SVGs here.
-        debugger;
-        // STEPS:
-        // 1)  Generate a drop down menu or a button that gives the option to save the svg in different
-        //     formats. At the moment i am only going to create a button  (IN PROGRESS)
-        // Add multiple options here.
+
+
+        // *********************** COLOR LEGEND ****************************************
+        this.colorLegend(el,x);
+        // *****************************************************************************
+
+
         select = document.createElement("select");
         select.options.add(new Option("Saving Options",0));
         select.options.add(new Option("Save as SVG",3));
@@ -109,13 +108,11 @@ HTMLWidgets.widget({
                 self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false);
             }
         };
-        document.getElementById("htmlwidget-1d9f9b9fdca3023baa83").appendChild(select);
-        // 2)   Just try to save the SVGs somewhere.
-        //              - First try to do it without any external libraries. If
-        //                that don't work out then try out some libraries.
-        //              - Take a look into FileSaver.js if nothing is working out.
-        // 3)   Save the SVGs as other file formats (jpeg, png etc).
-        // 4)   Enjoy the new feature.
+        debugger;
+        var HTMLContainer = d3.select("#htmlwidget_container")[0][0];
+        var containerID = HTMLContainer.childNodes[1].id;
+        document.getElementById(containerID).appendChild(select);
+
 
         var hm = heatMapObject[0];
         if(x.dendnw_row.length != 0){ // if row dendogram information is provided.
@@ -140,17 +137,62 @@ HTMLWidgets.widget({
         }
 
         },
-    doSomething: function(){
-        console.log("you clicked a button");
+
+
+    colorLegend: function(selector,x){
+    	// Create Color Legend here.
+
+        console.log("Creating color legend here");
+        //var el = d3.select(selector);
+        row = d3.select("#rowDend");
+        // row.style("background-color","yellow");
+        box = row.append("g");
+        // Now that we can select row dendogram svg
+        // add the rect element here !!
+        // Flatten the color array and make a new array of all the color elements here.
+        var UniqueColors = Array.from(new Set([].concat.apply([],x.colors.data)));
+        // var UniqueColors = UniqueColors.slice(0,10);
+        var numberOfUniqueColors = UniqueColors.length;
+        var heightOfSVG = row[0][0].height.baseVal.value;
+        var LenghtOfOneBox = heightOfSVG/numberOfUniqueColors;
+        for(i in UniqueColors){
+        	box.append("rect")
+        	.style("fill",UniqueColors[i])
+        	.attr("width", "20px")
+            .attr("height", LenghtOfOneBox.toString() + "px")
+            .attr("x", 0)
+            .attr("y", LenghtOfOneBox*i);
+        }
+
+        debugger;
+
+        // PUT VALUE OF THE COLORS !!  ***** IMPORTANT ++**+++*****
+        // Maybe i can make a list of objects, [color: , value: ]
+        // Then i can also sort on base of that.
+
+        // EXPERIMENTAL CODE  *** CONTROL PANEL *****
+
+        xaxis = d3.select("#xaxis");
+        rectangle = xaxis.append("g");
+        rectangle.append("rect")
+        .style("fill", "#c1c1c1")
+        .attr("width",1000)
+        .attr("height", 50)
+        .attr("x", 0)
+        .attr("y",70);
+
+         var text = xaxis.append("text");
+         text.attr("x", 5)
+             .attr("y", 100)
+             .text("Control PANEL")
+             .attr("fill", "black")
+             .style("font-size","24px");
+
+
+
     },
 
     combineSVG: function(){
-    	debugger;
-    	// we need dendrogram rowDend + dendrogram colDend + colormap .
-    	// GET THERE THE ATTRIBUTES OF THE ROW DEND AND COLDEND AND COLOR MAP
-    	// BUT THE CHANCES ARE THEY ARE PRETTY GENEREAL
-    	// INSTEAD, I THINK I AM VERY SURE THAT THEY ARE GENERAL AND ALWAYS THE SAME.
-    	// RAW CODE FOR THE SVG ELEMENTS THAT WE NEED TO COMBINE.
 
     	var rowDend = document.getElementsByClassName("rowDend")[0];
     	if(rowDend.getElementsByTagName("g")[0] != undefined)
