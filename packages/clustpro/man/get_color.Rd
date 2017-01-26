@@ -4,7 +4,7 @@
 \alias{get_color}
 \title{Function to get color}
 \usage{
-get_color(x)
+get_color(x, colors, palette)
 }
 \description{
 xxxxxx

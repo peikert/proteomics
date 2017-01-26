@@ -41,7 +41,10 @@ test_data[,1] <- NULL
 min(test_data)
 max(test_data)
 br <- min(diff(c(-1.1,-0.5,-0.1,0.1,0.5,1.1))/40)
-color_spectrum_unqiue_breaks(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
+heatmap_color <- color_spectrum_unqiue_breaks(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
+
+heatmap_color$label_position <- c(-1,-0.5,0,0.5,1)
+
 matrix <- test_data
 # matrix <- rbind(matrix,matrix)
 # matrix <- rbind(matrix,matrix)
@@ -73,7 +76,8 @@ data2 <- clustpro(matrix=matrix,
                   fixed_k = 25,
                   tooltip = info_list,
                   cols = TRUE,
-                  rows = FALSE,
+                  rows = TRUE,
+                  color_legend = heatmap_color,
                   export_dir = "D://test",
                   export_type = 'svg'
                   )
@@ -90,26 +94,38 @@ data2 <- clustpro(matrix=matrix,
                   rows = TRUE
 )
 
+data2 <- clustpro(matrix=matrix,
+                  method = "kmeans",
+                  min_k = 2,
+                  max_k = 10,
+                  fixed_k = 25,
+                  tooltip = info_list,
+                  cols = TRUE,
+                  rows = FALSE,
+                  export_dir = "D://test",
+                  export_type = 'svg'
+)
 
+#
 
 # second  run this:    use clustering results from clustpro to perform clustpro without clustering
 
-cluster_ids <- as.vector(data2$cobject$cluster)
-data2$col_dend_hclust
-df_matrix <- data2$datatable
-df_matrix$cluster <- cluster_ids
-col_dend <- as.dendrogram(data2$col_dend_hclust)
-
-if(class(col_dend)=="dendrogram"){
-  df_matrix <- df_matrix[,c(order.dendrogram(col_dend),ncol(df_matrix))]
-}
-
-
-nrow(df_matrix)
-clustpro(matrix = df_matrix[,-ncol(df_matrix)],
-         cluster_ids = cluster_ids,
-        tooltip = info_list,
-   # cols = TRUE,
-   # rows = FALSE,
-         perform_clustering = FALSE)
-
+# cluster_ids <- as.vector(data2$cobject$cluster)
+# data2$col_dend_hclust
+# df_matrix <- data2$datatable
+# df_matrix$cluster <- cluster_ids
+# col_dend <- as.dendrogram(data2$col_dend_hclust)
+#
+# if(class(col_dend)=="dendrogram"){
+#   df_matrix <- df_matrix[,c(order.dendrogram(col_dend),ncol(df_matrix))]
+# }
+#
+#
+# nrow(df_matrix)
+# clustpro(matrix = df_matrix[,-ncol(df_matrix)],
+#          cluster_ids = cluster_ids,
+#         tooltip = info_list,
+#         cols = TRUE,
+#         rows = FALSE,
+#          perform_clustering = FALSE)
+#

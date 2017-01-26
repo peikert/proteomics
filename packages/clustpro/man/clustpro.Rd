@@ -10,8 +10,8 @@ date: "19. Januar 2017"
 \usage{
 clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = -1,
   perform_clustering = TRUE, cluster_ids = NULL, rows = TRUE,
-  cols = TRUE, tooltip = NULL, save_widget = TRUE, width = NULL,
-  height = NULL, export_dir = NA, export_type = "svg")
+  cols = TRUE, tooltip = NULL, save_widget = TRUE, color_legend = NULL,
+  width = NULL, height = NULL, export_dir = NA, export_type = "svg")
 }
 \description{
 title: "clustpro - a cluster analysis package"

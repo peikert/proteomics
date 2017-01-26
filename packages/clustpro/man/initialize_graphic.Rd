@@ -2,7 +2,14 @@
 % Please edit documentation in R/clustpro.R
 \name{initialize_graphic}
 \alias{initialize_graphic}
-\title{Function to initialize a graphic}
+\title{#' Function to to define the color spectrum for heatmaps
+#'
+#' This function allows you to define the color spectrum for heatmaps.
+#' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
+#' @keywords color spectrum heatmaps
+#' @export
+#' @examples
+#' color_spectrum()}
 \usage{
 initialize_graphic(title, type = graphic_type, ...)
 }
@@ -10,6 +17,20 @@ initialize_graphic(title, type = graphic_type, ...)
 \item{title}{, project, type, number}
 }
 \description{
+color_spectrum_local <- function(values, color_spect){
+  index <- 1
+  palette <- c()
+  colors <- c()
+  while(index<length(values)){
+    colors <- c(colors,seq(values[index],values[index+1],length=100))
+    index <- index +1
+  }
+  palette <- colorRampPalette(color_spect)(n = ((length(values)-1)*100)-1)
+  return(c(colors=list(colors),palette=list(palette)))
+}
+Function to initialize a graphic
+}
+\details{
 This function allows you to initialize a graphic
 }
 \examples{

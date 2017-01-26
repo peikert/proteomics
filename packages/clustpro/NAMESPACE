@@ -2,11 +2,9 @@
 
 export(clustpro)
 export(clustproOutput)
-export(color_spectrum)
-export(color_spectrum_local)
-export(color_spectrum_unqiue_breaks)
 export(get_color)
 export(initialize_graphic)
+export(list)
 export(renderClustpro)
 import(Biobase)
 import(Mfuzz)
