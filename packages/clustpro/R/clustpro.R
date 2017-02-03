@@ -521,80 +521,7 @@ clustering <- function(matrix,
          )
 }
 
-#' ###
-#'
-#' #' Function to to define the color spectrum for heatmaps
-#' #'
-#' #' This function allows you to define the color spectrum for heatmaps.
-#' #' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
-#' #' @keywords color spectrum heatmaps
-#' #' @export
-#' #' @examples
-#' #' color_spectrum()
-#'
-#' color_spectrum <- function(values, color_spect){
-#'   index <- 1
-#'   palette <- c()
-#'   colors <- c()
-#'   while(index<length(values)){
-#'     colors <- c(colors,seq(values[index],values[index+1],length=100))
-#'     index <- index +1
-#'   }
-#'   palette <- colorRampPalette(color_spect)(n = ((length(values)-1)*100)-1)
-#'   ## standard global variables can define with <<-. However, in this case the variable were blocked by the enviroment so I have to use the
-#'   ## assign function. The first argument is the global variable name, second the local variable in function and the last the target enviroment
-#'   assign('colors', colors, envir = .GlobalEnv)
-#'   assign('palette', palette, envir = .GlobalEnv)
-#' }
-#'
-#'
-#' Function to to define the color spectrum for heatmaps
-#'
-#' This function allows you to define the color spectrum for heatmaps.
-#' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
-#' @keywords color spectrum heatmaps
-#' @export list
-#' @examples
-#' color_spectrum()
 
-color_spectrum_unqiue_breaks <- function(values, color_spect, shift_factor=0.0000000001){
-  index <- 1
-  palette <- c()
-  colors <- c()
-  while(index<length(values)){
-    colors <- c(colors,seq(values[index]+shift_factor,values[index+1]-shift_factor,length=100))
-    index <- index +1
-  }
-  colors <- unique(colors)
-  palette <- colorRampPalette(color_spect)(n = ((length(values)-1)*100)-1)
-  ## standard global variables can define with <<-. However, in this case the variable were blocked by the enviroment so I have to use the
-  ## assign function. The first argument is the global variable name, second the local variable in function and the last the target enviroment
-  # assign('colors', colors, envir = .GlobalEnv)
-  # assign('palette', palette, envir = .GlobalEnv)
-  return(list(colors=colors,palette=palette))
-}
-
-#'
-#' #' Function to to define the color spectrum for heatmaps
-#' #'
-#' #' This function allows you to define the color spectrum for heatmaps.
-#' #' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
-#' #' @keywords color spectrum heatmaps
-#' #' @export
-#' #' @examples
-#' #' color_spectrum()
-#'
-#' color_spectrum_local <- function(values, color_spect){
-#'   index <- 1
-#'   palette <- c()
-#'   colors <- c()
-#'   while(index<length(values)){
-#'     colors <- c(colors,seq(values[index],values[index+1],length=100))
-#'     index <- index +1
-#'   }
-#'   palette <- colorRampPalette(color_spect)(n = ((length(values)-1)*100)-1)
-#'   return(c(colors=list(colors),palette=list(palette)))
-#' }
 
 #' Function to initialize a graphic
 #'
@@ -640,6 +567,26 @@ get_color <- function(x,colors,palette){
   return(palette[i-1])
 }
 
+#' Function to to define the color spectrum for heatmaps
+#'
+#' This function allows you to define the color spectrum for heatmaps.
+#' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
+#' @keywords color spectrum heatmaps
+#' @export
+#' @examples
+#' color_spectrum()
+color_spectrum <- function(values, color_spect, shift_factor=0.0000000001){
+  index <- 1
+  palette <- c()
+  colors <- c()
+  while(index<length(values)){
+    colors <- c(colors,seq(values[index]+shift_factor,values[index+1]-shift_factor,length=100))
+    index <- index +1
+  }
+  colors <- unique(colors)
+  palette <- colorRampPalette(color_spect)(n = ((length(values)-1)*100)-1)
+  return(list(colors=colors,palette=palette))
+}
 
 ####
 

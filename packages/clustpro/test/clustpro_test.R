@@ -84,27 +84,29 @@ data2 <- clustpro(matrix=matrix,
 
 
 
-data2 <- clustpro(matrix=matrix,
-                  method = "kmeans",
-                  min_k = 2,
-                  max_k = 10,
-                  fixed_k = 25,
-                  tooltip = info_list,
-                  cols = FALSE,
-                  rows = TRUE
-)
-
-data2 <- clustpro(matrix=matrix,
-                  method = "kmeans",
-                  min_k = 2,
-                  max_k = 10,
-                  fixed_k = 25,
-                  tooltip = info_list,
-                  cols = TRUE,
-                  rows = FALSE,
-                  export_dir = "D://test",
-                  export_type = 'svg'
-)
+# data2 <- clustpro(matrix=matrix,
+#                   method = "kmeans",
+#                   min_k = 2,
+#                   max_k = 10,
+#                   fixed_k = 25,
+#                   tooltip = info_list,
+#                   cols = FALSE,
+#                   rows = TRUE,
+#                   color_legend = heatmap_color
+# )
+#
+# data2 <- clustpro(matrix=matrix,
+#                   method = "kmeans",
+#                   min_k = 2,
+#                   max_k = 10,
+#                   fixed_k = 25,
+#                   tooltip = info_list,
+#                   cols = TRUE,
+#                   rows = FALSE,
+#                   color_legend = heatmap_color,
+#                   export_dir = "D://test",
+#                   export_type = 'svg'
+# )
 
 #
 
