@@ -1,7 +1,11 @@
+/** Last Updated: 2nd February [18:00]
+    Version: 0.0.1
+*/
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
+
     debugger;
     console.log(data);
-    console.log("Last Updated: December 05th [13:55] (numair.mansur@gmail.com)");
+    console.log("");
     // ==== BEGIN HELPERS =================================
     function htmlEscape(str) {
         return (str+"").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

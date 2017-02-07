@@ -1,3 +1,6 @@
+/** Last Updated: 2nd February [18:00]
+    Version: 0.0.1
+*/
 HTMLWidgets.widget({
     name: "clustpro",
     type: "output",
