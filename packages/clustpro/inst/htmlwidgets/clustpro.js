@@ -144,35 +144,9 @@ HTMLWidgets.widget({
 
     colorLegend: function(selector,x){
     	// Create Color Legend here.
-
+    	debugger;
         console.log("Creating color legend here");
         //var el = d3.select(selector);
-        row = d3.select("#rowDend");
-        // row.style("background-color","yellow");
-        box = row.append("g");
-        // Now that we can select row dendogram svg
-        // add the rect element here !!
-        // Flatten the color array and make a new array of all the color elements here.
-        var UniqueColors = Array.from(new Set([].concat.apply([],x.colors.data)));
-        // var UniqueColors = UniqueColors.slice(0,10);
-        var numberOfUniqueColors = UniqueColors.length;
-        var heightOfSVG = row[0][0].height.baseVal.value;
-        var LenghtOfOneBox = heightOfSVG/numberOfUniqueColors;
-        for(i in UniqueColors){
-        	box.append("rect")
-        	.style("fill",UniqueColors[i])
-        	.attr("width", "20px")
-            .attr("height", LenghtOfOneBox.toString() + "px")
-            .attr("x", 0)
-            .attr("y", LenghtOfOneBox*i);
-        }
-
-        debugger;
-
-        // PUT VALUE OF THE COLORS !!  ***** IMPORTANT ++**+++*****
-        // Maybe i can make a list of objects, [color: , value: ]
-        // Then i can also sort on base of that.
-
         // EXPERIMENTAL CODE  *** CONTROL PANEL *****
 
         xaxis = d3.select("#xaxis");
@@ -183,6 +157,46 @@ HTMLWidgets.widget({
         .attr("height", 50)
         .attr("x", 0)
         .attr("y",70);
+
+
+        debugger;
+
+        row = d3.select("#rowDend");
+        box = row.append("g");
+        col = d3.select("#coldDend");
+
+        // var UniqueColors = Array.from(new Set([].concat.apply([],x.colors.data)));
+        var UniqueColors = [];
+        for(i in x.color_legend.gradient) {UniqueColors[i] = x.color_legend.gradient[i].color}
+
+        var numberOfUniqueColors = UniqueColors.length;
+        var widthOfSVG = col[0][0].width.baseVal.value;
+        var widthOfOneBox = widthOfSVG/numberOfUniqueColors;
+        var heightOfSVG = row[0][0].height.baseVal.value;
+        var LenghtOfOneBox = heightOfSVG/numberOfUniqueColors;
+
+        for(i in UniqueColors){
+        	xaxis.append("rect")
+        	.style("fill",UniqueColors[i])
+        	.attr("width", widthOfOneBox.toString() + "px")
+            .attr("height", "20px")
+            .attr("x", widthOfOneBox*i)
+            .attr("y", 100);
+
+
+            box.append("rect")
+        	.style("fill",UniqueColors[i])
+        	.attr("width", "20px")
+            .attr("height", LenghtOfOneBox.toString() + "px")
+            .attr("x", 0)
+            .attr("y", LenghtOfOneBox*i);
+        }
+
+
+        
+
+
+
 
          var text = xaxis.append("text");
          text.attr("x", 5)
