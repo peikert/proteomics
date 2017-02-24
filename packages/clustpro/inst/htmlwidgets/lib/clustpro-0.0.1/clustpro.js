@@ -1,5 +1,5 @@
-/** Last Updated: 2nd February [18:00]
-    Version: 0.0.1
+/** Last Updated: 20 February 
+    Version: 0.0.3
 */
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
 
@@ -195,7 +195,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var info = inner.append("div").classed("info", true);
         var colDend = inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
         var rowDend = inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
-        var colmap = inner.append("svg").classed("colormap", true).style(cssify(colormapBounds));
+        var colmap = inner.append("svg").attr("id","colormap").classed("colormap", true).style(cssify(colormapBounds));
         var xaxis = inner.append("svg").attr("id","xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = inner.append("svg").attr("id","yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
 
@@ -222,23 +222,23 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 typeof(hl.x) === 'number' || typeof(hl.y) === 'number');
         });
     })();
-
-    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height);
+    data.matrix.tooltip=data.tooltip; // Temporary solution
+    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height,data.tooltip);
     columnNames = data.matrix.cols;
     var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
-    if(data.dendnw_row.length != 0)
+    if(data.dendnw_row[0] != null)
         { var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
                 opts.axis_padding,  /*no of cols*/ data.matrix.cols.length, cluster, data.dendnw_row[0], columnNames);
         }
     
-    if(data.dendnw_col.length != 0)
+    if(data.dendnw_col[0] != null)
         {   var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
                 opts.axis_padding, data.matrix.cols.length , cluster, data.dendnw_col[0], columnNames);
         }
     
 
-    function colormap(svg, data, width, height) {
+    function colormap(svg, data, width, height, tooltip) {
         // Check for no data
         if (data.length === 0)
             return function() {};
@@ -249,7 +249,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var cols = data.dim[1];
         var rows = data.dim[0];
         var merged = data.merged;
-
+        var tooltip = tooltip;
         var x = d3.scale.linear().domain([0, cols]).range([0, width]);
         var y = d3.scale.linear().domain([0, rows]).range([0, height]);
         var tip = d3.tip() //HTML of the tip
@@ -259,8 +259,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
                     "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
                     "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>" +
-                    "<tr><th align=\"right\">Link</th><td>" +"~~ not available ~~" + "</td></tr>" +
-                    "<tr><th align=\"right\">Description</th><td>" + "~~ not available ~~" + "</td></tr>" +
+                    "<tr><th align=\"right\">Link</th><td>" + htmlEscape(data.tooltip.link[d.row]) + "</td></tr>" +
+                    "<tr><th align=\"right\">Description</th><td>" + htmlEscape(data.tooltip.description[d.row]) + "</td></tr>" +
                     "</table>";
             })
             .direction("se")
@@ -376,7 +376,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var brushG = svg.append("g")
             .attr('class', 'brush')
             .call(brush)
-            .call(brush.event);
+            .call(brush.event)
+            .data("numair");
+
         brushG.select("rect.background")
             .on("mouseenter", function() {
                 tip.style("display", "block");
@@ -406,19 +408,28 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             .on("mouseleave", function() {
                 tip.hide().style("display", "none");
                 controller.datapoint_hover(null);
-            });
-
-
-            brushG.select("rect.background")
-            .on("dblclick", function(d,i) {
+            })
+            .on("dblclick", function() {
+                tip.hide().style("display", "none");
                 debugger;
                 // figure out a way to put connect it with X data element and 
                 // get the link at this point.
-                console.log(d);
-                console.log(i);
+                var e = d3.event;
+                var offsetX = d3.event.offsetX;
+                var offsetY = d3.event.offsetY;
+                if (typeof(offsetX) === "undefined") {
+                    // Firefox 38 and earlier
+                    var target = e.target || e.srcElement;
+                    var rect = target.getBoundingClientRect();
+                    offsetX = e.clientX - rect.left,
+                        offsetY = e.clientY - rect.top;
+                }
+                var col = Math.floor(x.invert(offsetX));
+                var row = Math.floor(y.invert(offsetY));
                 console.log("you clicked on a box");
-                window.open("http://numairmansur.github.io/");
+                window.open("http://tritrypdb.org/tritrypdb/app/record/gene/Tb927.10.11030");
             });
+
 
         controller.on('highlight.datapt', function(hl) {
             rect.classed('highlight', function(d, i) {
@@ -461,13 +472,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size']  || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11: 8))) + "px";
         //axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
 
-        axisNodes.selectAll("text").style("font-size", function(d,i){
-                                                        if(d.length <=15){return 15;}
-                                                        else if (d.length >15 && d.length <=20){return 11;}
-                                                        else if(d.length == 21 || d.length == 22){return 10;}
-                                                        else if (d.length >23 && d.length <=25){return 9;}
-                                                        else {return 7;}
-                                                        }); // New font value
+
                                                             // Calculated on the basis of text length
         axisNodes.selectAll("text").style("fill","#6F6F6F");
         // First find the maximum length,

@@ -1,5 +1,5 @@
-/** Last Updated: 2nd February [18:00]
-    Version: 0.0.1
+/** Last Updated: 20th February
+    Version: 0.0.3
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -72,53 +72,15 @@ HTMLWidgets.widget({
 
 
         // *********************** COLOR LEGEND ****************************************
-        this.colorLegend(el,x);
+        // this.colorLegend(el,x);
         // *****************************************************************************
 
-
-        select = document.createElement("select");
-        select.options.add(new Option("Saving Options",0));
-        select.options.add(new Option("Save as SVG",3));
-        select.options.add(new Option("Testing", 5));
-        select.options.add(new Option("MAKE IT SCROLLABLE", 6));
-        select.options.add(new Option("Original Size", 7));
-
-
-        select.id = "selectionbox";
-        select.onchange = function (value){
-            debugger;
-            if (value.srcElement.value == 3){
-                var url = self.saveSvg();
-                var win = window.open(url, "_blank");
-                win.focus();
-            }
-            else if (value.srcElement.value == 6){
-                debugger;
-                // Making scrollable
-                var new_html_widget = el;
-                new_html_widget.style.width = "1600px";
-                new_html_widget.style.height = "2000px";
-                x.options.yaxis_width[0] = 220;
-                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
-            }
-            else if (value.srcElement.value == 7){
-                debugger;
-                // Going back to original
-                var old_html_widget = el;
-                old_html_widget.style.width = "100%";
-                old_html_widget.style.height = "100%";
-                x.options.yaxis_width[0] = 120;
-                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false);
-            }
-        };
-        debugger;
-        var HTMLContainer = d3.select("#htmlwidget_container")[0][0];
-        var containerID = HTMLContainer.childNodes[1].id;
-        document.getElementById(containerID).appendChild(select);
-
+        //*********************** Control Panel ***************************************
+        this.controlPanel(el,x,rowNewickSting,colNewickString,instance,newMerged);
+        // ****************************************************************************
 
         var hm = heatMapObject[0];
-        if(x.dendnw_row.length != 0){ // if row dendogram information is provided.
+        if(x.dendnw_row[0] != null){ // if row dendogram information is provided.
       		rowDendLinesListner = heatMapObject[1];
         	rowDendLinesListner.on("click", function(d,i) {
                 console.log("you clicked a line");
@@ -129,7 +91,7 @@ HTMLWidgets.widget({
         }
 
 
-        if(x.dendnw_col.length != 0){ // If column dendogram information is provided.
+        if(x.dendnw_col[0] != null){ // If column dendogram information is provided.
         	colDendLinesListner = heatMapObject[2];
         	colDendLinesListner.on("click",function (d,i) {
                 console.log("you clicked a column dendogram line");
@@ -142,70 +104,222 @@ HTMLWidgets.widget({
         },
 
 
+
+
+    showcolorlegend: function(el,x){
+    	var self = this;
+        xaxis = d3.select("#xaxis");
+        var colorlegendtext = xaxis.append("text");
+        d3.select("#hidecolorlegend").remove();
+        colorlegendtext.attr("x",390)
+             .attr("y",100)
+             .attr("id","showcolorlegend")
+             .text("Show Color Legend")
+             .attr("fill", "black")
+             .style("font-size","15px")
+             .on("click",function(){
+        			console.log("show color legend");
+        			self.colorLegend(el,x);
+             	})
+        	.on("mouseover",function(d,i){
+	        		d3.select(this)
+	        		.style("cursor", "pointer")
+	        		.attr("fill","blue");
+             	})
+        	.on("mouseout",function(d,i){
+	        		d3.select(this)
+	        		.attr("fill","black");
+        	});
+
+    },
+
+
     colorLegend: function(selector,x){
     	// Create Color Legend here.
+    	self = this;
     	debugger;
         console.log("Creating color legend here");
         //var el = d3.select(selector);
         // EXPERIMENTAL CODE  *** CONTROL PANEL *****
-
         xaxis = d3.select("#xaxis");
         rectangle = xaxis.append("g");
-        rectangle.append("rect")
-        .style("fill", "#c1c1c1")
-        .attr("width",1000)
-        .attr("height", 50)
-        .attr("x", 0)
-        .attr("y",70);
+        var colorlegendtext2 = xaxis.append("text");
+        d3.select("#showcolorlegend").remove();
+        colorlegendtext2.attr("x",390)
+             .attr("y",100)
+             .attr("id","hidecolorlegend")
+             .text("Hide Color Legend")
+             .attr("fill", "black")
+             .style("font-size","15px")
+             .on("click",function(){
+        			xaxis.selectAll("rect").remove();
+        			xaxis.selectAll("#colorlegends").remove();
+        			self.showcolorlegend(selector,x);
+             	})
+        	.on("mouseover",function(d,i){
+	        		d3.select(this)
+	        		.style("cursor", "pointer")
+	        		.attr("fill","blue");
+             	})
+        	.on("mouseout",function(d,i){
+	        		d3.select(this)
+	        		.attr("fill","black");
+        	});
+
+
+
 
 
         debugger;
-
-        row = d3.select("#rowDend");
-        box = row.append("g");
         col = d3.select("#coldDend");
-
-        // var UniqueColors = Array.from(new Set([].concat.apply([],x.colors.data)));
+        colormap = d3.select("#colormap");
         var UniqueColors = [];
         for(i in x.color_legend.gradient) {UniqueColors[i] = x.color_legend.gradient[i].color}
 
         var numberOfUniqueColors = UniqueColors.length;
-        var widthOfSVG = col[0][0].width.baseVal.value;
-        var widthOfOneBox = widthOfSVG/numberOfUniqueColors;
-        var heightOfSVG = row[0][0].height.baseVal.value;
-        var LenghtOfOneBox = heightOfSVG/numberOfUniqueColors;
+
+    	var widthOfSVG = colormap[0][0].width.baseVal.value; // a big number idicating the length of the svg
+
+    	var startingPoint = widthOfSVG/2;  //The point where the color legend should begin.
+    
+        var widthOfOneBox = (widthOfSVG - startingPoint)/numberOfUniqueColors;
+
 
         for(i in UniqueColors){
         	xaxis.append("rect")
         	.style("fill",UniqueColors[i])
         	.attr("width", widthOfOneBox.toString() + "px")
             .attr("height", "20px")
-            .attr("x", widthOfOneBox*i)
-            .attr("y", 100);
-
-
-            box.append("rect")
-        	.style("fill",UniqueColors[i])
-        	.attr("width", "20px")
-            .attr("height", LenghtOfOneBox.toString() + "px")
-            .attr("x", 0)
-            .attr("y", LenghtOfOneBox*i);
+            .attr("x", startingPoint + widthOfOneBox*i)
+            .attr("y", 70);
         }
+        debugger;
+        // *********** Labels for the color legend **************
+        var labels = x.color_legend.label_position;
+        var numberOfLabels = labels.length;
+        var labelText = xaxis.append("text");
+        // Calculate the starting point of the first text element
+        var startLabelText = startingPoint;
+        // Calculate the distance between the label texts
+        var distanceBetweenLabels = (widthOfSVG - startLabelText) / (numberOfLabels-1);
 
+        for(var i in labels)
+        {
+		        xaxis.append("text")
+		        .attr("x", startingPoint+(distanceBetweenLabels*i))
+		        .attr("id","colorlegends")
+		        .attr("y", 100)
+		        .text(labels[i])
+		        .attr("fill", "black")
+		        .style("font-size","10px");
+	        }
+    },
 
-        
+    controlPanel: function(el,x,rowNewickSting,colNewickString,instance,newMerged){
+    	var self = this;
+    	col = d3.select("#coldDend");
+    	colormap = d3.select("#colormap");
+    	var widthOfSVG = colormap[0][0].width.baseVal.value;
+    	var startingPoint = widthOfSVG/2;
 
+        xaxis = d3.select("#xaxis");
+        var savetext = xaxis.append("text");
+        var scrolltext = xaxis.append("text");
+        var unscrolltext = xaxis.append("text");
+        var horizontalScroll = xaxis.append("text");
 
-
-
-         var text = xaxis.append("text");
-         text.attr("x", 5)
-             .attr("y", 100)
-             .text("Control PANEL")
+        self.showcolorlegend(el,x);
+     
+         
+        savetext.attr("x",0)
+             .attr("y",100)
+             .text("SAVE")
              .attr("fill", "black")
-             .style("font-size","24px");
+             .style("font-size","15px")
+             .on("click",function(){
+        			console.log("save the image...");
+        			var url = self.saveSvg();
+                	var win = window.open(url, "_blank");
+                	win.focus();
+             	})
+        	.on("mouseover",function(d,i){
+	        		d3.select(this)
+	        		.style("cursor", "pointer")
+	        		.attr("fill","blue");
+             	})
+        	.on("mouseout",function(d,i){
+	        		d3.select(this)
+	        		.attr("fill","black");
+        	});
 
 
+        scrolltext.attr("x",70)
+             .attr("y",100)
+             .text("SCROLL")
+             .attr("fill", "black")
+             .style("font-size","15px")
+             .on("click",function(d,i){
+                	var new_html_widget = el;
+                	new_html_widget.style.width = "2000px";
+                	new_html_widget.style.height = "1700px";
+                	x.options.yaxis_width[0] = 300;
+                	self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);        			
+             	})
+        	.on("mouseover",function(d,i){
+	        		d3.select(this)
+	        		.style("cursor", "pointer")
+	        		.attr("fill","blue");
+             	})
+        	.on("mouseout",function(d,i){
+	        		d3.select(this)
+	        		.attr("fill","black");
+        	});
+
+
+        // SCROLL HORIZONTALLY
+        horizontalScroll.attr("x",250)
+             .attr("y",100)
+             .text("Scroll Horizontally")
+             .attr("fill", "black")
+             .style("font-size","15px")
+             .on("click",function(d,i){
+                	var new_html_widget = el;
+                	new_html_widget.style.width = "2500px";
+                	x.options.yaxis_width[0] = 1200;
+                	self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);        			
+             	})
+        	.on("mouseover",function(d,i){
+	        		d3.select(this)
+	        		.style("cursor", "pointer")
+	        		.attr("fill","blue");
+             	})
+        	.on("mouseout",function(d,i){
+	        		d3.select(this)
+	        		.attr("fill","black");
+        	});
+
+
+        unscrolltext.attr("x",150)
+             .attr("y",100)
+             .text("UNSCROLL")
+             .attr("fill", "black")
+             .style("font-size","15px")
+             .on("click",function(d,i){
+	                var old_html_widget = el;
+	                old_html_widget.style.width = "100%";
+	                old_html_widget.style.height = "100%";
+	                x.options.yaxis_width[0] = 120;
+	                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false);       			
+             	})
+        	.on("mouseover",function(d,i){
+	        		d3.select(this)
+	        		.style("cursor", "pointer")
+	        		.attr("fill","blue");
+             	})
+        	.on("mouseout",function(d,i){
+	        		d3.select(this)
+	        		.attr("fill","black");
+        	});
 
     },
 
