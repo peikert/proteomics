@@ -10,14 +10,11 @@
 #' @import Biobase
 #' @import Mfuzz
 #' @import clusterSim
-#' @import doSNOW
 #' @import pheatmap
 #' @import gplots
 #' @import ctc
 #' @import jsonlite
 #' @import foreach
-#' @import doParallel
-
 
 
 # test_package <- function(){
@@ -52,7 +49,8 @@ clustpro <- function(
   width = NULL,
   height = NULL,
   export_dir = NA,
-  export_type = 'svg'
+  export_type = 'svg',
+  seed=NULL
   ) {
 
 
@@ -63,13 +61,13 @@ clustpro <- function(
     library(Biobase)
     library(Mfuzz)
     library(clusterSim)
-    library(doSNOW)
+    # library(doSNOW)
     library(pheatmap)
     library(gplots)
     library(ctc)
     library(jsonlite)
     library(foreach)
-    library(doParallel)
+    # library(doParallel)
 
     matrix <- matrix
     min_k = 2
@@ -80,8 +78,11 @@ clustpro <- function(
     perform_clustering = TRUE
     cluster_ids = NULL
     tooltip = NULL
-    rows = FALSE
+    rows = TRUE
     cols = TRUE
+    export_dir = NA
+    export_type = 'svg'
+    seed = 123
   }
   if(F){
     matrix = matrix
@@ -154,7 +155,7 @@ clustpro <- function(
       col_dend <- as.dendrogram(cols)
     }
   }else{
-  no_cores <- max(1, detectCores() - 1)
+  # no_cores <- max(1, detectCores() - 1)
   #rs <- test_package()
   rs <- clustering(
     matrix = matrix,
@@ -162,10 +163,11 @@ clustpro <- function(
     min_k = min_k,
     max_k = max_k,
     fixed_k = fixed_k,
-    no_cores = no_cores
+    no_cores = no_cores,
+    seed = seed
     )
 
- # matrix = rs$matrix
+  matrix = rs$data[,!colnames(rs$data)%in%'cluster']
   clusters = rs$clusters
   cluster_centers = rs$cluster_centers
   row_dend_nw = rs$dendnw_row_nw
@@ -175,7 +177,8 @@ clustpro <- function(
   data = rs$data
   cobject = rs$cobject
   }
-
+ #  tail(matrix)
+ # tail(rs$data)
   ### color matrix ###
   color_matrix <- as.data.frame(apply(matrix,c(1,2),get_color,colors=color_legend$colors,palette = color_legend$palette)) ## without id column
   colnames(color_matrix) <- colnames(matrix)
@@ -321,8 +324,9 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
   return(order_data)
 }
 
-findk_cmeans <- function(matrix, k, minimalSet, fp) {
+findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
   tryCatch({
+    if(!is.null(seed))set.seed(seed)
     cluster <- mfuzz(minimalSet, c = k, m = fp)$cluster
     db_score <- index.DB(matrix, cluster, centrotypes = "centroids",
                          p = 2, q = 2)
@@ -336,8 +340,9 @@ findk_cmeans <- function(matrix, k, minimalSet, fp) {
   })
 }
 
-findk_kmeans <- function(matrix, k) {
+findk_kmeans <- function(matrix, k, seed=NULL) {
   tryCatch({
+    if(!is.null(seed))set.seed(seed)
     cluster <- kmeans(matrix, k, iter.max = 1000)
     db_score <- index.DB(matrix, cluster$cluster, centrotypes = "centroids",
                          p = 2, q = 2)
@@ -351,7 +356,7 @@ findk_kmeans <- function(matrix, k) {
   })
 }
 
-get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
+get_best_k <- function(matrix, min_k, max_k, method,no_cores, seed=NULL) {
   if (nrow(matrix) < max_k) {
     max_k <- nrow(matrix)
     print("max_k larger the rows in matrix.")
@@ -361,23 +366,26 @@ get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
   matrix<- matrix
 
 
-  cl <- makeCluster(no_cores)
-  registerDoParallel(cl)
+  # cl <- makeCluster(no_cores)
+  # registerDoParallel(cl)
 
   switch(method,
          kmeans = {
            findk <- findk_kmeans
-           clusterExport(cl, c("matrix","findk"))
-           clusterEvalQ(cl, c(library(clusterSim),library(stats),library(clustpro)))
-           db_list <- t(foreach(k = c(min_k:iterations),
-                                .combine = "cbind"#,
-                              #  .export=c('findk')
-                                ) %dopar% {
-             findk(matrix, k)
-           })
-
-           stopCluster(cl)
-
+         #  clusterExport(cl, varlist=c("findk", "matrix"))
+           # # clusterExport(cl, c("matrix","findk"))
+           # clusterExport(cl, c('matrix','seed','findk'))
+           # clusterEvalQ(cl, c(library(clusterSim),library(stats),library(clustpro)))
+           # db_list <- t(foreach(k = c(min_k:iterations),
+           #                      .combine = "cbind"#,
+           #                      #.export=c('findk','seed')
+           #                      ) %dopar% {
+           #   findk(matrix, k, seed)
+           # })
+           #
+           # stopCluster(cl)
+           # findk_kmeans(matrix, k=3, seed=123)
+           db_list <- t(foreach(k =c(min_k:iterations),.combine = "cbind", .export=c('findk','matrix','seed')) %do% findk(matrix, k, seed))
          return(list(db_list=db_list))
 
          },
@@ -388,7 +396,7 @@ get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
            findk <- findk_cmeans
            message('here 2')
        ##    clusterExport(cl, c("mfuzz", "index.DB", "minimalSet", "fp","matrix"))
-           clusterExport(cl, c("matrix","findk"))
+           clusterExport(cl, c("matrix","findk","seed"))
            clusterEvalQ(cl, c(library('clusterSim'),library('Mfuzz'),library('e1071'),library('clustpro'),library('Biobase')))
            db_list <- t(foreach(k = c(min_k:iterations),
                                 .combine = "cbind",
@@ -397,7 +405,7 @@ get_best_k <- function(matrix, min_k, max_k, method,no_cores) {
               findk(matrix, k, minimalSet, fp)
            })
           message('here 3')
-          stopCluster(cl)
+          # stopCluster(cl)
 
          return(list(db_list=db_list, minimalSet=minimalSet,fp=fp))
          })
@@ -410,8 +418,10 @@ clustering <- function(matrix,
                        max_k = 100,
                        fixed_k = -1,
                        method = "kmeans",
-                       no_cores = 2
+                       no_cores = 2,
+                       seed = NULL
                        ) {
+
   # fixed_k=-1 matrix <- matrix
   #method = "cmeans"
   if(F){
@@ -427,7 +437,7 @@ clustering <- function(matrix,
   if (fixed_k > 0) {
     k <- fixed_k
   } else {
-    rv <- get_best_k(matrix, min_k, max_k, method, no_cores=no_cores)
+    rv <- get_best_k(matrix, min_k, max_k, method, no_cores=no_cores, seed)
     db_list <- rv$db_list
     if(method=='cmeans'){
     minimalSet <- rv$minimalSet
@@ -438,7 +448,7 @@ clustering <- function(matrix,
     dev.off()
     k <- db_list[db_list[, 2] == max(db_list[, 2],na.rm=TRUE), ][1]
   }
-  set.seed(1)
+  if(!is.null(seed))set.seed(seed)
   cluster_cols <- F
   cluster_rows <- T
 

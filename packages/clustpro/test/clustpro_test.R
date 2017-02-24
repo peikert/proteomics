@@ -6,7 +6,7 @@
 # biocLite("ctc")
 # biocLite("roxygen2")
 # install.packages('ggplot2')
-
+# options(warn=-1)
 #devtools::create("clustpro")
 if(F){
   library(devtools)
@@ -19,13 +19,17 @@ if(F){
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
 library("clustpro")
+
+get_first_split_element <- function(x,split){
+  return(sub('\\s+$', '',unlist(strsplit(x, split))[1]))
+}
 # unload("D:/git/proteomics/packages/clustpro")
 #remove.packages('clustpro')
 
 
 graphic_type <<- "tif"
 br <- min(diff(c(0,2,4,6,8,10))/40)
-color_spectrum_unqiue_breaks(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
+color_spectrum(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
 #
 matrix <- iris[-ncol(iris)]
 #
@@ -41,11 +45,46 @@ test_data[,1] <- NULL
 min(test_data)
 max(test_data)
 br <- min(diff(c(-1.1,-0.5,-0.1,0.1,0.5,1.1))/40)
-heatmap_color <- color_spectrum_unqiue_breaks(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
+heatmap_color <- color_spectrum(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
 
 heatmap_color$label_position <- c(-1,-0.5,0,0.5,1)
 
 matrix <- test_data
+
+info_list <- list()
+info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
+info_list[['description']] <- rep('no description', nrow(matrix))
+
+#####
+
+
+# test_data = read.csv('D:/projects/AG Warscheid/MM87/clustering_do not work.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+# rownames(test_data) <- test_data[,1]
+# test_data[,1] <- NULL
+# min(test_data)
+# max(test_data)
+# br <- min(diff(c(-0.1,0.2,0.4,0.6,0.8,1.1,2.1))/40)
+# # heatmap_color <- color_spectrum(c(-0.1,0.2,0.4,0.6,0.8,1.1,2.1),c("blue","lightblue","white","yellow", "red"),br)
+# heatmap_color <-color_spectrum(c(-0.1,0.2,0.4,0.6,0.8,1.1,(df_max+1)),c("white","white","yellow","orange", "red",'red'),br)
+#
+# heatmap_color$label_position <- c(0,0.5,1,1.5,2)
+#
+#
+# info_list <- list()
+#
+#
+# info_list[['link']] <- paste('http://www.yeastgenome.org/locus/',sapply(rownames(test_data),get_first_split_element,';'),'/overview',sep='')
+# info_list[['description']] <- rep('no description', nrow(test_data))
+#
+# matrix <- test_data
+
+####
+
+
+
+
+
+
 # matrix <- rbind(matrix,matrix)
 # matrix <- rbind(matrix,matrix)
 #########
@@ -59,30 +98,38 @@ matrix <- test_data
 
 # data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10)
 
-get_first_split_element <- function(x,split){
-  return(sub('\\s+$', '',unlist(strsplit(x, split))[1]))
-}
 
-info_list <- list()
-info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
-info_list[['description']] <- rep('no description', nrow(matrix))
 
+color_legend <- heatmap_color
 # first run this:    perform clustpro with clustering
-
+head(matrix)
 data2 <- clustpro(matrix=matrix,
                   method = "kmeans",
                   min_k = 2,
-                  max_k = 10,
-                  fixed_k = 25,
-                  tooltip = info_list,
-                  cols = TRUE,
+                  max_k = 100,
+                  fixed_k = -1,
+                  perform_clustering = TRUE,
+                  cluster_ids = NULL,
                   rows = TRUE,
+                  cols = TRUE,
+                  tooltip = info_list,
+                  save_widget = TRUE,
                   color_legend = heatmap_color,
-                  export_dir = "D://test",
-                  export_type = 'svg'
+                  width = NULL,
+                  height = NULL,
+                  export_dir = NA,
+                  export_type = 'svg',
+                  seed=1
                   )
 
 
+
+
+
+head(data2$datatable)
+tail(data2$datatable)
+heatmap.2(as.matrix(matrix))
+write.table(data2$datatable, 'test.txt', sep = "\t", row.names = TRUE , col.names = NA, quote = FALSE)
 
 # data2 <- clustpro(matrix=matrix,
 #                   method = "kmeans",
