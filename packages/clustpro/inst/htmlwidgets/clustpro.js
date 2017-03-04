@@ -285,7 +285,7 @@ HTMLWidgets.widget({
              .on("click",function(d,i){
                 	var new_html_widget = el;
                 	new_html_widget.style.width = "2500px";
-                	x.options.yaxis_width[0] = 1200;
+                	x.options.yaxis_width[0] = 600;
                 	self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);        			
              	})
         	.on("mouseover",function(d,i){
