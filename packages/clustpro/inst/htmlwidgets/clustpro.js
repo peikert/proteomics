@@ -312,22 +312,21 @@ HTMLWidgets.widget({
     },
 
     combineSVG: function(){
-
+    	debugger;
     	var rowDend = document.getElementsByClassName("rowDend")[0];
+    	var rowDendSvgString = "";
     	if(rowDend.getElementsByTagName("g")[0] != undefined)
     	{
     		rowDend.getElementsByTagName("g")[0].setAttribute("transform","translate(0,110)");
-    		rowDend = rowDend.innerHTML;
-    	}
-    	else 
-    	{
-    		rowDend = "";
-    	}
-    	
+    		rowDendSvgString = rowDend.innerHTML;
+    		rowDend.getElementsByTagName("g")[0].setAttribute("transform","translate(0,0)"); // Transform it back
+    	}    	
     	var colDend = document.getElementsByClassName("dendrogram colDend")[0];
+    	var colDendSvgString = "";
     	if(colDend.getElementsByTagName("g")[0] != undefined){
     		colDend.getElementsByTagName("g")[0].setAttribute("transform","rotate(-90)  translate(0,216)");
-    		colDend = colDend.innerHTML;
+    		colDendSvgString = colDend.innerHTML;
+    		colDend.getElementsByTagName("g")[0].setAttribute("transform","rotate(-90)  translate(0,0)");
     	}
     	else
     	{
@@ -335,9 +334,9 @@ HTMLWidgets.widget({
     	}
 
     	var colormap = document.getElementsByClassName("colormap")[0];
-    	colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
+    	var normalized_colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
     	// Do extensicve string manipulations here.
-    	var combinedSVG = rowDend + colDend + colormap;
+    	var combinedSVG = rowDendSvgString + colDendSvgString + normalized_colormap;
     	combinedSVG = '<?xml version="1.0"?>\r\n' +
     				'<?xml-stylesheet href="lib/clustpro-0.0.1/./clustpro.css" type="text/css"?>\r\n' + 
     				'<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" class="colormap" width="2000" height="1000" style="position: absolute; top: 0px; left: 0px; width:1680px; height: 1000px;">\r\n' +

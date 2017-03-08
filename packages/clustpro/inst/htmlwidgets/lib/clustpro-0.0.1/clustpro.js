@@ -364,7 +364,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                             svg.append("line")
                                 .attr("x1", 0)
                                 .attr("y1", y(Math.floor(i / cols)))
-                                .attr("x2", selection[0][i].width.animVal.value* (cols +1))
+                                .attr("x2", selection[0][i].width.animVal.value* (cols))
                                 .attr("y2", y(Math.floor(i / cols)))
                                 .attr("stroke","black")
                                 .attr("stroke-width",1.25)
