@@ -2,10 +2,8 @@
     Version: 0.0.3
 */
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner){
-
+    console.log("-- Entered CLUSTPRO() --");
     debugger;
-    console.log(data);
-    console.log("");
     // ==== BEGIN HELPERS =================================
     function htmlEscape(str) {
         return (str+"").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -223,22 +221,35 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         });
     })();
     data.matrix.tooltip=data.tooltip; // Temporary solution
+    console.log("       [Generating Color Map]");
     var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height,data.tooltip);
+    console.log("       [ColorMap generated]");
     columnNames = data.matrix.cols;
+    console.log("       [Generating Xaxis]");
     var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
+    console.log("       [Xaxis generated]");
+    console.log("       [Generating Yaxis]");
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
+    console.log("       [Yaxis generated]");
     if(data.dendnw_row[0] != null)
-        { var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
+        { 
+            console.log("       [Generating Row Dendogram]");
+            var row = dendogram(el.select('svg.rowDend'),false, rowDendBounds.width, rowDendBounds.height,
                 opts.axis_padding,  /*no of cols*/ data.matrix.cols.length, cluster, data.dendnw_row[0], columnNames);
+            console.log("       [Row Dendogram generated]");
         }
     
     if(data.dendnw_col[0] != null)
-        {   var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
+        {   
+            console.log("       [Generating Column Dendogram]");
+            var col = dendogram(el.select('svg.colDend'), true, colDendBounds.width, colDendBounds.height,
                 opts.axis_padding, data.matrix.cols.length , cluster, data.dendnw_col[0], columnNames);
+            console.log("       [Column Dendogram Generated]");
         }
     
 
     function colormap(svg, data, width, height, tooltip) {
+        console.log("           --Entered colormap() --");
         // Check for no data
         if (data.length === 0)
             return function() {};
@@ -249,6 +260,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var cols = data.dim[1];
         var rows = data.dim[0];
         var merged = data.merged;
+        links = data.tooltip.link; // temp solution for the double click function.
         var tooltip = tooltip;
         var x = d3.scale.linear().domain([0, cols]).range([0, width]);
         var y = d3.scale.linear().domain([0, rows]).range([0, height]);
@@ -320,7 +332,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             });
         rect.exit().remove();
         rect.append("title")
-            .text(function(d, i) { return d.label; });
+            .text(function(d, i) { return d.label; });        
+
         rect.call(tip);
 
         var spacing;
@@ -410,10 +423,6 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                 controller.datapoint_hover(null);
             })
             .on("dblclick", function() {
-                tip.hide().style("display", "none");
-                debugger;
-                // figure out a way to put connect it with X data element and 
-                // get the link at this point.
                 var e = d3.event;
                 var offsetX = d3.event.offsetX;
                 var offsetY = d3.event.offsetY;
@@ -424,10 +433,9 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
                     offsetX = e.clientX - rect.left,
                         offsetY = e.clientY - rect.top;
                 }
-                var col = Math.floor(x.invert(offsetX));
                 var row = Math.floor(y.invert(offsetY));
-                console.log("you clicked on a box");
-                window.open("http://tritrypdb.org/tritrypdb/app/record/gene/Tb927.10.11030");
+                var link = links[row];
+                window.open(link);
             });
 
 
@@ -439,6 +447,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     }
 
     function axisLabels(svg, data, rotated, width, height, padding) {
+        console.log("           --Entered axisLabel() --");
         svg = svg.append('g');
         // The data variable is either cluster info, or a flat list of names.
         // If the former, transform it to simply a list of names.
@@ -885,6 +894,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         return table;
 
 
+
     }
 
     function preLineObjects(table, links1, rotated)
@@ -918,7 +928,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
 
     function drawDendogramLines(dendrG, links1, table)
     {
-        var DendogramLines = dendrG.selectAll("polyline").data(links1); //GLOBAL
+        var DendogramLines = dendrG.selectAll("polyline").data(links1); // GLOBAL
         DendogramLines
             .enter().append("polyline")
             .attr("class", "link")
@@ -1015,6 +1025,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     }
     function dendogram(svg,rotated, width, height, padding,noOfCols,cluster_array, newickString,columnNames)
     {
+        console.log("           --Entered dendogram() --");
+        rotated ? console.log("                     Column Dendogram") : console.log("                 Row Dendogram");
         var fakedata = {members:150, edgePar:{cols:""}, height: 30, children:[{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10},{members:150, edgePar:{cols:""},
             height: 30, children:[{},{}],counter:10}],counter:10} // CHANGE THIS 150 to the real value.    AND SHOULD THE HEIGHT STAY 30 ?
@@ -1075,9 +1087,18 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         // Couont the number of characters in the newick String.
         totalCharacterLength = characterLength(newickString.split(" "));
         maxdepth = maxDepth(newickString.split(" "),0,0,0);
+        console.log("                           Entering PreLineObjects()");
+        console.log("                                   Preparing the Data Structure for the Dendogram . . . . .")
         var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength,0,maxdepth);
+        console.log("                           Done !");
+        console.log("                           Entering PreLineObjects()");
+        console.log("                                   Getting information from the data structure and generating line objects");
         links1 = preLineObjects(table, links1, rotated);
+        console.log("                           Done !");
+        console.log("                           Entering drawDendogramLines()");
+        console.log("                                   Rendering the lines from the line objects");
         var DendogramLines = drawDendogramLines(dendrG,links1,table);
+        console.log("                           Done !");
         
         function draw(selection,rotated) {
             function elbow(d, i) {

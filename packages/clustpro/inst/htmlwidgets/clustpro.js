@@ -6,7 +6,7 @@ HTMLWidgets.widget({
     type: "output",
 
     initialize: function(el, width, height) {
-        console.log("Last Updated: August 28th [13:55] (numair.mansur@gmail.com)");
+        console.log("-- Entered initialize() --");
         debugger;
         return {
             lastTheme: null,
@@ -14,13 +14,14 @@ HTMLWidgets.widget({
         };
     },
     renderValue: function(el, x, instance) {
+    	console.log("-- Entered renderValue() --");
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
         x.matrix.data = [].concat.apply([],x.matrix.data); // Flattening the data array.
         this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false);
     },
     resize: function(el, width, height, instance) {
-        d3.select(el).select("svg")
+        d3	.select(el).select("svg")
             .attr("width", width)
             .attr("height", height);
 //
@@ -28,14 +29,7 @@ HTMLWidgets.widget({
         this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
     doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable){
-
-        { // This should be done when new values are given by the user.
-            // document.getElementById(el.id).style.height = "1000px"; //experimental value
-            // document.getElementById(el.id).style.width = "700px"; //experimental value
-            // document.getElementsByTagName("body")[0].style.overflow = "scroll"; // Expreimental Value
-        }
-
-        // el.clientWidth = 1000;  //experimental values
+    	console.log("-- Entered doRenderValue() --");
         if(scrollable){document.getElementsByTagName("body")[0].style.overflow = "scroll";}
         var self = this;
         instance.lastValue = x;
@@ -61,13 +55,9 @@ HTMLWidgets.widget({
         var location_object_array = []; // Document it's purpose here.
         var cluster_change_rows = []; // Document it's purpose here.
         var cluster = x.clusters; //Document it's purpose here.
-        // Calculate at which row index where the cluster value changes:
         cluster_change_rows = this.clusterChangeInformation(cluster, cluster_change_rows);
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
-        // for(i in x.matrix.cols){x.matrix.cols[i] = "aaaaa"}
-        //for(i in x.matrix.cols){x.colors.cols[i] = "aaaaa"}
-        // x.dendnw_col[0] =  "((aaaaa,(aaaaa,aaaaa)),(aaaaa,(aaaaa,aaaaa)));"
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
 
 
@@ -238,9 +228,7 @@ HTMLWidgets.widget({
              .style("font-size","15px")
              .on("click",function(){
         			console.log("save the image...");
-        			var url = self.saveSvg();
-                	var win = window.open(url, "_blank");
-                	win.focus();
+        			self.saveSvg(x.export_type[0]);
              	})
         	.on("mouseover",function(d,i){
 	        		d3.select(this)
@@ -359,7 +347,7 @@ HTMLWidgets.widget({
     },
 
 
-    saveSvg: function(){
+    saveSvg: function(export_type){
         debugger;
         var source = this.combineSVG();
         if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
@@ -370,7 +358,9 @@ HTMLWidgets.widget({
         }
         // source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
         var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
-        return url;
+        debugger;
+        // Saving wih the "FileSaver.js"
+        saveAs(new Blob([source], {type:"application/svg+xml"}), "clustpro_heatmap."+ export_type); // save according to the given format.
     },
 
     refreshRowDendogram: function(d,el,x,rowNewickSting, colNewickString,instance){
