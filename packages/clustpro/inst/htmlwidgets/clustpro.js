@@ -58,15 +58,14 @@ HTMLWidgets.widget({
         cluster_change_rows = this.clusterChangeInformation(cluster, cluster_change_rows);
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
+        console.log("Initializing ClustPro()");
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
-
-
-        // *********************** COLOR LEGEND ****************************************
-        // this.colorLegend(el,x);
-        // *****************************************************************************
+        console.log("Exited ClustPro()");
 
         //*********************** Control Panel ***************************************
+        console.log("[Generating Control Panel]");
         this.controlPanel(el,x,rowNewickSting,colNewickString,instance,newMerged);
+        console.log("Control Panel Generated");
         // ****************************************************************************
 
         var hm = heatMapObject[0];
@@ -211,13 +210,11 @@ HTMLWidgets.widget({
     	colormap = d3.select("#colormap");
     	var widthOfSVG = colormap[0][0].width.baseVal.value;
     	var startingPoint = widthOfSVG/2;
-
         xaxis = d3.select("#xaxis");
         var savetext = xaxis.append("text");
         var scrolltext = xaxis.append("text");
         var unscrolltext = xaxis.append("text");
         var horizontalScroll = xaxis.append("text");
-
         self.showcolorlegend(el,x);
      
          
@@ -227,7 +224,7 @@ HTMLWidgets.widget({
              .attr("fill", "black")
              .style("font-size","15px")
              .on("click",function(){
-        			console.log("save the image...");
+        			console.log("[Saving Image]");
         			self.saveSvg(x.export_type[0]);
              	})
         	.on("mouseover",function(d,i){
@@ -247,6 +244,7 @@ HTMLWidgets.widget({
              .attr("fill", "black")
              .style("font-size","15px")
              .on("click",function(d,i){
+                    console.log("Scroll");
                 	var new_html_widget = el;
                 	new_html_widget.style.width = "2000px";
                 	new_html_widget.style.height = "1700px";
@@ -271,6 +269,7 @@ HTMLWidgets.widget({
              .attr("fill", "black")
              .style("font-size","15px")
              .on("click",function(d,i){
+                    console.log("Scroll Horizontally");
                 	var new_html_widget = el;
                 	new_html_widget.style.width = "2500px";
                 	x.options.yaxis_width[0] = 600;
@@ -293,6 +292,7 @@ HTMLWidgets.widget({
              .attr("fill", "black")
              .style("font-size","15px")
              .on("click",function(d,i){
+                    console.log("Unscroll");
 	                var old_html_widget = el;
 	                old_html_widget.style.width = "100%";
 	                old_html_widget.style.height = "100%";
@@ -348,6 +348,7 @@ HTMLWidgets.widget({
 
     saveSvg: function(export_type){
         debugger;
+        console.log("       --Entered SaveSVG()");
         var source = this.combineSVG();
         if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
             source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
@@ -355,11 +356,11 @@ HTMLWidgets.widget({
         if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
             source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
         }
-        // source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
         var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
         debugger;
         // Saving wih the "FileSaver.js"
-        saveAs(new Blob([source], {type:"application/svg+xml"}), "clustpro_heatmap."+ export_type); // save according to the given format.
+        console.log("       --Saving as "+ export_type);
+        saveAs(new Blob([source], {type:"application/svg+xml"}), "clustpro_heatmap."+ export_type); // saving in the user passed format.
     },
 
     refreshRowDendogram: function(d,el,x,rowNewickSting, colNewickString,instance){

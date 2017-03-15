@@ -899,6 +899,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
 
     function preLineObjects(table, links1, rotated)
     {
+        console.log("                                       ** PreLine Objects **");
         var links1Counter = 0;
         for (var i in table)
         {
@@ -1087,7 +1088,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         // Couont the number of characters in the newick String.
         totalCharacterLength = characterLength(newickString.split(" "));
         maxdepth = maxDepth(newickString.split(" "),0,0,0);
-        console.log("                           Entering PreLineObjects()");
+        console.log("                           Entering string_parser()");
         console.log("                                   Preparing the Data Structure for the Dendogram . . . . .")
         var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength,0,maxdepth);
         console.log("                           Done !");
