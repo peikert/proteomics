@@ -1081,16 +1081,22 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         });
         //Refine location object array
         location_object_array = refineLocationObjectArray(noOfCols,height,cluster_array);
-        newickString = newickString.replace(/\(/g," ( ");
-        newickString = newickString.replace(/\)/g," ) ");
-        newickString = newickString.replace(/\,/g," , ");
+        //  Use "++" around the entities you want to seperate 
+        newickString = newickString.replace(/\(/g,"+-*+-*(+-*+-*");
+        newickString = newickString.replace(/\)/g,"+-*+-*)+-*+-*");
+        newickString = newickString.replace(/\,/g,"+-*+-*,+-*+-*");
 
         // Couont the number of characters in the newick String.
-        totalCharacterLength = characterLength(newickString.split(" "));
-        maxdepth = maxDepth(newickString.split(" "),0,0,0);
+        totalCharacterLength = characterLength(newickString.split("+-*+-*"));
+        maxdepth = maxDepth(newickString.split("+-*+-*"),0,0,0);
         console.log("                           Entering string_parser()");
-        console.log("                                   Preparing the Data Structure for the Dendogram . . . . .")
-        var table = string_parser(newickString.split(" "), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength,0,maxdepth);
+        console.log("                                   Preparing the Data Structure for the Dendogram . . . . .");
+
+        // ERROR Solved
+        // There is a problem in column dendogram generation because the colums sometimes have spaces and that is causig the error.
+        // So we replace the space(which was the splitting cirteria before) with the pattern "+-*+-*" which makes it possible to have spaces
+        // as in the column/row names. 
+        var table = string_parser(newickString.split("+-*+-*"), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength,0,maxdepth);
         console.log("                           Done !");
         console.log("                           Entering PreLineObjects()");
         console.log("                                   Getting information from the data structure and generating line objects");
