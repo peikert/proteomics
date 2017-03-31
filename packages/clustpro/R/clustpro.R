@@ -77,12 +77,13 @@ clustpro <- function(
     no_cores = 2
     perform_clustering = TRUE
     cluster_ids = NULL
-    tooltip = NULL
+    tooltip = info_list
     rows = TRUE
     cols = TRUE
+    color_legend = heatmap_color
     export_dir = NA
     export_type = 'svg'
-    seed = 123
+    seed = 1
   }
   if(F){
     matrix = matrix
@@ -177,6 +178,9 @@ clustpro <- function(
   data = rs$data
   cobject = rs$cobject
   }
+  new_order <- sapply(rownames(matrix),function(x)which(x==tooltip[['id']]))
+  reordered_tooltip <- lapply(tooltip,function(x)x[new_order])
+  reordered_tooltip[['id']] <- NULL
  #  tail(matrix)
  # tail(rs$data)
   ### color matrix ###
@@ -224,7 +228,7 @@ clustpro <- function(
   df_legend$x2 <- color_legend$colors[2: (length(color_legend$palette)+1)]
   payload[['color_legend']] <- list(gradient=df_legend, label_position=color_legend$label_position)
 ######
-  payload[['tooltip']] <- tooltip
+  payload[['tooltip']] <- reordered_tooltip
 
   payload[['export_dir']] <- export_dir
   payload[['export_type']] <- export_type

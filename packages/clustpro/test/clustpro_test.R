@@ -52,6 +52,7 @@ heatmap_color$label_position <- c(-1,-0.5,0,0.5,1)
 matrix <- test_data
 
 info_list <- list()
+info_list[['id']]  <- rownames(matrix)
 info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
 info_list[['description']] <- rep('no description', nrow(matrix))
 
