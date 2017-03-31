@@ -28,9 +28,6 @@ get_first_split_element <- function(x,split){
 
 
 graphic_type <<- "tif"
-br <- min(diff(c(0,2,4,6,8,10))/40)
-color_spectrum(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
-#
 matrix <- iris[-ncol(iris)]
 #
 
@@ -49,6 +46,11 @@ heatmap_color <- color_spectrum(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblu
 
 heatmap_color$label_position <- c(-1,-0.5,0,0.5,1)
 
+intervals <- c(-1.1,-0.5,-0.1,0.1,0.5,1.1)
+color_list <- c("blue","lightblue","white","yellow", "red")
+data  <- test_data
+
+heatmap_color <- setHeatmapColors(data=test_data,color_list = ('red','yellow','green','blue'),auto=TRUE)
 matrix <- test_data
 
 info_list <- list()
@@ -129,7 +131,6 @@ data2 <- clustpro(matrix=matrix,
 
 head(data2$datatable)
 tail(data2$datatable)
-heatmap.2(as.matrix(matrix))
 write.table(data2$datatable, 'test.txt', sep = "\t", row.names = TRUE , col.names = NA, quote = FALSE)
 
 # data2 <- clustpro(matrix=matrix,
