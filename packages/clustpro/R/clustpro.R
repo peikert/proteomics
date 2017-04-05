@@ -16,20 +16,45 @@
 #' @import jsonlite
 #' @import foreach
 
+#' @export
+clustpro_example <- function(){
+  graphic_type <<- "tif"
+  matrix <- iris[-ncol(iris)]
+  max(matrix)
+  # intervals <- c(-0.1,2,4,6,8.1)
+  color_list <- c("blue","lightblue","yellow", "red")
+  heatmap_color <- setHeatmapColors(data=matrix,color_list = color_list ,auto=TRUE)
+  heatmap_color$label_position <- c(0,2,4,6,8)
 
-# test_package <- function(){
-#   graphic_type <<- "tif"
-#   br <- min(diff(c(0,2,4,6,8,10))/40)
-#   color_spectrum_unqiue_breaks(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
-#
-#   matrix <- iris[-ncol(iris)]
-#
-#   matrix <- as.data.frame(matrix(round(runif(4800*4, 0.1, 9.9),1),ncol=4,byrow=T))
-#   colnames(matrix) <- c('A','B','C','D')
-#   rownames(matrix) <- paste('gene_',c(1:nrow(matrix)))
-#
-#   return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
-# }
+  info_list <- list()
+  info_list[['id']]  <- rownames(matrix)
+  info_list[['link']] <- NULL #paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
+  info_list[['description']] <- NULL #rep('no description', nrow(matrix))
+
+  return(
+    clustpro(matrix=matrix,
+                    method = "kmeans",
+                    min_k = 2,
+                    max_k = 100,
+                    fixed_k = -1,
+                    perform_clustering = TRUE,
+                    cluster_ids = NULL,
+                    rows = TRUE,
+                    cols = TRUE,
+                    tooltip = info_list,
+                    save_widget = TRUE,
+                    color_legend = heatmap_color,
+                    width = NULL,
+                    height = NULL,
+                    export_dir = NA,
+                    export_type = 'svg',
+                    seed=1
+    )
+  )
+
+
+  return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
+}
 
 
 #' @export
@@ -313,18 +338,25 @@ renderClustpro <-
     shinyRenderWidget(expr, clustproOutput, env, quoted = TRUE)
   }
 
-distributions_histograms <- function(data, title) {
-  for (i in 1:ncol(data)) {
-    x <- data[, i, drop = FALSE]
-    h <- histss(x[, 1], n = round(nrow(data) / 10), plotting = FALSE)
-    title_add <- i
-    if (!is.null(colnames(data)))
-      title_add <- colnames(data)[i]
-    initialize_graphic(paste(title, title_add, sep = "_"))
+distributions_histograms <- function(matrix) {
+  for (i in 1:ncol(matrix)) {
+    x <- matrix[, i, drop = FALSE]
+  initialize_graphic(paste('distribution_column_',colnames(matrix)[i], sep = "_"), type = 'tif')
     g <-
-      ggplot(x, aes_string(x = colnames(x))) + stat_bin(breaks = h$breaks)
+      ggplot(x, aes_string(x = colnames(x))) +
+      geom_density(fill = 'blue',alpha = 0.2) +
+      scale_color_discrete(name = '') +
+      xlab("density") +
+      xlab("value") +
+      theme(plot.title = element_text(size = 12, face = "plain"),
+            axis.title=element_text(size=12,face="plain"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
+      ggtitle(paste('column: ',colnames(matrix)[i],sep=''))
     show(g)
-    dev.off()
+  dev.off()
   }
 }
 
@@ -440,21 +472,39 @@ clustering <- function(matrix,
                        no_cores = 2,
                        seed = NULL) {
   #  distributions_histograms(matrix, "distributions_histograms")
+  distributions_histograms(matrix)
 
   if (fixed_k > 0) {
     k <- fixed_k
   } else {
     rv <-
       get_best_k(matrix, min_k, max_k, method, no_cores = no_cores, seed)
-    db_list <- rv$db_list
+    db_list <- as.data.frame(rv$db_list)
     if (method == 'cmeans') {
       minimalSet <- rv$minimalSet
       fp <- rv$fp
     }
-    initialize_graphic(paste("db_index_ratio_div_ratio", sep = ""))
-    plot(db_list, type = "b")
-    dev.off()
-    k <- db_list[db_list[, 2] == max(db_list[, 2], na.rm = TRUE),][1]
+    k <- as.numeric(db_list[db_list[, 2] == max(db_list[, 2], na.rm = TRUE),][1])
+    colnames(db_list) <- c('k','score')
+    initialize_graphic('best k estimation', type = 'tif')
+    g <-
+      ggplot(db_list, aes(x = k, y=score)) +
+      geom_line()+
+      geom_point()+
+      geom_point(data = db_list[which(db_list$k == k),],mapping = aes(x=k,y=score), color="red") +
+      geom_text(data = db_list[which(db_list$k == k),],mapping = aes(x=k,y=score), label = paste('k:',k,';seed:',seed,sep=''), vjust = 0, nudge_y = 0.01, color="red")+
+      ylab("Davies–Bouldin Index [DBI]") +
+      xlab("k") +
+      # scale_x_continuous(limits=c(-2, 7),breaks = (-2:7))+
+      theme(plot.title = element_text(size = 12, face = "plain"),
+            axis.title=element_text(size=12,face="plain"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            axis.line = element_line(colour = "black")) +
+   ggtitle('best k estimation')
+    show(g)
+   dev.off()
   }
   if (!is.null(seed))
     set.seed(seed)

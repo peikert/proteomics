@@ -19,6 +19,7 @@ if(F){
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
 library("clustpro")
+clustpro_example()
 
 get_first_split_element <- function(x,split){
   return(sub('\\s+$', '',unlist(strsplit(x, split))[1]))
