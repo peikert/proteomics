@@ -24,7 +24,6 @@ HTMLWidgets.widget({
         d3	.select(el).select("svg")
             .attr("width", width)
             .attr("height", height);
-//
         instance.force.size([width, height]).resume();
         this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
@@ -100,7 +99,7 @@ HTMLWidgets.widget({
         xaxis = d3.select("#xaxis");
         var colorlegendtext = xaxis.append("text");
         d3.select("#hidecolorlegend").remove();
-        colorlegendtext.attr("x",390)
+        colorlegendtext.attr("x",450)
              .attr("y",100)
              .attr("id","showcolorlegend")
              .text("Show Color Legend")
@@ -134,7 +133,7 @@ HTMLWidgets.widget({
         rectangle = xaxis.append("g");
         var colorlegendtext2 = xaxis.append("text");
         d3.select("#showcolorlegend").remove();
-        colorlegendtext2.attr("x",390)
+        colorlegendtext2.attr("x",450)
              .attr("y",100)
              .attr("id","hidecolorlegend")
              .text("Hide Color Legend")
@@ -213,11 +212,179 @@ HTMLWidgets.widget({
         xaxis = d3.select("#xaxis");
         var savetext = xaxis.append("text");
         var scrolltext = xaxis.append("text");
+        // Scroll control Buttons !
+
+        var verticalScrollControlPlus = xaxis.append("text");
+        var verticalScrollControlMinus = xaxis.append("text");
+        var horizontalScrollControlPlus = xaxis.append("text");
+        var horizontalScrollControlMinus = xaxis.append("text");
+
+        // Scroll Control Buttons !
         var unscrolltext = xaxis.append("text");
         var horizontalScroll = xaxis.append("text");
         self.showcolorlegend(el,x);
      
-         
+         verticalScrollControlPlus.attr("x", 125)
+                        .attr("y", 115)
+                        .text("+")
+                        .style("font-size","15px")
+                        .on("click",function(){
+                                debugger;
+        			            console.log("[Zoom in Vertically]");
+                                var new_html_widget = el;
+                                var old_height = new_html_widget.style.height;
+                                if(old_height == "100%")
+                                {
+                                    new_html_widget.style.height = "1000px";
+                                }
+                                else{
+                                    old_height = old_height.match(/\d+/g); // get the number value from old height
+                                    old_height = parseInt(old_height);
+                                    new_height = old_height + 200;
+                                    new_height = new_height.toString();
+                                    new_height = new_height+ "px";
+                                    new_html_widget.style.height = new_height;
+                                    
+                                }
+                                //new_html_widget.style.width = "1500px";
+                                //x.options.yaxis_width[0] = 600;
+                                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+                                window.scrollTo(0,document.body.scrollHeight);
+        			            
+             	            })
+                        .on("mouseover",function(d,i){
+	        		            d3.select(this)
+	        		            .style("cursor", "pointer")
+	        		            .attr("fill","blue")
+                                .style("font-size","25px");
+             	            })
+                        .on("mouseout",function(d,i){
+	        		            d3.select(this)
+	        		            .attr("fill","black")
+                                .style("font-size","15px");
+        	        });
+
+        verticalScrollControlMinus.attr("x", 140)
+                    .attr("y", 115)
+                    .text("-")
+                    .style("font-size","15px")
+                    .on("click",function(){
+                                debugger;
+        			            console.log("[Zoom out Vertically]");
+                                var new_html_widget = el;
+                                var old_height = new_html_widget.style.height;
+                                if(old_height == "100%")
+                                {
+                                    new_html_widget.style.height = "1000px";
+                                }
+                                else{
+                                    old_height = old_height.match(/\d+/g); // get the number value from old height
+                                    old_height = parseInt(old_height);  //
+                                    new_height = old_height - 200;
+                                    new_height = new_height.toString();
+                                    new_height = new_height+ "px";
+                                    new_html_widget.style.height = new_height;
+                                    
+                                }
+                                //new_html_widget.style.width = "1500px";
+                                //x.options.yaxis_width[0] = 600;
+                                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+        			            
+             	            })
+                    .on("mouseover",function(d,i){
+	        		        d3.select(this)
+	        		        .style("cursor", "pointer")
+	        		        .attr("fill","blue")
+                            .style("font-size","25px");
+             	        })
+                    .on("mouseout",function(d,i){
+	        		        d3.select(this)
+	        		        .attr("fill","black")
+                            .style("font-size","15px");
+        	        });
+
+                horizontalScrollControlPlus.attr("x", 380)
+                            .attr("y", 100)
+                            .text("+")
+                            .style("font-size","15px")
+                            .on("click",function(){
+                                    debugger;
+                                    console.log("[Zoom In Horizontally]");
+                                    var new_html_widget = el;
+                                    var old_width = new_html_widget.style.width;
+                                    if(old_width == "100%")
+                                    {
+                                        new_html_widget.style.width = "2500px";
+                                    }
+                                    else{
+                                        old_width = old_width.match(/\d+/g); // get the number value from old height
+                                        old_width = parseInt(old_width);  //
+                                        new_width = old_width + 200;
+                                        new_width = new_width.toString();
+                                        new_width = new_width+ "px";
+                                        new_html_widget.style.width = new_width;
+                                        x.options.yaxis_width[0] = x.options.yaxis_width[0]+ 100;
+                                        // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
+                                    }
+                                    //new_html_widget.style.width = "1500px";
+                                    x.options.yaxis_width[0] = 600;
+                                    self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+        			            
+             	            })
+                            .on("mouseover",function(d,i){
+                                d3.select(this)
+                                .style("cursor", "pointer")
+                                .attr("fill","blue")
+                                .style("font-size","25px");
+             	            })
+                            .on("mouseout",function(d,i){
+                                d3.select(this)
+                                .attr("fill","black")
+                                .style("font-size","15px");
+        	            });
+
+                    horizontalScrollControlMinus.attr("x", 400)
+                            .attr("y", 100)
+                            .text("-")
+                            .style("font-size","15px")
+                            .on("click",function(){
+                                    debugger;
+                                    console.log("[Zoom In Horizontally]");
+                                    var new_html_widget = el;
+                                    var old_width = new_html_widget.style.width;
+                                    if(old_width == "100%")
+                                    {
+                                        new_html_widget.style.width = "1700px";
+                                    }
+                                    else{
+                                        old_width = old_width.match(/\d+/g); // get the number value from old height
+                                        old_width = parseInt(old_width);  //
+                                        new_width = old_width - 200;
+                                        new_width = new_width.toString();
+                                        new_width = new_width+ "px";
+                                        new_html_widget.style.width = new_width;
+                                        x.options.yaxis_width[0] = x.options.yaxis_width[0]- 50;
+                                        
+                                    }
+                                    //new_html_widget.style.width = "1500px";
+                                    //x.options.yaxis_width[0] = 600;
+                                    self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+        			            
+             	            })
+                            .on("mouseover",function(d,i){
+                                d3.select(this)
+                                .style("cursor", "pointer")
+                                .attr("fill","blue")
+                                .style("font-size","25px");
+             	            })
+                            .on("mouseout",function(d,i){
+                                d3.select(this)
+                                .attr("fill","black")
+                                .style("font-size","15px");
+        	            });
+
+
+
         savetext.attr("x",0)
              .attr("y",100)
              .text("SAVE")
@@ -238,16 +405,16 @@ HTMLWidgets.widget({
         	});
 
 
-        scrolltext.attr("x",70)
-             .attr("y",100)
-             .text("SCROLL")
+        scrolltext.attr("x",0)
+             .attr("y",115)
+             .text("Vertical Scrolling")
              .attr("fill", "black")
              .style("font-size","15px")
              .on("click",function(d,i){
                     console.log("Scroll");
                 	var new_html_widget = el;
-                	new_html_widget.style.width = "2000px";
-                	new_html_widget.style.height = "1700px";
+                	new_html_widget.style.width = "2000px";   // Make this a user defined value !
+                	new_html_widget.style.height = "1700px";  // Make this a user defined value !
                 	x.options.yaxis_width[0] = 300;
                 	self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);        			
              	})
@@ -262,7 +429,8 @@ HTMLWidgets.widget({
         	});
 
 
-        // SCROLL HORIZONTALLY
+
+
         horizontalScroll.attr("x",250)
              .attr("y",100)
              .text("Scroll Horizontally")
@@ -286,8 +454,8 @@ HTMLWidgets.widget({
         	});
 
 
-        unscrolltext.attr("x",150)
-             .attr("y",100)
+        unscrolltext.attr("x",250)
+             .attr("y",115)
              .text("UNSCROLL")
              .attr("fill", "black")
              .style("font-size","15px")
