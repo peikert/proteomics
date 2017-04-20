@@ -49,7 +49,7 @@ hist(matrix[,1])
 
 br <- min(diff(c(-0.1,0.2,0.4,0.8,1.1))/40)
 heatmap_color <- color_spectrum(c(-0.1,0.2,0.4,0.8,1.1),c("white","yellow","red","purple","blue"),br)
-
+heatmap_color$label_position <- c(0,-0.5,0,0.5,1)
 
 # br <- min(diff(c(-1.1,0.5,0.1))/40)
 # heatmap_color <- color_spectrum(c(-1.1,0.5,0.1),c("red","yellow","white"),br)

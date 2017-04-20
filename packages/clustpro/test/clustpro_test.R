@@ -1,16 +1,6 @@
-#setwd("D:/git/proteomics/packages)
-# install.packages('devtools')
-# source("https://bioconductor.org/biocLite.R")
-# biocLite("Biobase")
-# biocLite("Mfuzz")
-# biocLite("ctc")
-# biocLite("roxygen2")
-# install.packages('ggplot2')
-# options(warn=-1)
-#devtools::create("clustpro")
+
 if(F){
   library(devtools)
-#setwd("C:/Users/cpeikert/Documents/proteomics/packages/clustpro")
   setwd("D:/git/proteomics/packages/clustpro")
 # devtools::check()
   devtools::document()
@@ -19,6 +9,7 @@ if(F){
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
 library("clustpro")
+help(package = clustpro)
 clustpro_example()
 
 get_first_split_element <- function(x,split){

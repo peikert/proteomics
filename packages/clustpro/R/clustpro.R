@@ -1,22 +1,9 @@
-#' title: "clustpro - a cluster analysis package"
-#' author: "Christian Peikert and Muhammad Numair Mansur"
-#' version: 0.01b
-#' date: "19. Januar 2017"
-#' <Add Description>
+#' Example function 01
 #'
-#' @import htmlwidgets
-#' @import ggplot2
-#' @import pracma
-#' @import Biobase
-#' @import Mfuzz
-#' @import clusterSim
-#' @import pheatmap
-#' @import gplots
-#' @import ctc
-#' @import jsonlite
-#' @import foreach
-
+#' A theoretical proteomics dataset composed of 1000 human proteins (UniProt accessionn umbers) and random choosen values will be used to call the clustpro() main function.
+#' @return see clustpro() function output
 #' @export
+#'
 clustpro_example <- function(){
   graphic_type <<- "tif"
   matrix <- iris[-ncol(iris)]
@@ -57,6 +44,24 @@ clustpro_example <- function(){
 }
 
 
+#' Clustpro main function
+#'
+#' This function is used to start the clustering and visualisation process.
+#' @param matrix
+#' @param method
+#' @param min_k,max_k,fixed_k
+#' @param perform_clustering
+#' @param cluster_ids
+#' @param rows,cols
+#' @param tooltip
+#' @param save_widget
+#' @param color_legend
+#' @param width,height
+#' @param export_dir
+#' @param export_type
+#' @param seed
+#' @return see clustpro() function output
+#' @examples
 #' @export
 clustpro <- function(matrix,
                      method = "kmeans",
@@ -137,8 +142,6 @@ clustpro <- function(matrix,
 
   payload <- list(options = options)
 
-
-  # matrix = rs$matrix
   clusters <- NULL
   cluster_centers <- NULL
   row_dend_nw <- NULL
@@ -206,7 +209,7 @@ clustpro <- function(matrix,
   reordered_tooltip <- lapply(tooltip, function(x)
     x[new_order])
   reordered_tooltip[['id']] <- NULL
-  ### color matrix ###
+
   color_matrix <-
     as.data.frame(
       apply(
@@ -216,10 +219,9 @@ clustpro <- function(matrix,
         ticks = color_legend$ticks,
         colors = color_legend$colors
       )
-    ) ## without id column
+    )
   colnames(color_matrix) <- colnames(matrix)
   rownames(color_matrix) <- rownames(matrix)
-  #############
 
   payload[['matrix']] <- list(
     data = as.matrix(matrix),
@@ -229,7 +231,6 @@ clustpro <- function(matrix,
   )
 
   payload[['clusters']] <- clusters
-
 
   if ((is.logical(rows) &&
        rows && class(row_dend_nw) == "character") || class(rows) == 'hclust') {
@@ -263,7 +264,7 @@ clustpro <- function(matrix,
   payload[['color_legend']] <-
     list(gradient = df_legend,
          label_position = color_legend$label_position)
-  ######
+
   payload[['tooltip']] <- reordered_tooltip
 
   payload[['export_dir']] <- export_dir
@@ -278,6 +279,7 @@ clustpro <- function(matrix,
         file = "version_0.03a",
         ncolumns = 1,
         append = FALSE)
+  write.table(cbind(matrix,clusters),file = "clustered_matrix.txt",sep="\t", col.names=NA, row.names=T)
   widget <- htmlwidgets::createWidget(
     'clustpro',
     json_payload,
@@ -299,8 +301,6 @@ clustpro <- function(matrix,
     )
   )
 }
-
-
 
 #' Shiny bindings for clustpro
 #'
@@ -338,6 +338,12 @@ renderClustpro <-
     shinyRenderWidget(expr, clustproOutput, env, quoted = TRUE)
   }
 
+#' distributions_histograms
+#'
+#' .................
+#' @param matrix
+#' @examples
+
 distributions_histograms <- function(matrix) {
   for (i in 1:ncol(matrix)) {
     x <- matrix[, i, drop = FALSE]
@@ -360,6 +366,15 @@ distributions_histograms <- function(matrix) {
   }
 }
 
+#' order_dataframe_by_list
+#'
+#' .................
+#' @param x
+#' @param list
+#' @param col
+#' @param reverse
+#' @examples
+
 order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
   if (reverse) {
     list <- rev(list)
@@ -370,6 +385,16 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
   }
   return(order_data)
 }
+
+#' findk_cmeans
+#'
+#' .................
+#' @param matrix
+#' @param k
+#' @param minimalSet
+#' @param fp
+#' @param seed
+#' @examples
 
 findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
   tryCatch({
@@ -390,6 +415,14 @@ findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
     return(NA)
   })
 }
+
+#' findk_kmeans
+#'
+#' .................
+#' @param matrix
+#' @param k
+#' @param seed
+#' @examples
 
 findk_kmeans <- function(matrix, k, seed = NULL) {
   tryCatch({
@@ -413,6 +446,17 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
     return(NA)
   })
 }
+
+
+#' Get best k
+#'
+#' .................
+#' @param matrix
+#' @param min_k,max_k,fixed_k
+#' @param method
+#' @param no_cores
+#' @param seed
+#' @examples
 
 get_best_k <-
   function(matrix,
@@ -464,6 +508,16 @@ get_best_k <-
 
   }
 
+
+#' Clustering
+#'
+#' This function allows you to initialize a graphic
+#' @param matrix
+#' @param min_k,max_k,fixed_k
+#' @param method
+#' @param no_cores
+#' @param seed
+#' @examples
 clustering <- function(matrix,
                        min_k = 2,
                        max_k = 100,
@@ -471,7 +525,7 @@ clustering <- function(matrix,
                        method = "kmeans",
                        no_cores = 2,
                        seed = NULL) {
-  #  distributions_histograms(matrix, "distributions_histograms")
+
   distributions_histograms(matrix)
 
   if (fixed_k > 0) {
@@ -587,11 +641,11 @@ clustering <- function(matrix,
 #' Function to initialize a graphic
 #'
 #' This function allows you to initialize a graphic
-#' @param title , project, type, number
-#' @keywords initialize graphic
-#' @export
+#' @param title
+#' @param project
+#' @param type
+#' @param number
 #' @examples
-#' initialize_graphic()
 initialize_graphic <- function(title, type = graphic_type, ...) {
   gap_free_title <- gsub('\\s', '_', title)
   switch(type,
@@ -620,12 +674,11 @@ initialize_graphic <- function(title, type = graphic_type, ...) {
 
 #' Function to get color
 #'
-#' xxxxxx
+#' ..............
 #' @param x
-#' @keywords get color
-#' @export
+#' @param ticks
+#' @param colors
 #' @examples
-#' get_color()
 
 get_color <- function(x, ticks, colors) {
   i = 1
@@ -641,8 +694,8 @@ get_color <- function(x, ticks, colors) {
 #'
 #' This function allows you to define the color spectrum for heatmaps.
 #' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
-#' @keywords color spectrum heatmaps
-#' @export
+#' @param color_spect
+#' @param shift_factor
 #' @examples
 #' color_spectrum()
 color_spectrum <-
@@ -674,8 +727,7 @@ color_spectrum <-
 #' @param auto todo
 #' @keywords color spectrum heatmaps
 #' @export
-#' @examples
-#' color_spectrum()
+#' @examples setHeatmapColors()
 
 setHeatmapColors <-
   function(data,
