@@ -18,7 +18,7 @@ HTMLWidgets.widget({
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
         x.matrix.data = [].concat.apply([],x.matrix.data); // Flattening the data array.
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, false);
     },
     resize: function(el, width, height, instance) {
         d3	.select(el).select("svg")
@@ -27,7 +27,7 @@ HTMLWidgets.widget({
         instance.force.size([width, height]).resume();
         this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
-    doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable){
+    doRenderValue: function(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, enableRowLabel){
     	console.log("-- Entered doRenderValue() --");
         if(scrollable){document.getElementsByTagName("body")[0].style.overflow = "scroll";}
         var self = this;
@@ -58,7 +58,7 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         console.log("Initializing ClustPro()");
-        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner);
+        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel);
         console.log("Exited ClustPro()");
 
         //*********************** Control Panel ***************************************
@@ -118,7 +118,6 @@ HTMLWidgets.widget({
 	        		d3.select(this)
 	        		.attr("fill","black");
         	});
-
     },
 
 
@@ -203,6 +202,32 @@ HTMLWidgets.widget({
 	        }
     },
 
+    disableRowLabels: function(el,x){
+        debugger;
+        self = this;
+        d3.select("#rowLabelEnable").remove();
+        xaxis = d3.select("#xaxis");
+        var rowLabelDisable = xaxis.append("text");
+        rowLabelDisable.attr("x", 450)
+                        .attr("y", 115)
+                        .attr("id","rowLabelDisable")
+                        .text("Disable row label")
+                        .style("font-size","15px")
+                        .on("click",function(){
+                                debugger;
+        			            self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, false);
+             	            })
+                        .on("mouseover",function(d,i){
+	        		            d3.select(this)
+	        		            .style("cursor", "pointer")
+	        		            .attr("fill","blue");
+             	            })
+        	            .on("mouseout",function(d,i){
+	        		            d3.select(this)
+	        		            .attr("fill","black");
+        	                });
+    },
+
     controlPanel: function(el,x,rowNewickSting,colNewickString,instance,newMerged){
     	var self = this;
     	col = d3.select("#coldDend");
@@ -212,6 +237,7 @@ HTMLWidgets.widget({
         xaxis = d3.select("#xaxis");
         var savetext = xaxis.append("text");
         var scrolltext = xaxis.append("text");
+        var rowLabelEnable = xaxis.append("text");
         // Scroll control Buttons !
 
         var verticalScrollControlPlus = xaxis.append("text");
@@ -223,6 +249,28 @@ HTMLWidgets.widget({
         var unscrolltext = xaxis.append("text");
         var horizontalScroll = xaxis.append("text");
         self.showcolorlegend(el,x);
+
+
+        rowLabelEnable.attr("x", 450)
+                        .attr("y", 115)
+                        .attr("id","rowLabelEnable")
+                        .text("enable row label")
+                        .style("font-size","15px")
+                        .on("click",function(){
+                                debugger;
+        			            self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, true);
+                                self.disableRowLabels(el, x);
+
+             	            })
+                        .on("mouseover",function(d,i){
+	        		            d3.select(this)
+	        		            .style("cursor", "pointer")
+	        		            .attr("fill","blue");
+             	            })
+        	            .on("mouseout",function(d,i){
+	        		            d3.select(this)
+	        		            .attr("fill","black");
+        	                });
      
          verticalScrollControlPlus.attr("x", 125)
                         .attr("y", 115)
@@ -248,7 +296,7 @@ HTMLWidgets.widget({
                                 }
                                 //new_html_widget.style.width = "1500px";
                                 //x.options.yaxis_width[0] = 600;
-                                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+                                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
                                 window.scrollTo(0,document.body.scrollHeight);
         			            
              	            })
@@ -288,7 +336,7 @@ HTMLWidgets.widget({
                                 }
                                 //new_html_widget.style.width = "1500px";
                                 //x.options.yaxis_width[0] = 600;
-                                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+                                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
         			            
              	            })
                     .on("mouseover",function(d,i){
@@ -322,13 +370,13 @@ HTMLWidgets.widget({
                                         new_width = old_width + 200;
                                         new_width = new_width.toString();
                                         new_width = new_width+ "px";
-                                        new_html_widget.style.width = new_width;
+                                        new_html_widget.style.width = new_width;verticalScrollControlMinus
                                         x.options.yaxis_width[0] = x.options.yaxis_width[0]+ 100;
                                         // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
                                     }
                                     //new_html_widget.style.width = "1500px";
                                     x.options.yaxis_width[0] = 600;
-                                    self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+                                    self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
         			            
              	            })
                             .on("mouseover",function(d,i){
@@ -368,7 +416,7 @@ HTMLWidgets.widget({
                                     }
                                     //new_html_widget.style.width = "1500px";
                                     //x.options.yaxis_width[0] = 600;
-                                    self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);
+                                    self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
         			            
              	            })
                             .on("mouseover",function(d,i){
@@ -409,24 +457,7 @@ HTMLWidgets.widget({
              .attr("y",115)
              .text("Vertical Scrolling")
              .attr("fill", "black")
-             .style("font-size","15px")
-             .on("click",function(d,i){
-                    console.log("Scroll");
-                	var new_html_widget = el;
-                	new_html_widget.style.width = "2000px";   // Make this a user defined value !
-                	new_html_widget.style.height = "1700px";  // Make this a user defined value !
-                	x.options.yaxis_width[0] = 300;
-                	self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);        			
-             	})
-        	.on("mouseover",function(d,i){
-	        		d3.select(this)
-	        		.style("cursor", "pointer")
-	        		.attr("fill","blue");
-             	})
-        	.on("mouseout",function(d,i){
-	        		d3.select(this)
-	        		.attr("fill","black");
-        	});
+             .style("font-size","15px");
 
 
 
@@ -435,23 +466,7 @@ HTMLWidgets.widget({
              .attr("y",100)
              .text("Scroll Horizontally")
              .attr("fill", "black")
-             .style("font-size","15px")
-             .on("click",function(d,i){
-                    console.log("Scroll Horizontally");
-                	var new_html_widget = el;
-                	new_html_widget.style.width = "2500px";
-                	x.options.yaxis_width[0] = 600;
-                	self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true);        			
-             	})
-        	.on("mouseover",function(d,i){
-	        		d3.select(this)
-	        		.style("cursor", "pointer")
-	        		.attr("fill","blue");
-             	})
-        	.on("mouseout",function(d,i){
-	        		d3.select(this)
-	        		.attr("fill","black");
-        	});
+             .style("font-size","15px");
 
 
         unscrolltext.attr("x",250)
@@ -465,7 +480,7 @@ HTMLWidgets.widget({
 	                old_html_widget.style.width = "100%";
 	                old_html_widget.style.height = "100%";
 	                x.options.yaxis_width[0] = 120;
-	                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false);       			
+	                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, false);       			
              	})
         	.on("mouseover",function(d,i){
 	        		d3.select(this)
@@ -550,7 +565,7 @@ HTMLWidgets.widget({
                 this.dataMatrixSwap(x, matrixDataArray_2, matrixDataArray_1, matrixMergeArray_2, matrixMergeArray_1, matrixDataCounter, matrixMergeCounter); // If the line clicked is the upper sibling.
         rowNewickSting = this.stringSwap(d,rowNewickSting); //refresh newick string.
         x.dendnw_row[0] = rowNewickSting;
-        this.doRenderValue(el,x,rowNewickSting,colNewickString,instance, x.matrix.merged, false);
+        this.doRenderValue(el,x,rowNewickSting,colNewickString,instance, x.matrix.merged, false, false);
     },
 
     refreshColDendogram: function(d,el,x,rowNewickSting, colNewickString, instance){
@@ -566,7 +581,7 @@ HTMLWidgets.widget({
         }
         colNewickString = this.stringSwap(d,colNewickString); //refresh newick string.
         x.dendnw_col[0] = colNewickString; //refresh newick string.
-        this.doRenderValue(el,x,rowNewickSting, colNewickString, instance, x.matrix.merged, false);
+        this.doRenderValue(el,x,rowNewickSting, colNewickString, instance, x.matrix.merged, false, false);
     },
 
 
