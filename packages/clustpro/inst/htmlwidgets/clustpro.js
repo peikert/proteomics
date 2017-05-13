@@ -117,11 +117,6 @@ HTMLWidgets.widget({
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel);
         console.log("Exited ClustPro()");
 
-        //*********************** Control Panel ***************************************
-        console.log("[Generating Control Panel]");
-        this.controlPanel(el, x, rowNewickSting, colNewickString, instance, newMerged);
-        console.log("Control Panel Generated");
-        // ****************************************************************************
 
 
         //********************* HTML SIDE BAR ****************************************  
@@ -190,10 +185,28 @@ HTMLWidgets.widget({
         d3.select("#vzoomin") // On click for VzoomIn
             .on("click", function () {
              debugger;
+             
+            var new_html_widget = el;
+            var old_height = new_html_widget.style.height;
+            if (old_height == "100%") {
+                    new_html_widget.style.height = "1000px";
+            }
+            else {
+                old_height = old_height.match(/\d+/g); // get the number value from old height
+                old_height = parseInt(old_height);
+                new_height = old_height + 200;
+                new_height = new_height.toString();
+                new_height = new_height + "px";
+                new_html_widget.style.height = new_height;
+
+            }
+            //new_html_widget.style.width = "1500px";
+            //x.options.yaxis_width[0] = 600;
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
+            window.scrollTo(0, 0);
          })
         .on("mouseover", function (d, i) {
                 vzoomin.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
-                debugger;
         })
         .on("mouseout", function (d, i) {
                 vzoomin.style.cssText = 'height:50px; background-color: white';
@@ -212,6 +225,24 @@ HTMLWidgets.widget({
         d3.select("#vzoomout") // On click for VzoomIn
             .on("click", function () {
              debugger;
+             var new_html_widget = el;
+            var old_height = new_html_widget.style.height;
+            if (old_height == "100%") {
+                new_html_widget.style.height = "1000px";
+            }
+            else {
+                old_height = old_height.match(/\d+/g); // get the number value from old height
+                old_height = parseInt(old_height);  //
+                new_height = old_height - 200;
+                new_height = new_height.toString();
+                new_height = new_height + "px";
+                new_html_widget.style.height = new_height;
+
+            }
+            //new_html_widget.style.width = "1500px";
+            //x.options.yaxis_width[0] = 600;
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
+
          })
         .on("mouseover", function (d, i) {
                 vzoomout.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
@@ -234,6 +265,25 @@ HTMLWidgets.widget({
         d3.select("#hzoomin") // On click for VzoomIn
             .on("click", function () {
              debugger;
+            var new_html_widget = el;
+            var old_width = new_html_widget.style.width;
+            if (old_width == "100%") {
+                new_html_widget.style.width = "2500px";
+            }
+            else {
+                old_width = old_width.match(/\d+/g); // get the number value from old height
+                old_width = parseInt(old_width);  //
+                new_width = old_width + 200;
+                new_width = new_width.toString();
+                new_width = new_width + "px";
+                new_html_widget.style.width = new_width;
+                x.options.yaxis_width[0] = x.options.yaxis_width[0] + 100;
+                // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
+            }
+            //new_html_widget.style.width = "1500px";
+            x.options.yaxis_width[0] = 600;
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
+
          })
         .on("mouseover", function (d, i) {
                 hzoomin.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
@@ -256,6 +306,25 @@ HTMLWidgets.widget({
         d3.select("#hzoomout") // On click for VzoomIn
             .on("click", function () {
              debugger;
+             var new_html_widget = el;
+            var old_width = new_html_widget.style.width;
+            if (old_width == "100%") {
+                new_html_widget.style.width = "1700px";
+            }
+            else {
+                old_width = old_width.match(/\d+/g); // get the number value from old height
+                old_width = parseInt(old_width);  //
+                new_width = old_width - 200;
+                new_width = new_width.toString();
+                new_width = new_width + "px";
+                new_html_widget.style.width = new_width;
+                x.options.yaxis_width[0] = x.options.yaxis_width[0] - 50;
+
+            }
+            //new_html_widget.style.width = "1500px";
+            //x.options.yaxis_width[0] = 600;
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
+
          })
         .on("mouseover", function (d, i) {
                 hzoomout.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
@@ -264,6 +333,37 @@ HTMLWidgets.widget({
         .on("mouseout", function (d, i) {
                 hzoomout.style.cssText = 'height:50px; background-color: white';
         });
+
+        // 5.5) Unscroll all 
+        var unscroll = document.createElement("div");
+        unscroll.setAttribute("id", "unscroll");
+        unscroll.setAttribute("title", "UnScroll");
+        unscroll.style.cssText = 'height:50px';
+        // Try to insert a GIF in here....
+        unscroll.innerHTML = unScroll();
+        // GIF INSERTED....
+        sideBar.appendChild(unscroll);
+
+        d3.select("#unscroll") // On click for VzoomIn
+            .on("click", function () {
+                debugger;
+                // REFRESH HERE: MAKE THE WhOLE DIAGRAM AGAIN !!
+                var old_html_widget = el;
+                old_html_widget.style.width = "100%";
+                old_html_widget.style.height = "100%";
+                x.options.yaxis_width[0] = 120;
+                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, false);
+
+             
+         })
+        .on("mouseover", function (d, i) {
+                unscroll.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                debugger;
+        })
+        .on("mouseout", function (d, i) {
+                unscroll.style.cssText = 'height:50px; background-color: white';
+        });
+
 
 
         // 6) Enable Row Label
@@ -447,268 +547,6 @@ HTMLWidgets.widget({
         //         d3.select(this)
         //             .attr("fill", "black");
         //     });
-    },
-
-    controlPanel: function (el, x, rowNewickSting, colNewickString, instance, newMerged) {
-        var self = this;
-        col = d3.select("#coldDend");
-        colormap = d3.select("#colormap");
-        var widthOfSVG = colormap[0][0].width.baseVal.value;
-        var startingPoint = widthOfSVG / 2;
-        xaxis = d3.select("#xaxis");
-        var savetext = xaxis.append("text");
-        var scrolltext = xaxis.append("text");
-        var rowLabelEnable = xaxis.append("text");
-        // Scroll control Buttons !
-
-        var verticalScrollControlPlus = xaxis.append("text");
-        var verticalScrollControlMinus = xaxis.append("text");
-        var horizontalScrollControlPlus = xaxis.append("text");
-        var horizontalScrollControlMinus = xaxis.append("text");
-
-        // Scroll Control Buttons !
-        var unscrolltext = xaxis.append("text");
-        var horizontalScroll = xaxis.append("text");
-        self.showcolorlegend(el, x);
-
-
-        rowLabelEnable.attr("x", 450)
-            .attr("y", 115)
-            .attr("id", "rowLabelEnable")
-            .text("enable row label")
-            .style("font-size", "15px")
-            .on("click", function () {
-                debugger;
-                self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, true);
-                self.disableRowLabels(el, x, rowNewickSting, colNewickString, instance, newMerged);
-
-            })
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .style("cursor", "pointer")
-                    .attr("fill", "blue");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "black");
-            });
-
-        verticalScrollControlPlus.attr("x", 125)
-            .attr("y", 115)
-            .text("+")
-            .style("font-size", "15px")
-            .on("click", function () {
-                debugger;
-                console.log("[Zoom in Vertically]");
-                var new_html_widget = el;
-                var old_height = new_html_widget.style.height;
-                if (old_height == "100%") {
-                    new_html_widget.style.height = "1000px";
-                }
-                else {
-                    old_height = old_height.match(/\d+/g); // get the number value from old height
-                    old_height = parseInt(old_height);
-                    new_height = old_height + 200;
-                    new_height = new_height.toString();
-                    new_height = new_height + "px";
-                    new_html_widget.style.height = new_height;
-
-                }
-                //new_html_widget.style.width = "1500px";
-                //x.options.yaxis_width[0] = 600;
-                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
-                window.scrollTo(0, document.body.scrollHeight);
-
-            })
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .style("cursor", "pointer")
-                    .attr("fill", "blue")
-                    .style("font-size", "25px");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "black")
-                    .style("font-size", "15px");
-            });
-
-        verticalScrollControlMinus.attr("x", 140)
-            .attr("y", 115)
-            .text("-")
-            .style("font-size", "15px")
-            .on("click", function () {
-                debugger;
-                console.log("[Zoom out Vertically]");
-                var new_html_widget = el;
-                var old_height = new_html_widget.style.height;
-                if (old_height == "100%") {
-                    new_html_widget.style.height = "1000px";
-                }
-                else {
-                    old_height = old_height.match(/\d+/g); // get the number value from old height
-                    old_height = parseInt(old_height);  //
-                    new_height = old_height - 200;
-                    new_height = new_height.toString();
-                    new_height = new_height + "px";
-                    new_html_widget.style.height = new_height;
-
-                }
-                //new_html_widget.style.width = "1500px";
-                //x.options.yaxis_width[0] = 600;
-                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
-
-            })
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .style("cursor", "pointer")
-                    .attr("fill", "blue")
-                    .style("font-size", "25px");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "black")
-                    .style("font-size", "15px");
-            });
-
-        horizontalScrollControlPlus.attr("x", 380)
-            .attr("y", 100)
-            .text("+")
-            .style("font-size", "15px")
-            .on("click", function () {
-                debugger;
-                console.log("[Zoom In Horizontally]");
-                var new_html_widget = el;
-                var old_width = new_html_widget.style.width;
-                if (old_width == "100%") {
-                    new_html_widget.style.width = "2500px";
-                }
-                else {
-                    old_width = old_width.match(/\d+/g); // get the number value from old height
-                    old_width = parseInt(old_width);  //
-                    new_width = old_width + 200;
-                    new_width = new_width.toString();
-                    new_width = new_width + "px";
-                    new_html_widget.style.width = new_width; verticalScrollControlMinus
-                    x.options.yaxis_width[0] = x.options.yaxis_width[0] + 100;
-                    // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
-                }
-                //new_html_widget.style.width = "1500px";
-                x.options.yaxis_width[0] = 600;
-                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
-
-            })
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .style("cursor", "pointer")
-                    .attr("fill", "blue")
-                    .style("font-size", "25px");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "black")
-                    .style("font-size", "15px");
-            });
-
-        horizontalScrollControlMinus.attr("x", 400)
-            .attr("y", 100)
-            .text("-")
-            .style("font-size", "15px")
-            .on("click", function () {
-                debugger;
-                console.log("[Zoom In Horizontally]");
-                var new_html_widget = el;
-                var old_width = new_html_widget.style.width;
-                if (old_width == "100%") {
-                    new_html_widget.style.width = "1700px";
-                }
-                else {
-                    old_width = old_width.match(/\d+/g); // get the number value from old height
-                    old_width = parseInt(old_width);  //
-                    new_width = old_width - 200;
-                    new_width = new_width.toString();
-                    new_width = new_width + "px";
-                    new_html_widget.style.width = new_width;
-                    x.options.yaxis_width[0] = x.options.yaxis_width[0] - 50;
-
-                }
-                //new_html_widget.style.width = "1500px";
-                //x.options.yaxis_width[0] = 600;
-                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
-
-            })
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .style("cursor", "pointer")
-                    .attr("fill", "blue")
-                    .style("font-size", "25px");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "black")
-                    .style("font-size", "15px");
-            });
-
-
-
-        savetext.attr("x", 0)
-            .attr("y", 100)
-            .text("SAVE")
-            .attr("fill", "black")
-            .style("font-size", "15px")
-            .on("click", function () {
-                console.log("[Saving Image]");
-                self.saveSvg(x.export_type[0]);
-            })
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .style("cursor", "pointer")
-                    .attr("fill", "blue");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "black");
-            });
-
-
-        scrolltext.attr("x", 0)
-            .attr("y", 115)
-            .text("Vertical Scrolling")
-            .attr("fill", "black")
-            .style("font-size", "15px");
-
-
-
-
-        horizontalScroll.attr("x", 250)
-            .attr("y", 100)
-            .text("Scroll Horizontally")
-            .attr("fill", "black")
-            .style("font-size", "15px");
-
-
-        unscrolltext.attr("x", 250)
-            .attr("y", 115)
-            .text("UNSCROLL")
-            .attr("fill", "black")
-            .style("font-size", "15px")
-            .on("click", function (d, i) {
-                console.log("Unscroll");
-                var old_html_widget = el;
-                old_html_widget.style.width = "100%";
-                old_html_widget.style.height = "100%";
-                x.options.yaxis_width[0] = 120;
-                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, false);
-            })
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .style("cursor", "pointer")
-                    .attr("fill", "blue");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "black");
-            });
-
     },
 
     combineSVG: function () {
