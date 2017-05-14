@@ -83,7 +83,8 @@ HTMLWidgets.widget({
         });
     },
 
-    doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, enableRowLabel) {
+    doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
+                                newMerged, scrollable, enableRowLabel, scrollFlag) {
         console.log("-- Entered doRenderValue() --");
         if (scrollable) { document.getElementsByTagName("body")[0].style.overflow = "scroll"; }
         self = this;
@@ -114,7 +115,7 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         console.log("Initializing ClustPro()");
-        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel);
+        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel, scrollFlag);
         console.log("Exited ClustPro()");
 
 

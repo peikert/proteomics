@@ -6,15 +6,6 @@
 \usage{
 initialize_graphic(title, type = graphic_type, ...)
 }
-\arguments{
-\item{title}{, project, type, number}
-}
 \description{
 This function allows you to initialize a graphic
 }
-\examples{
-initialize_graphic()
-}
-\keyword{graphic}
-\keyword{initialize}
-

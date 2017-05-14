@@ -4,14 +4,8 @@
 \alias{get_color}
 \title{Function to get color}
 \usage{
-get_color(x, colors, palette)
+get_color(x, ticks, colors)
 }
 \description{
-xxxxxx
+..............
 }
-\examples{
-get_color()
-}
-\keyword{color}
-\keyword{get}
-
