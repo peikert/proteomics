@@ -2,7 +2,7 @@
     Version: 0.0.3
 */
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, 
-                    rowDendLinesListner, colDendLinesListner, enableRowLabel,scrollFlag){
+                    rowDendLinesListner, colDendLinesListner, enableRowLabel){
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================

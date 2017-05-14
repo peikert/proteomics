@@ -19,7 +19,7 @@ HTMLWidgets.widget({
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
         x.matrix.data = [].concat.apply([], x.matrix.data); // Flattening the data array.
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, false);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, false, false);
     },
     resize: function (el, width, height, instance) {
         d3.select(el).select("svg")
@@ -37,8 +37,8 @@ HTMLWidgets.widget({
         var UniqueColors = [];
         for (i in x.color_legend.gradient) { UniqueColors[i] = x.color_legend.gradient[i].color }
         var numberOfUniqueColors = UniqueColors.length;
-        var widthOfSVG = colormap[0][0].width.baseVal.value; // a big number idicating the length of the svg
-        var startingPoint = widthOfSVG / 2;  //The point where the color legend should begin.
+        var widthOfSVG = colormap.width.baseVal.value; // a big number idicating the length of the svg
+        var startingPoint = widthOfSVG / 2;  //The point where the color legend should begin
         var widthOfOneBox = (widthOfSVG - startingPoint) / numberOfUniqueColors;
         for (i in UniqueColors) {
             xaxis.append("rect")
@@ -84,7 +84,7 @@ HTMLWidgets.widget({
     },
 
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
-                                newMerged, scrollable, enableRowLabel, scrollFlag) {
+                                newMerged, scrollable, enableRowLabel) {
         console.log("-- Entered doRenderValue() --");
         if (scrollable) { document.getElementsByTagName("body")[0].style.overflow = "scroll"; }
         self = this;
@@ -115,7 +115,7 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         console.log("Initializing ClustPro()");
-        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel, scrollFlag);
+        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel);
         console.log("Exited ClustPro()");
 
 
