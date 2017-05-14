@@ -198,7 +198,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var yaxis = inner.append("svg").attr("id","yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         ////////// SIDE BAR /////////////////////////
         var sideBarStyle = cssify(rowDendBounds);
-        sideBarStyle.width = "50px"  // Temporary for the moment. Make it in percentatge of the rowdendogram thing.
+        sideBarStyle.width = parseInt(sideBarStyle.width, 10) * 0.25 // Set the width to be 25% of the width of the rowDend.
+        sideBarStyle.width = sideBarStyle.width.toString() + "px";
         sideBarStyle.color = "blue";
         sideBarStyle.top = "0px";
         sideBarStyle.height = opts.height + "px";
