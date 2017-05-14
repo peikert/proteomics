@@ -122,36 +122,42 @@ HTMLWidgets.widget({
         //********************* HTML SIDE BAR ****************************************  
         debugger;
         var sideBar = document.getElementById("myTopnav");
-        // sideBar.style.backgroundColor = '#E5E8E8';    // Color of side bar html
-        // Add options
+        { // Gif Dimensions
+            var sideBarWidth = sideBar.offsetWidth; // int 
+            var normalGIFHeight = sideBarWidth + (sideBarWidth * 0.5);
+            var normalGIFWidth = sideBarWidth * 0.90; // 90 % of the width.
+            var normalgifHeightcssText = normalGIFHeight.toString()+"px"; // Normal height of the GIF.
+            var normalgifWidthcssText = normalGIFWidth.toString()+"px"; // Normal width of the GIF.
+            var zoomedInGidWidthCssText = sideBarWidth.toString()+"px"; // Hovered width of the GIF.
+            var normalCSSText = "height:"+normalgifHeightcssText+"; width:"+normalgifWidthcssText;
+            var hoverCSSText = "height:"+normalgifHeightcssText+"; width:"+zoomedInGidWidthCssText+";  cursor : pointer";
+        }
+
         // 1) SAVE
         var save = document.createElement("div");
         save.setAttribute("id", "save");
         save.setAttribute("title", "Save");
-        save.style.cssText = 'height:50px';
-        // Try to insert a GIF in here....
+        save.style.cssText = normalCSSText;
         save.innerHTML = saveIcon();
-        // GIF INSERTED....
         sideBar.appendChild(save);
-
-        d3.select("#save") // On click for Save
+        d3.select("#save")
             .on("click", function () {
              debugger;
              self.saveSvg(x.export_type[0]);
          })
             .on("mouseover", function (d, i) {
-                save.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer ';
+                save.style.cssText = hoverCSSText;
                 debugger;
         })
         .on("mouseout", function (d, i) {
-                save.style.cssText = 'height:50px; background-color: white';
+                save.style.cssText = normalCSSText;
         });
 
          // 2) Show Color Legend
          var showColorLegend = document.createElement("div");
          showColorLegend.setAttribute("id", "showColorLegend");
          showColorLegend.setAttribute("title", "Show Color Legend");
-         showColorLegend.style.cssText = 'height:50px';
+         showColorLegend.style.cssText = normalCSSText;
          // Insert GIF
          showColorLegend.innerHTML = showColorLegendIcon();
          //GIF Inserted
@@ -165,10 +171,10 @@ HTMLWidgets.widget({
              self.colorLegend2(el,x);
          })
             .on("mouseover", function (d, i) {
-                showColorLegend.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                showColorLegend.style.cssText = hoverCSSText;
         })
         .on("mouseout", function (d, i) {
-                showColorLegend.style.cssText = 'height:50px; background-color: white';
+                showColorLegend.style.cssText = normalCSSText;
         });
 
 
@@ -176,7 +182,7 @@ HTMLWidgets.widget({
         var vzoomin = document.createElement("div");
         vzoomin.setAttribute("id", "vzoomin");
         vzoomin.setAttribute("title", "Zoom In");
-        vzoomin.style.cssText = 'height:50px';
+        vzoomin.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
         vzoomin.innerHTML = verticalZoom();
         // GIF INSERTED....
@@ -206,17 +212,17 @@ HTMLWidgets.widget({
             window.scrollTo(0, 0);
          })
         .on("mouseover", function (d, i) {
-                vzoomin.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                vzoomin.style.cssText = hoverCSSText;
         })
         .on("mouseout", function (d, i) {
-                vzoomin.style.cssText = 'height:50px; background-color: white';
+                vzoomin.style.cssText = normalCSSText;
         });
         // 4)Vertial Zoom OUT
 
         var vzoomout = document.createElement("div");
         vzoomout.setAttribute("id", "vzoomout");
         vzoomout.setAttribute("title", "Zoom Out");
-        vzoomout.style.cssText = 'height:50px';
+        vzoomout.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
         vzoomout.innerHTML = verticalUnZoom();
         // GIF INSERTED....
@@ -245,18 +251,18 @@ HTMLWidgets.widget({
 
          })
         .on("mouseover", function (d, i) {
-                vzoomout.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                vzoomout.style.cssText = hoverCSSText;
                 debugger;
         })
         .on("mouseout", function (d, i) {
-                vzoomout.style.cssText = 'height:50px; background-color: white';
+                vzoomout.style.cssText = normalCSSText;
         });
 
         // 5) Horizontal Zoom In
         var hzoomin = document.createElement("div");
         hzoomin.setAttribute("id", "hzoomin");
         hzoomin.setAttribute("title", "Horizontal Zoom In");
-        hzoomin.style.cssText = 'height:50px';
+        hzoomin.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
         hzoomin.innerHTML = horizontalZoomIn();
         // GIF INSERTED....
@@ -286,18 +292,18 @@ HTMLWidgets.widget({
 
          })
         .on("mouseover", function (d, i) {
-                hzoomin.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                hzoomin.style.cssText = hoverCSSText;
                 debugger;
         })
         .on("mouseout", function (d, i) {
-                hzoomin.style.cssText = 'height:50px; background-color: white';
+                hzoomin.style.cssText = normalCSSText;
         });
 
         // 6) Horizontal Zoom In
         var hzoomout = document.createElement("div");
         hzoomout.setAttribute("id", "hzoomout");
         hzoomout.setAttribute("title", "Horizontal Zoom Out");
-        hzoomout.style.cssText = 'height:50px';
+        hzoomout.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
         hzoomout.innerHTML = horizontalZoomOut();
         // GIF INSERTED....
@@ -327,18 +333,18 @@ HTMLWidgets.widget({
 
          })
         .on("mouseover", function (d, i) {
-                hzoomout.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                hzoomout.style.cssText = hoverCSSText;
                 debugger;
         })
         .on("mouseout", function (d, i) {
-                hzoomout.style.cssText = 'height:50px; background-color: white';
+                hzoomout.style.cssText = normalCSSText;
         });
 
         // 5.5) Unscroll all 
         var unscroll = document.createElement("div");
         unscroll.setAttribute("id", "unscroll");
         unscroll.setAttribute("title", "UnScroll");
-        unscroll.style.cssText = 'height:50px';
+        unscroll.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
         unscroll.innerHTML = unScroll();
         // GIF INSERTED....
@@ -357,11 +363,11 @@ HTMLWidgets.widget({
              
          })
         .on("mouseover", function (d, i) {
-                unscroll.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                unscroll.style.cssText = hoverCSSText;
                 debugger;
         })
         .on("mouseout", function (d, i) {
-                unscroll.style.cssText = 'height:50px; background-color: white';
+                unscroll.style.cssText = normalCSSText;
         });
 
 
@@ -370,7 +376,7 @@ HTMLWidgets.widget({
         var enablerowlabel = document.createElement("div");
         enablerowlabel.setAttribute("id", "enablerowlabel");
         enablerowlabel.setAttribute("title", "Enable Row Legend");
-        enablerowlabel.style.cssText = 'height:50px';
+        enablerowlabel.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
         enablerowlabel.innerHTML = showRowLabel();
         // GIF INSERTED....
@@ -384,11 +390,11 @@ HTMLWidgets.widget({
              
          })
         .on("mouseover", function (d, i) {
-                enablerowlabel.style.cssText = 'height:50px; background-color: #C1C1C1; cursor : pointer';
+                enablerowlabel.style.cssText = hoverCSSText;
                 debugger;
         })
         .on("mouseout", function (d, i) {
-                enablerowlabel.style.cssText = 'height:50px; background-color: white';
+                enablerowlabel.style.cssText = normalCSSText;
         });
 
         
