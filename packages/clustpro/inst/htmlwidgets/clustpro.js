@@ -18,8 +18,9 @@ HTMLWidgets.widget({
         debugger;
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
+        var sidebar_options = {"colorLegend":true, "rowLabels":true};
         x.matrix.data = [].concat.apply([], x.matrix.data); // Flattening the data array.
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, false, false);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options);
     },
     resize: function (el, width, height, instance) {
         d3.select(el).select("svg")
@@ -29,7 +30,7 @@ HTMLWidgets.widget({
         this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
 
-    colorLegend2 : function(el,x){
+    drawColorLegend : function(el,x){
         debugger;
         var self = this;
         xaxis = d3.select("#xaxis");
@@ -56,7 +57,6 @@ HTMLWidgets.widget({
         var startLabelText = startingPoint;
         // Calculate the distance between the label texts
         var distanceBetweenLabels = (widthOfSVG - startLabelText) / (numberOfLabels - 1);
-
         for (var i in labels) {
             xaxis.append("text")
                 .attr("x", startingPoint + (distanceBetweenLabels * i))
@@ -66,25 +66,11 @@ HTMLWidgets.widget({
                 .attr("fill", "black")
                 .style("font-size", "10px");
         }
-
-
-        d3.select("#hideColorLegend")
-        .on("click",function(){
-            debugger;
-             document.getElementById("hideColorLegend").id = "showColorLegend";
-             xaxis.selectAll("rect").remove();
-             xaxis.selectAll("#colorlegends").remove();
-             d3.select("#showColorLegend")
-                .on("click", function () {
-                    debugger;
-                    document.getElementById("showColorLegend").id = "hideColorLegend";
-                self.colorLegend2(el,x);
-         })
-        });
     },
 
+
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
-                                newMerged, scrollable, enableRowLabel) {
+                                newMerged, scrollable, sidebar_options) {
         console.log("-- Entered doRenderValue() --");
         if (scrollable) { document.getElementsByTagName("body")[0].style.overflow = "scroll"; }
         self = this;
@@ -115,15 +101,19 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         console.log("Initializing ClustPro()");
-        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel);
+        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, sidebar_options);
         console.log("Exited ClustPro()");
-
-
-
+        // ******************* Color Legend *****************************************
+        // Check from the options object if colorLegend is "true". If yes, then draw color legend.
+        if(sidebar_options.colorLegend){
+            debugger;
+            self.drawColorLegend(el,x);
+        }
+        // **************************************************************************
         //********************* HTML SIDE BAR ****************************************  
         debugger;
         var sideBar = document.getElementById("myTopnav");
-        { // Gif Dimensions
+        { // Side bar Gif Dimensions
             var sideBarWidth = sideBar.offsetWidth; // int 
             var normalGIFHeight = sideBarWidth + (sideBarWidth * 0.5);
             var normalGIFWidth = sideBarWidth * 0.90; // 90 % of the width.
@@ -134,90 +124,100 @@ HTMLWidgets.widget({
             var hoverCSSText = "height:"+normalgifHeightcssText+"; width:"+zoomedInGidWidthCssText+";  cursor : pointer";
         }
 
-        // 1) SAVE
-        var save = document.createElement("div");
-        save.setAttribute("id", "save");
-        save.setAttribute("title", "Save");
-        save.style.cssText = normalCSSText;
-        save.innerHTML = saveIcon();
-        sideBar.appendChild(save);
-        d3.select("#save")
-            .on("click", function () {
-             debugger;
-             self.saveSvg(x.export_type[0]);
-         })
-            .on("mouseover", function (d, i) {
-                save.style.cssText = hoverCSSText;
+        
+
+        { // 1) SAVE 
+            var save = document.createElement("div");
+            save.setAttribute("id", "save");
+            save.setAttribute("title", "Save");
+            save.style.cssText = normalCSSText;
+            save.innerHTML = saveIcon();
+            sideBar.appendChild(save);
+            d3.select("#save")
+                .on("click", function () {
                 debugger;
-        })
-        .on("mouseout", function (d, i) {
-                save.style.cssText = normalCSSText;
-        });
+                self.saveSvg(x.export_type[0]);
+            })
+                .on("mouseover", function (d, i) {
+                    save.style.cssText = hoverCSSText;
+                    debugger;
+            })
+            .on("mouseout", function (d, i) {
+                    save.style.cssText = normalCSSText;
+            });
+        }
 
-         // 2) Show Color Legend
-         var showColorLegend = document.createElement("div");
-         showColorLegend.setAttribute("id", "showColorLegend");
-         showColorLegend.setAttribute("title", "Show Color Legend");
-         showColorLegend.style.cssText = normalCSSText;
-         // Insert GIF
-         showColorLegend.innerHTML = showColorLegendIcon();
-         //GIF Inserted
-         sideBar.appendChild(showColorLegend);
+         
+        { // 2) Show Color Legend
+            var colorLegend = document.createElement("div");
+            colorLegend.setAttribute("id", "colorLegend");
+            colorLegend.setAttribute("title", "Show Color Legend");
+            colorLegend.style.cssText = normalCSSText;
+            // Insert GIF
+            colorLegend.innerHTML = showColorLegendIcon();
+            //GIF Inserted
+            sideBar.appendChild(colorLegend);
 
-         d3.select("#showColorLegend")
-            .on("click", function () {
-                debugger;
-                document.getElementById("showColorLegend").id = "hideColorLegend";
-                showColorLegend.setAttribute("title", "Hide Color Legend");
-             self.colorLegend2(el,x);
-         })
-            .on("mouseover", function (d, i) {
-                showColorLegend.style.cssText = hoverCSSText;
-        })
-        .on("mouseout", function (d, i) {
-                showColorLegend.style.cssText = normalCSSText;
-        });
-
+            d3.select("#colorLegend")
+                .on("click", function () {
+                    debugger;
+                    if(sidebar_options.colorLegend) // If the color legend is already being displayed.
+                    { // Hide it.
+                        xaxis.selectAll("rect").remove();
+                        xaxis.selectAll("#colorlegends").remove();
+                        sidebar_options.colorLegend = false;
+                    }else{ // If not then display it. 
+                        self.drawColorLegend(el,x);
+                        sidebar_options.colorLegend = true;
+                    }
+            })
+                .on("mouseover", function (d, i) {
+                    colorLegend.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    colorLegend.style.cssText = normalCSSText;
+            }); 
+        }
 
         // 3)Vertial Zoom in
-        var vzoomin = document.createElement("div");
-        vzoomin.setAttribute("id", "vzoomin");
-        vzoomin.setAttribute("title", "Zoom In");
-        vzoomin.style.cssText = normalCSSText;
-        // Try to insert a GIF in here....
-        vzoomin.innerHTML = verticalZoom();
-        // GIF INSERTED....
-        sideBar.appendChild(vzoomin);
+        {
+            var vzoomin = document.createElement("div");
+            vzoomin.setAttribute("id", "vzoomin");
+            vzoomin.setAttribute("title", "Zoom In");
+            vzoomin.style.cssText = normalCSSText;
+            // Try to insert a GIF in here....
+            vzoomin.innerHTML = verticalZoom();
+            // GIF INSERTED....
+            sideBar.appendChild(vzoomin);
 
-        d3.select("#vzoomin") // On click for VzoomIn
-            .on("click", function () {
-             debugger;
-             
-            var new_html_widget = el;
-            var old_height = new_html_widget.style.height;
-            if (old_height == "100%") {
-                    new_html_widget.style.height = "1000px";
-            }
-            else {
-                old_height = old_height.match(/\d+/g); // get the number value from old height
-                old_height = parseInt(old_height);
-                new_height = old_height + 200;
-                new_height = new_height.toString();
-                new_height = new_height + "px";
-                new_html_widget.style.height = new_height;
+            d3.select("#vzoomin") // On click for VzoomIn
+                .on("click", function () {
+                debugger;
+                
+                var new_html_widget = el;
+                var old_height = new_html_widget.style.height;
+                if (old_height == "100%") {
+                        new_html_widget.style.height = "1000px";
+                }
+                else {
+                    old_height = old_height.match(/\d+/g); // get the number value from old height
+                    old_height = parseInt(old_height);
+                    new_height = old_height + 200;
+                    new_height = new_height.toString();
+                    new_height = new_height + "px";
+                    new_html_widget.style.height = new_height;
 
-            }
-            //new_html_widget.style.width = "1500px";
-            //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
-            window.scrollTo(0, 0);
-         })
-        .on("mouseover", function (d, i) {
-                vzoomin.style.cssText = hoverCSSText;
-        })
-        .on("mouseout", function (d, i) {
-                vzoomin.style.cssText = normalCSSText;
-        });
+                }
+                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
+                window.scrollTo(0, 0);
+            })
+            .on("mouseover", function (d, i) {
+                    vzoomin.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    vzoomin.style.cssText = normalCSSText;
+            });
+        }
         // 4)Vertial Zoom OUT
 
         var vzoomout = document.createElement("div");
@@ -248,7 +248,7 @@ HTMLWidgets.widget({
             }
             //new_html_widget.style.width = "1500px";
             //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
 
          })
         .on("mouseover", function (d, i) {
@@ -289,7 +289,7 @@ HTMLWidgets.widget({
             }
             //new_html_widget.style.width = "1500px";
             x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
 
          })
         .on("mouseover", function (d, i) {
@@ -330,7 +330,7 @@ HTMLWidgets.widget({
             }
             //new_html_widget.style.width = "1500px";
             //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, false);
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
 
          })
         .on("mouseover", function (d, i) {
@@ -359,7 +359,7 @@ HTMLWidgets.widget({
                 old_html_widget.style.width = "100%";
                 old_html_widget.style.height = "100%";
                 x.options.yaxis_width[0] = 120;
-                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, false);
+                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options);
 
              
          })
@@ -374,29 +374,36 @@ HTMLWidgets.widget({
 
 
         // 6) Enable Row Label
-        var enablerowlabel = document.createElement("div");
-        enablerowlabel.setAttribute("id", "enablerowlabel");
-        enablerowlabel.setAttribute("title", "Enable Row Legend");
-        enablerowlabel.style.cssText = normalCSSText;
-        // Try to insert a GIF in here....
-        enablerowlabel.innerHTML = showRowLabel();
-        // GIF INSERTED....
-        sideBar.appendChild(enablerowlabel);
+        {
+            var enablerowlabel = document.createElement("div");
+            enablerowlabel.setAttribute("id", "enablerowlabel");
+            enablerowlabel.setAttribute("title", "Enable Row Legend");
+            enablerowlabel.style.cssText = normalCSSText;
+            // Try to insert a GIF in here....
+            enablerowlabel.innerHTML = showRowLabel();
+            // GIF INSERTED....
+            sideBar.appendChild(enablerowlabel);
 
-        d3.select("#enablerowlabel") // On click for VzoomIn
-            .on("click", function () {
-                debugger;
-                self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, true);
-                self.disableRowLabels(el, x, rowNewickSting, colNewickString, instance, newMerged);
-             
-         })
-        .on("mouseover", function (d, i) {
-                enablerowlabel.style.cssText = hoverCSSText;
-                debugger;
-        })
-        .on("mouseout", function (d, i) {
-                enablerowlabel.style.cssText = normalCSSText;
-        });
+            d3.select("#enablerowlabel")
+                .on("click", function () {
+                    debugger;
+                    if(sidebar_options.rowLabels){
+                        sidebar_options.rowLabels = false;
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options);
+                    }else{
+                        sidebar_options.rowLabels = true;
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options);
+                    }
+                
+            })
+            .on("mouseover", function (d, i) {
+                    enablerowlabel.style.cssText = hoverCSSText;
+                    debugger;
+            })
+            .on("mouseout", function (d, i) {
+                    enablerowlabel.style.cssText = normalCSSText;
+            });
+        }
 
         
         //**************************************************************************** */
@@ -408,7 +415,7 @@ HTMLWidgets.widget({
                 console.log("you clicked a line");
                 console.log(i);
                 console.log(d);
-                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance);
+                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options);
             });
         }
 
@@ -419,7 +426,7 @@ HTMLWidgets.widget({
                 console.log("you clicked a column dendogram line");
                 console.log(i);
                 console.log(d);
-                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance);
+                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options);
             });
         }
 
@@ -532,29 +539,6 @@ HTMLWidgets.widget({
         }
     },
 
-    disableRowLabels: function (el, x, rowNewickSting, colNewickString, instance, newMerged) {
-        debugger;
-        self = this; // ? not cool 
-        //d3.select("#rowLabelEnable").remove();
-        //xaxis = d3.select("#xaxis");
-        document.getElementById("enablerowlabel").id = "disablerowlabel";
-        document.getElementById("disablerowlabel").title = "Disable Row Label";
-        
-         d3.select("#disablerowlabel")
-             .on("click", function () {
-                 debugger;
-                 self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, false);
-             });
-        //     .on("mouseover", function (d, i) {
-        //         d3.select(this)
-        //             .style("cursor", "pointer")
-        //             .attr("fill", "blue");
-        //     })
-        //     .on("mouseout", function (d, i) {
-        //         d3.select(this)
-        //             .attr("fill", "black");
-        //     });
-    },
 
     combineSVG: function () {
         debugger;
@@ -606,7 +590,7 @@ HTMLWidgets.widget({
         saveAs(new Blob([source], { type: "application/svg+xml" }), "clustpro_heatmap." + export_type); // saving in the user passed format.
     },
 
-    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance) {
+    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options) {
         var clusterSwapArray_1 = x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow + 1);
         var clusterSwapArray_2 = x.clusters.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow + 1);
         var matrixDataArray_1 = x.matrix.data.slice(d.rowRange.startRow * x.matrix.cols.length, ((d.rowRange.endRow + 1) * x.matrix.cols.length));
@@ -625,10 +609,10 @@ HTMLWidgets.widget({
             this.dataMatrixSwap(x, matrixDataArray_2, matrixDataArray_1, matrixMergeArray_2, matrixMergeArray_1, matrixDataCounter, matrixMergeCounter); // If the line clicked is the upper sibling.
         rowNewickSting = this.stringSwap(d, rowNewickSting); //refresh newick string.
         x.dendnw_row[0] = rowNewickSting;
-        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, false);
+        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options);
     },
 
-    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance) {
+    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options) {
         var columnRangeClicked = d.columnRange;
         var siblingColumnRange = d.siblingColumnRange;
         if (columnRangeClicked.start < siblingColumnRange.start) {
@@ -641,7 +625,7 @@ HTMLWidgets.widget({
         }
         colNewickString = this.stringSwap(d, colNewickString); //refresh newick string.
         x.dendnw_col[0] = colNewickString; //refresh newick string.
-        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, false);
+        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options);
     },
 
 

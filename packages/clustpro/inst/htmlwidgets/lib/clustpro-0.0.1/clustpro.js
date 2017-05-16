@@ -2,7 +2,7 @@
     Version: 0.0.3
 */
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, 
-                    rowDendLinesListner, colDendLinesListner, enableRowLabel){
+                    rowDendLinesListner, colDendLinesListner, sidebar_options){
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================
@@ -239,7 +239,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
     console.log("       [Xaxis generated]");
     console.log("       [Generating Yaxis]");
-    if(enableRowLabel){
+    if(sidebar_options.rowLabels){
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
     }
     console.log("       [Yaxis generated]");
