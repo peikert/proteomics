@@ -13,14 +13,26 @@ HTMLWidgets.widget({
             lastValue: null
         };
     },
+
+    htmlSideBarInitialize : function (el,x){
+        var el = d3.select(el);
+        var bbox = el.node().getBoundingClientRect();
+        var height = bbox.height.toString()+"px";
+        var left = "0px";
+        var top = "0px";
+        var width = (bbox.width * 0.12 * 0.25).toString() + "px";
+        return {height:height, left:left, position:"absolute", top:top, width:width};
+    },
+
     renderValue: function (el, x, instance) {
         console.log("-- Entered renderValue() --");
         debugger;
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
         var sidebar_options = {"colorLegend":true, "rowLabels":true};
+        var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         x.matrix.data = [].concat.apply([], x.matrix.data); // Flattening the data array.
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options, sideBarDimensions);
     },
     resize: function (el, width, height, instance) {
         d3.select(el).select("svg")
@@ -70,7 +82,7 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
-                                newMerged, scrollable, sidebar_options) {
+                                newMerged, scrollable, sidebar_options, sideBarDimensions) {
         console.log("-- Entered doRenderValue() --");
         if (scrollable) { document.getElementsByTagName("body")[0].style.overflow = "scroll"; }
         self = this;
@@ -101,7 +113,7 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         console.log("Initializing ClustPro()");
-        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, sidebar_options);
+        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions);
         console.log("Exited ClustPro()");
         // ******************* Color Legend *****************************************
         // Check from the options object if colorLegend is "true". If yes, then draw color legend.
@@ -208,7 +220,7 @@ HTMLWidgets.widget({
                     new_html_widget.style.height = new_height;
 
                 }
-                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
+                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
                 window.scrollTo(0, 0);
             })
             .on("mouseover", function (d, i) {
@@ -248,7 +260,7 @@ HTMLWidgets.widget({
             }
             //new_html_widget.style.width = "1500px";
             //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
 
          })
         .on("mouseover", function (d, i) {
@@ -289,7 +301,7 @@ HTMLWidgets.widget({
             }
             //new_html_widget.style.width = "1500px";
             x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
 
          })
         .on("mouseover", function (d, i) {
@@ -330,7 +342,7 @@ HTMLWidgets.widget({
             }
             //new_html_widget.style.width = "1500px";
             //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options);
+            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
 
          })
         .on("mouseover", function (d, i) {
@@ -359,7 +371,7 @@ HTMLWidgets.widget({
                 old_html_widget.style.width = "100%";
                 old_html_widget.style.height = "100%";
                 x.options.yaxis_width[0] = 120;
-                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options);
+                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
 
              
          })
@@ -389,10 +401,10 @@ HTMLWidgets.widget({
                     debugger;
                     if(sidebar_options.rowLabels){
                         sidebar_options.rowLabels = false;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
                     }else{
                         sidebar_options.rowLabels = true;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
                     }
                 
             })
@@ -609,7 +621,7 @@ HTMLWidgets.widget({
             this.dataMatrixSwap(x, matrixDataArray_2, matrixDataArray_1, matrixMergeArray_2, matrixMergeArray_1, matrixDataCounter, matrixMergeCounter); // If the line clicked is the upper sibling.
         rowNewickSting = this.stringSwap(d, rowNewickSting); //refresh newick string.
         x.dendnw_row[0] = rowNewickSting;
-        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options);
+        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions);
     },
 
     refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options) {
@@ -625,7 +637,7 @@ HTMLWidgets.widget({
         }
         colNewickString = this.stringSwap(d, colNewickString); //refresh newick string.
         x.dendnw_col[0] = colNewickString; //refresh newick string.
-        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options);
+        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions);
     },
 
 

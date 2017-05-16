@@ -2,7 +2,7 @@
     Version: 0.0.3
 */
 function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, 
-                    rowDendLinesListner, colDendLinesListner, sidebar_options){
+                    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions){
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================
@@ -197,15 +197,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var colmap = inner.append("svg").attr("id","colormap").classed("colormap", true).style(cssify(colormapBounds));
         var xaxis = inner.append("svg").attr("id","xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = inner.append("svg").attr("id","yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
-        ////////// SIDE BAR /////////////////////////
-        var sideBarStyle = cssify(rowDendBounds);
-        sideBarStyle.width = parseInt(sideBarStyle.width, 10) * 0.25 // Set the width to be 25% of the width of the rowDend.
-        sideBarStyle.width = sideBarStyle.width.toString() + "px";
-        sideBarStyle.color = "blue";
-        sideBarStyle.top = "0px";
-        sideBarStyle.height = opts.height + "px";
-        var sidebar = inner.append("div").attr({"id":"myTopnav"}).classed("topnav", true).style(sideBarStyle);
-        //////// SIDE BAR //////////////////////////
+        var sidebar = inner.append("div").attr({"id":"myTopnav"}).classed("topnav", true).style(sideBarDimensions);
 
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
         // QtWebkit viewer won't allow svg elements to overflow:visible.
