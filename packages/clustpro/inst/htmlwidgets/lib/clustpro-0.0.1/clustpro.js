@@ -1,7 +1,8 @@
 /** Last Updated: 20 February 
     Version: 0.0.3
 */
-function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, rowDendLinesListner, colDendLinesListner, enableRowLabel){
+function clustpro(selector, data, options, location_object_array,cluster_change_rows,cluster, 
+                    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions){
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================
@@ -196,6 +197,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var colmap = inner.append("svg").attr("id","colormap").classed("colormap", true).style(cssify(colormapBounds));
         var xaxis = inner.append("svg").attr("id","xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = inner.append("svg").attr("id","yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
+        var sidebar = inner.append("div").attr({"id":"myTopnav"}).classed("topnav", true).style(sideBarDimensions);
 
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
         // QtWebkit viewer won't allow svg elements to overflow:visible.
@@ -229,7 +231,7 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     var xax = axisLabels(el.select('svg.xaxis'), columnNames , true, xaxisBounds.width, xaxisBounds.height, opts.axis_padding);
     console.log("       [Xaxis generated]");
     console.log("       [Generating Yaxis]");
-    if(enableRowLabel){
+    if(sidebar_options.rowLabels){
     var yax = axisLabels(el.select('svg.yaxis'), data.rows || data.matrix.rows, false, yaxisBounds.width, yaxisBounds.height, opts.axis_padding);
     }
     console.log("       [Yaxis generated]");
@@ -269,13 +271,24 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var tip = d3.tip() //HTML of the tip
             .attr('class', 'clustpro-tip')
             .html(function(d, i) {
-                return "<table>" +
-                    "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
-                    "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
-                    "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>" +
-                    "<tr><th align=\"right\">Link</th><td>" + htmlEscape(data.tooltip.link[d.row]) + "</td></tr>" +
-                    "<tr><th align=\"right\">Description</th><td>" + htmlEscape(data.tooltip.description[d.row]) + "</td></tr>" +
-                    "</table>";
+                var html_string = "<table>" +
+                    // The constant 3 lines that will always be in the tooltip.
+                     "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
+                     "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
+                     "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>";
+                     // Grab more lines to put into the tooltip.
+                    Object.keys(data.tooltip).forEach(function(key) {
+                            html_string = html_string + "<tr><th align=\"right\">"+ key +"</th><td>" + htmlEscape(data.tooltip[key][d.row]) + "</td></tr>";
+                    });
+                html_string = html_string + "</table>";
+                // return "<table>" +
+                //     "<tr><th align=\"right\">Row</th><td>" + htmlEscape(data.rows[d.row]) + "</td></tr>" +
+                //     "<tr><th align=\"right\">Column</th><td>" + htmlEscape(data.cols[d.col]) + "</td></tr>" +
+                //     "<tr><th align=\"right\">Value</th><td>" + htmlEscape(d.label) + "</td></tr>" +
+                //     "<tr><th align=\"right\">Link</th><td>" + htmlEscape(data.tooltip.link[d.row]) + "</td></tr>" +
+                //     "<tr><th align=\"right\">Description</th><td>" + htmlEscape(data.tooltip.description[d.row]) + "</td></tr>" +
+                //     "</table>";
+                return html_string;
             })
             .direction("se")
             .style("position", "fixed");

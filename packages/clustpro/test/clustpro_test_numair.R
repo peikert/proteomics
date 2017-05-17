@@ -1,133 +1,65 @@
-#setwd("D:/git/proteomics/packages)
-# install.packages('devtools')
-# source("https://bioconductor.org/biocLite.R")
-# biocLite("Biobase")
-# biocLite("Mfuzz")
-# biocLite("ctc")
-# biocLite("roxygen2")
-# install.packages('ggplot2')
-# /home/numair/Videos/proteomics/packages
-#devtools::create("clustpro")
+# "/home/numair/Videos/proteomics/packages/clustpro"
+# install.packages("/home/numair/Videos/proteomics_temp/packages/clustpro", repos = NULL, type="source")
+
 if(F){
   library(devtools)
-#setwd("C:/Users/cpeikert/Documents/proteomics/packages/clustpro")
   setwd("/home/numair/Videos/proteomics/packages/clustpro")
 # devtools::check()
   devtools::document()
   devtools::install()
   #devtools::reload()
+
+  # unload("D:/git/proteomics/packages/clustpro")
+  #remove.packages('clustpro')
 }
+
+get_first_split_element <- function(x,split){
+  return(sub('\\s+$', '',unlist(strsplit(x, split))[1]))
+}
+
+
 setwd("/home/numair/Videos/proteomics/packages/clustpro/output")
 library("clustpro")
-# unload("D:/git/proteomics/packages/clustpro")
-#remove.packages('clustpro')
-
+##help(package = clustpro)
+clustpro_example()
 
 graphic_type <<- "tif"
-br <- min(diff(c(0,2,4,6,8,10))/40)
-color_spectrum(c(0,2,4,6,8,10),c("grey","khaki2","yellow","orange", "red"),br)
-#
 matrix <- iris[-ncol(iris)]
-#
-
-
-
-
-#########
 
 test_data = read.csv('/home/numair/Videos/proteomics/packages/clustpro/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
 rownames(test_data) <- test_data[,1]
 test_data[,1] <- NULL
 min(test_data)
 max(test_data)
-br <- min(diff(c(-1.1,-0.5,-0.1,0.1,0.5,1.1))/40)
-heatmap_color <- color_spectrum(c(-1.1,-0.5,-0.1,0.1,0.5,1.1),c("blue","lightblue","white","yellow", "red"),br)
 
-heatmap_color$label_position <- c(-1,-0.5,0,0.5,1)
+intervals <- c(-1.1,-0.5,-0.1,0.1,0.5,1.1)
+color_list <- c("blue","lightblue","white","yellow", "red")
+data  <- test_data
 
+heatmap_color <- setHeatmapColors(data=data, color_list = color_list,auto=TRUE)
 matrix <- test_data
-# matrix <- rbind(matrix,matrix)
-# matrix <- rbind(matrix,matrix)
-#########
-# matrix <- as.data.frame(matrix(round(runif(400, 0.1, 9.9),1),ncol=4,byrow=T))
-# matrix <- as.data.frame(matrix(round(runif(4800, 0.1, 9.9),1),ncol=4,byrow=T))
-# matrix <- as.data.frame(matrix(round(runif(4800*4, 0.1, 9.9),1),ncol=4,byrow=T))
-
-# colnames(matrix) <- c('A','B','C','D')
-# rownames(matrix) <- paste('gene_',c(1:nrow(matrix)))
-
-
-# data2 <- clustpro(matrix=matrix, method = "kmeans", min_k = 2, max_k = 10)
-
-get_first_split_element <- function(x,split){
-  return(sub('\\s+$', '',unlist(strsplit(x, split))[1]))
-}
 
 info_list <- list()
+info_list[['id']]  <- rownames(matrix)
 info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
 info_list[['description']] <- rep('no description', nrow(matrix))
 
-# first run this:    perform clustpro with clustering
-
-data2 <- clustpro(matrix=matrix,
+color_legend <- heatmap_color
+cluster_results <- clustpro(matrix=matrix,
                   method = "kmeans",
                   min_k = 2,
-                  max_k = 10,
-                  fixed_k = 25,
-                  tooltip = info_list,
-                  cols = TRUE,
+                  max_k = 100,
+                  fixed_k = -1,
+                  perform_clustering = TRUE,
+                  cluster_ids = NULL,
                   rows = TRUE,
+                  cols = TRUE,
+                  tooltip = info_list,
+                  save_widget = TRUE,
                   color_legend = heatmap_color,
-                  export_dir = "D://test",
-                  export_type = 'svg'
+                  width = NULL,
+                  height = NULL,
+                  export_dir = NA,
+                  export_type = 'svg',
+                  seed=1
                   )
-
-
-
-# data2 <- clustpro(matrix=matrix,
-#                   method = "kmeans",
-#                   min_k = 2,
-#                   max_k = 10,
-#                   fixed_k = 25,
-#                   tooltip = info_list,
-#                   cols = FALSE,
-#                   rows = TRUE,
-#                   color_legend = heatmap_color
-# )
-#
-# data2 <- clustpro(matrix=matrix,
-#                   method = "kmeans",
-#                   min_k = 2,
-#                   max_k = 10,
-#                   fixed_k = 25,
-#                   tooltip = info_list,
-#                   cols = TRUE,
-#                   rows = FALSE,
-#                   color_legend = heatmap_color,
-#                   export_dir = "D://test",
-#                   export_type = 'svg'
-# )
-
-#
-
-# second  run this:    use clustering results from clustpro to perform clustpro without clustering
-
-# cluster_ids <- as.vector(data2$cobject$cluster)
-# data2$col_dend_hclust
-# df_matrix <- data2$datatable
-# df_matrix$cluster <- cluster_ids
-# col_dend <- as.dendrogram(data2$col_dend_hclust)
-#
-# if(class(col_dend)=="dendrogram"){
-#   df_matrix <- df_matrix[,c(order.dendrogram(col_dend),ncol(df_matrix))]
-# }
-#
-#
-# nrow(df_matrix)
-# clustpro(matrix = df_matrix[,-ncol(df_matrix)],
-#          cluster_ids = cluster_ids,
-#         tooltip = info_list,
-#         cols = TRUE,
-#         rows = FALSE,
-#          perform_clustering = FALSE)
-#
