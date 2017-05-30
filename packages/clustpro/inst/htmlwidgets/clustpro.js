@@ -427,7 +427,7 @@ HTMLWidgets.widget({
                 console.log("you clicked a line");
                 console.log(i);
                 console.log(d);
-                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options);
+                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions);
             });
         }
 
@@ -438,7 +438,7 @@ HTMLWidgets.widget({
                 console.log("you clicked a column dendogram line");
                 console.log(i);
                 console.log(d);
-                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options);
+                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions);
             });
         }
 
@@ -533,7 +533,7 @@ HTMLWidgets.widget({
         debugger;
         // *********** Labels for the color legend **************
         var labels = x.color_legend.label_position;
-        var numberOfLabels = labels.length;self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance);
+        var numberOfLabels = labels.length;
         var labelText = xaxis.append("text");
         // Calculate the starting point of the first text element
         var startLabelText = startingPoint;
@@ -602,7 +602,7 @@ HTMLWidgets.widget({
         saveAs(new Blob([source], { type: "application/svg+xml" }), "clustpro_heatmap." + export_type); // saving in the user passed format.
     },
 
-    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options) {
+    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions) {
         var clusterSwapArray_1 = x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow + 1);
         var clusterSwapArray_2 = x.clusters.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow + 1);
         var matrixDataArray_1 = x.matrix.data.slice(d.rowRange.startRow * x.matrix.cols.length, ((d.rowRange.endRow + 1) * x.matrix.cols.length));
@@ -624,7 +624,7 @@ HTMLWidgets.widget({
         this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions);
     },
 
-    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options) {
+    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions) {
         var columnRangeClicked = d.columnRange;
         var siblingColumnRange = d.siblingColumnRange;
         if (columnRangeClicked.start < siblingColumnRange.start) {
