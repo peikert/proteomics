@@ -91,6 +91,7 @@ HTMLWidgets.widget({
         var merged = [];
         var dataMatrixIndex = 0;
         // coloring information.
+        //
         for (var i = 0; i < x.colors.data.length; i++) {
             for (var j = 0; j < x.colors.data[i].length; j++) {
                 merged.push({
