@@ -418,6 +418,37 @@ HTMLWidgets.widget({
             });
         }
 
+        // 7) Zoom Box (Experimental)
+        {
+            var zoombox = document.createElement("div");
+            zoombox.setAttribute("id", "zoombox");
+            zoombox.setAttribute("title", "Zoom Box");
+            zoombox.style.cssText = normalCSSText;
+            // Try to insert a GIF in here....
+            zoombox.innerHTML = zoomBox();
+            // GIF INSERTED....
+            sideBar.appendChild(zoombox);
+
+            d3.select("#zoombox")
+                .on("click", function () {
+                    debugger;
+                    // Put a d3 rectangle here.
+                    var rectangle = d3.select("#colormap").append("rect")
+                                        .attr("x",0)
+                                        .attr("y",0)
+                                        .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
+                                        .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
+                                        .style("opacity", 0.5);
+
+            })
+            .on("mouseover", function (d, i) {
+                    zoombox.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    zoombox.style.cssText = normalCSSText;
+            });
+        }
+
         
         //**************************************************************************** */
 
