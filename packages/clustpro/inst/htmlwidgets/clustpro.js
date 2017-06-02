@@ -91,6 +91,7 @@ HTMLWidgets.widget({
         var merged = [];
         var dataMatrixIndex = 0;
         // coloring information.
+        //
         for (var i = 0; i < x.colors.data.length; i++) {
             for (var j = 0; j < x.colors.data[i].length; j++) {
                 merged.push({
@@ -299,10 +300,8 @@ HTMLWidgets.widget({
                 x.options.yaxis_width[0] = x.options.yaxis_width[0] + 100;
                 // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
             }
-            //new_html_widget.style.width = "1500px";
             x.options.yaxis_width[0] = 600;
             self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-
          })
         .on("mouseover", function (d, i) {
                 hzoomin.style.cssText = hoverCSSText;
@@ -312,7 +311,7 @@ HTMLWidgets.widget({
                 hzoomin.style.cssText = normalCSSText;
         });
 
-        // 6) Horizontal Zoom In
+        // 6) Horizontal Zoom OUT
         var hzoomout = document.createElement("div");
         hzoomout.setAttribute("id", "hzoomout");
         hzoomout.setAttribute("title", "Horizontal Zoom Out");
@@ -417,6 +416,56 @@ HTMLWidgets.widget({
             });
         }
 
+        // 7) Zoom Box (Experimental)
+        {
+            var zoombox = document.createElement("div");
+            zoombox.setAttribute("id", "zoombox");
+            zoombox.setAttribute("title", "Zoom Box");
+            zoombox.style.cssText = normalCSSText;
+            // Try to insert a GIF in here....
+            zoombox.innerHTML = zoomBox();
+            // GIF INSERTED....
+            sideBar.appendChild(zoombox);
+            d3.select("#zoombox")
+                .on("click", function () {
+                    // Put a d3 rectangle here.
+
+
+                    var drag = d3.behavior.drag()
+                            .on('drag', function() {
+                                 box.attr("x", d3.event.x)
+                                    .attr("y", d3.event.y);
+                                rectangle.attr("width", d3.event.x + 10)
+                                                .attr("height", d3.event.y + 10);
+                            });
+                    var rectangle = d3.select("#colormap").append("rect")
+                                        .attr("x",0)
+                                        .attr("y",0)
+                                        .attr("id", "resizerectangle")
+                                        .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
+                                        .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
+                                        .style("opacity", 0.5);
+
+                   var box = d3.select("#colormap").append("rect") // The draggable box 
+                                        .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 20)
+                                        .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 20)
+                                        .attr("width", 20)
+                                        .attr("height", 20)
+                                        .attr("opacity", 0.8)
+                                        .call(drag)
+                                        .on("mouseup", function(){
+                                                            self.tempfunction(el,d3.event.x, d3.event.y, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
+                                                        }) ;   // When i release the box, the colormap should be resized.
+                  
+            })
+            .on("mouseover", function (d, i) {
+                    zoombox.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    zoombox.style.cssText = normalCSSText;
+            });
+        }
+
         
         //**************************************************************************** */
 
@@ -427,7 +476,7 @@ HTMLWidgets.widget({
                 console.log("you clicked a line");
                 console.log(i);
                 console.log(d);
-                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options);
+                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions);
             });
         }
 
@@ -438,12 +487,20 @@ HTMLWidgets.widget({
                 console.log("you clicked a column dendogram line");
                 console.log(i);
                 console.log(d);
-                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options);
+                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions);
             });
         }
 
     },
 
+    tempfunction: function(el,width,height, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions){
+        debugger;
+        // Width and height should be the plus of the x-axis label and y-axis label.
+        el.style.width = width.toString() + "px"; // should be in a string with px in the end. 
+        el.style.height = height.toString() + "px"; // should be in a string with px in the end. 
+        // still need to adjust the height of other things
+        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions);
+    },
 
     showcolorlegend: function (el, x) {
         var self = this;
@@ -533,7 +590,7 @@ HTMLWidgets.widget({
         debugger;
         // *********** Labels for the color legend **************
         var labels = x.color_legend.label_position;
-        var numberOfLabels = labels.length;self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance);
+        var numberOfLabels = labels.length;
         var labelText = xaxis.append("text");
         // Calculate the starting point of the first text element
         var startLabelText = startingPoint;
@@ -602,7 +659,7 @@ HTMLWidgets.widget({
         saveAs(new Blob([source], { type: "application/svg+xml" }), "clustpro_heatmap." + export_type); // saving in the user passed format.
     },
 
-    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options) {
+    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions) {
         var clusterSwapArray_1 = x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow + 1);
         var clusterSwapArray_2 = x.clusters.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow + 1);
         var matrixDataArray_1 = x.matrix.data.slice(d.rowRange.startRow * x.matrix.cols.length, ((d.rowRange.endRow + 1) * x.matrix.cols.length));
@@ -624,7 +681,7 @@ HTMLWidgets.widget({
         this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions);
     },
 
-    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options) {
+    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions) {
         var columnRangeClicked = d.columnRange;
         var siblingColumnRange = d.siblingColumnRange;
         if (columnRangeClicked.start < siblingColumnRange.start) {
