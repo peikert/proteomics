@@ -300,10 +300,8 @@ HTMLWidgets.widget({
                 x.options.yaxis_width[0] = x.options.yaxis_width[0] + 100;
                 // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
             }
-            //new_html_widget.style.width = "1500px";
             x.options.yaxis_width[0] = 600;
             self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-
          })
         .on("mouseover", function (d, i) {
                 hzoomin.style.cssText = hoverCSSText;
@@ -313,7 +311,7 @@ HTMLWidgets.widget({
                 hzoomin.style.cssText = normalCSSText;
         });
 
-        // 6) Horizontal Zoom In
+        // 6) Horizontal Zoom OUT
         var hzoomout = document.createElement("div");
         hzoomout.setAttribute("id", "hzoomout");
         hzoomout.setAttribute("title", "Horizontal Zoom Out");
@@ -430,13 +428,11 @@ HTMLWidgets.widget({
             sideBar.appendChild(zoombox);
             d3.select("#zoombox")
                 .on("click", function () {
-                    debugger;
                     // Put a d3 rectangle here.
 
 
                     var drag = d3.behavior.drag()
                             .on('drag', function() {
-                                debugger;
                                  box.attr("x", d3.event.x)
                                     .attr("y", d3.event.y);
                                 rectangle.attr("width", d3.event.x + 10)
@@ -456,8 +452,10 @@ HTMLWidgets.widget({
                                         .attr("width", 20)
                                         .attr("height", 20)
                                         .attr("opacity", 0.8)
-                                        .call(drag);
-
+                                        .call(drag)
+                                        .on("mouseup", function(){
+                                                            self.tempfunction(el,d3.event.x, d3.event.y, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
+                                                        }) ;   // When i release the box, the colormap should be resized.
                   
             })
             .on("mouseover", function (d, i) {
@@ -495,6 +493,14 @@ HTMLWidgets.widget({
 
     },
 
+    tempfunction: function(el,width,height, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions){
+        debugger;
+        // Width and height should be the plus of the x-axis label and y-axis label.
+        el.style.width = width.toString() + "px"; // should be in a string with px in the end. 
+        el.style.height = height.toString() + "px"; // should be in a string with px in the end. 
+        // still need to adjust the height of other things
+        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions);
+    },
 
     showcolorlegend: function (el, x) {
         var self = this;
