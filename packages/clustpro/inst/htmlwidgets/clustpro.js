@@ -428,18 +428,37 @@ HTMLWidgets.widget({
             zoombox.innerHTML = zoomBox();
             // GIF INSERTED....
             sideBar.appendChild(zoombox);
-
             d3.select("#zoombox")
                 .on("click", function () {
                     debugger;
                     // Put a d3 rectangle here.
+
+
+                    var drag = d3.behavior.drag()
+                            .on('drag', function() {
+                                debugger;
+                                 box.attr("x", d3.event.x)
+                                    .attr("y", d3.event.y);
+                                rectangle.attr("width", d3.event.x + 10)
+                                                .attr("height", d3.event.y + 10);
+                            });
                     var rectangle = d3.select("#colormap").append("rect")
                                         .attr("x",0)
                                         .attr("y",0)
+                                        .attr("id", "resizerectangle")
                                         .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
                                         .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
                                         .style("opacity", 0.5);
 
+                   var box = d3.select("#colormap").append("rect") // The draggable box 
+                                        .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 20)
+                                        .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 20)
+                                        .attr("width", 20)
+                                        .attr("height", 20)
+                                        .attr("opacity", 0.8)
+                                        .call(drag);
+
+                  
             })
             .on("mouseover", function (d, i) {
                     zoombox.style.cssText = hoverCSSText;
