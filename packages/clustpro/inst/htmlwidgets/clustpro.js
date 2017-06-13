@@ -435,33 +435,33 @@ HTMLWidgets.widget({
                             .on('drag', function() {
                                  box.attr("x", d3.event.x)
                                     .attr("y", d3.event.y);
-                                rectangle.attr("width", d3.event.x + 10)
-                                                .attr("height", d3.event.y + 10);
+                                rectangle.attr("width", d3.event.x + 20)
+                                                .attr("height", d3.event.y + 20);
                             });
-
                     // Implemetation details:
-                    // The start location of zoomArea should be the start location of the colormap. // Very imortant. Not compromisable. 
-                    // #
-                    document.getElementById("colormap").getBoundingClientRect().
-                    var zoomArea = inner.append("div").attr({"id":"zoomarea"}).classed("zoomarea", true).style(cssify(zoomAreaBounds));
-
-                    var zoomArea = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
+                    // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
+                    var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
+                    var zoomAreaSvgContainer = d3.select("#inner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
+                    var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                         .attr("x",0)
                                         .attr("y",0)
                                         .attr("id", "zoomAreasvg")
-                                        .attr("width",document.getElementById("zoomarea").offsetWidth) // Should be a specific size bigger then the color map
-                                        .attr("height", document.getElementById("zoomarea").offsetHeight) // Should be a specific size bigger then the color map
-                                        .attr("fill","pink");
+                                        .attr("width",document.getElementById("zoomarea").getBoundingClientRect().width) // Should be a specific size bigger then the color map
+                                        .attr("height", document.getElementById("zoomarea").getBoundingClientRect().height) // Should be a specific size bigger then the color map
+                                        .style("opacity",0.1);
 
-                    var rectangle = d3.select("#colormap").append("rect") // Equal to the size of the color map.
+                    var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                         .attr("x",0)
                                         .attr("y",0)
                                         .attr("id", "resizerectangle")
                                         .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
                                         .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
-                                        .style("opacity", 0.5);
+                                        .style("opacity", 0.5)
+                                        .on("mouseup", function(){
+                                                            self.tempfunction(el,d3.event.x, d3.event.y, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
+                                                        }) ;
 
-                   var box = d3.select("#colormap").append("rect") // The draggable box 
+                   var box = d3.select("#zoomarea").append("rect") // The draggable box 
                                         .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 20)
                                         .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 20)
                                         .attr("width", 20)
@@ -482,7 +482,7 @@ HTMLWidgets.widget({
         }
 
         
-        //**************************************************************************** */
+        //*****************************************************************************/
 
         var hm = heatMapObject[0];
         if (x.dendnw_row[0] != null) { // if row dendogram information is provided.
@@ -511,8 +511,8 @@ HTMLWidgets.widget({
     tempfunction: function(el,width,height, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions){
         debugger;
         // Width and height should be the plus of the x-axis label and y-axis label.
-        el.style.width = width.toString() + "px"; // should be in a string with px in the end. 
-        el.style.height = height.toString() + "px"; // should be in a string with px in the end. 
+        el.style.width = (width+ (width*0.06)).toString() + "px"; // Temporary [The calculation is not 100% correct.]
+        el.style.height = (height + (height*0.12)).toString() + "px"; // Temporary [The calculation is not 100% correct.]
         // still need to adjust the height of other things
         self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions);
     },
