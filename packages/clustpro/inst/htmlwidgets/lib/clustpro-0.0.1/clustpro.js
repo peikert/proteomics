@@ -176,6 +176,11 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
     var rowDendBounds = gridSizer.getCellBounds(0, 1);
     var yaxisBounds = gridSizer.getCellBounds(2, 1);
     var xaxisBounds = gridSizer.getCellBounds(1, 2);
+    var zoomAreaBounds = gridSizer.getCellBounds(1,1); // To be one of the things returned by this function
+    // Hack Zoom Area Bound. Height and width should be 20 % bigger.
+    zoomAreaBounds.height = zoomAreaBounds.height + 50;
+    zoomAreaBounds.width = zoomAreaBounds.width + 100;
+
     xaxisBounds.height= 200;
 
     function cssify(styles) {
@@ -198,7 +203,8 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
         var xaxis = inner.append("svg").attr("id","xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = inner.append("svg").attr("id","yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         var sidebar = inner.append("div").attr({"id":"myTopnav"}).classed("topnav", true).style(sideBarDimensions);
-
+        
+        zoomArea.style("background-color", "lightblue");
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
         // QtWebkit viewer won't allow svg elements to overflow:visible.
         xaxis.style("width", (opts.width - opts.yclust_width) + "px");
@@ -1204,5 +1210,5 @@ function clustpro(selector, data, options, location_object_array,cluster_change_
             dispatcher.on(type, listener);
             return this;
         }
-    }, rowDendLinesListner , colDendLinesListner];
+    }, rowDendLinesListner , colDendLinesListner, cssify(zoomAreaBounds)];
 }

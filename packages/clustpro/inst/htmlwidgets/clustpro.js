@@ -416,7 +416,7 @@ HTMLWidgets.widget({
             });
         }
 
-        // 7) Zoom Box (Experimental)
+        // 7) Zoom Box (EXPERIMENTAL) [ UNDERDEVELOPMENT ]
         {
             var zoombox = document.createElement("div");
             zoombox.setAttribute("id", "zoombox");
@@ -430,7 +430,7 @@ HTMLWidgets.widget({
                 .on("click", function () {
                     // Put a d3 rectangle here.
 
-
+                    debugger;
                     var drag = d3.behavior.drag()
                             .on('drag', function() {
                                  box.attr("x", d3.event.x)
@@ -438,7 +438,22 @@ HTMLWidgets.widget({
                                 rectangle.attr("width", d3.event.x + 10)
                                                 .attr("height", d3.event.y + 10);
                             });
-                    var rectangle = d3.select("#colormap").append("rect")
+
+                    // Implemetation details:
+                    // The start location of zoomArea should be the start location of the colormap. // Very imortant. Not compromisable. 
+                    // #
+                    document.getElementById("colormap").getBoundingClientRect().
+                    var zoomArea = inner.append("div").attr({"id":"zoomarea"}).classed("zoomarea", true).style(cssify(zoomAreaBounds));
+
+                    var zoomArea = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
+                                        .attr("x",0)
+                                        .attr("y",0)
+                                        .attr("id", "zoomAreasvg")
+                                        .attr("width",document.getElementById("zoomarea").offsetWidth) // Should be a specific size bigger then the color map
+                                        .attr("height", document.getElementById("zoomarea").offsetHeight) // Should be a specific size bigger then the color map
+                                        .attr("fill","pink");
+
+                    var rectangle = d3.select("#colormap").append("rect") // Equal to the size of the color map.
                                         .attr("x",0)
                                         .attr("y",0)
                                         .attr("id", "resizerectangle")
@@ -455,7 +470,7 @@ HTMLWidgets.widget({
                                         .call(drag)
                                         .on("mouseup", function(){
                                                             self.tempfunction(el,d3.event.x, d3.event.y, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
-                                                        }) ;   // When i release the box, the colormap should be resized.
+                                                        }) ;   // When box released, the colormap should be resized.
                   
             })
             .on("mouseover", function (d, i) {
