@@ -1,4 +1,4 @@
-/** Last Updated: 20th February
+/** Last Updated: 19th June
     Version: 0.0.3
 */
 HTMLWidgets.widget({
@@ -271,87 +271,6 @@ HTMLWidgets.widget({
         .on("mouseout", function (d, i) {
                 vzoomout.style.cssText = normalCSSText;
         });
-
-        // 5) Horizontal Zoom In
-        var hzoomin = document.createElement("div");
-        hzoomin.setAttribute("id", "hzoomin");
-        hzoomin.setAttribute("title", "Horizontal Zoom In");
-        hzoomin.style.cssText = normalCSSText;
-        // Try to insert a GIF in here....
-        hzoomin.innerHTML = horizontalZoomIn();
-        // GIF INSERTED....
-        sideBar.appendChild(hzoomin);
-
-        d3.select("#hzoomin") // On click for VzoomIn
-            .on("click", function () {
-             debugger;
-            var new_html_widget = el;
-            var old_width = new_html_widget.style.width;
-            if (old_width == "100%") {
-                new_html_widget.style.width = "2500px";
-            }
-            else {
-                old_width = old_width.match(/\d+/g); // get the number value from old height
-                old_width = parseInt(old_width);  //
-                new_width = old_width + 200;
-                new_width = new_width.toString();
-                new_width = new_width + "px";
-                new_html_widget.style.width = new_width;
-                x.options.yaxis_width[0] = x.options.yaxis_width[0] + 100;
-                // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
-            }
-            x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-         })
-        .on("mouseover", function (d, i) {
-                hzoomin.style.cssText = hoverCSSText;
-                debugger;
-        })
-        .on("mouseout", function (d, i) {
-                hzoomin.style.cssText = normalCSSText;
-        });
-
-        // 6) Horizontal Zoom OUT
-        var hzoomout = document.createElement("div");
-        hzoomout.setAttribute("id", "hzoomout");
-        hzoomout.setAttribute("title", "Horizontal Zoom Out");
-        hzoomout.style.cssText = normalCSSText;
-        // Try to insert a GIF in here....
-        hzoomout.innerHTML = horizontalZoomOut();
-        // GIF INSERTED....
-        sideBar.appendChild(hzoomout);
-
-        d3.select("#hzoomout") // On click for VzoomIn
-            .on("click", function () {
-             debugger;
-             var new_html_widget = el;
-            var old_width = new_html_widget.style.width;
-            if (old_width == "100%") {
-                new_html_widget.style.width = "1700px";
-            }
-            else {
-                old_width = old_width.match(/\d+/g); // get the number value from old height
-                old_width = parseInt(old_width);  //
-                new_width = old_width - 200;
-                new_width = new_width.toString();
-                new_width = new_width + "px";
-                new_html_widget.style.width = new_width;
-                x.options.yaxis_width[0] = x.options.yaxis_width[0] - 50;
-
-            }
-            //new_html_widget.style.width = "1500px";
-            //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-
-         })
-        .on("mouseover", function (d, i) {
-                hzoomout.style.cssText = hoverCSSText;
-                debugger;
-        })
-        .on("mouseout", function (d, i) {
-                hzoomout.style.cssText = normalCSSText;
-        });
-
         // 5.5) Unscroll all 
         var unscroll = document.createElement("div");
         unscroll.setAttribute("id", "unscroll");
@@ -416,7 +335,7 @@ HTMLWidgets.widget({
             });
         }
 
-        // 7) Zoom Box (Experimental)
+        // 7) Zoom Box (EXPERIMENTAL) [ UNDERDEVELOPMENT ]
         {
             var zoombox = document.createElement("div");
             zoombox.setAttribute("id", "zoombox");
@@ -429,16 +348,47 @@ HTMLWidgets.widget({
             d3.select("#zoombox")
                 .on("click", function () {
                     // Put a d3 rectangle here.
-
+                    debugger;
+                    dimensions = self.calculateDimensions();
+                    var old_html_widget = el;
+                    var old_el_style_width = dimensions[0];
+                    var old_el_style_height = dimensions[1];
+                    el.style.width = "5000px"; // Increase the over all scrollable area Temporaray value !
+                    el.style.height = "5000px"; // Increase the over all scrollable area  Temporaray Value !
+                    document.getElementsByTagName("body")[0].style.overflow = "scroll";
 
                     var drag = d3.behavior.drag()
                             .on('drag', function() {
-                                 box.attr("x", d3.event.x)
-                                    .attr("y", d3.event.y);
-                                rectangle.attr("width", d3.event.x + 10)
-                                                .attr("height", d3.event.y + 10);
+                                 box.attr("x", d3.event.x - 25)
+                                    .attr("y", d3.event.y - 25);
+                                rectangle.attr("width", d3.event.x - 5)
+                                         .attr("height", d3.event.y -5);
                             });
-                    var rectangle = d3.select("#colormap").append("rect")
+                    // Implemetation details:
+                    // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
+                    var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
+                    var zoomAreaSvgContainer = d3.select("#inner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
+                    var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
+                                        .attr("x",0)
+                                        .attr("y",0)
+                                        .attr("id", "zoomAreasvg")
+                                        .attr("width",document.getElementById("zoomarea").getBoundingClientRect().width) // Should be a specific size bigger then the color map
+                                        .attr("height", document.getElementById("zoomarea").getBoundingClientRect().height) // Should be a specific size bigger then the color map
+                                        .style("opacity",0)
+                                        .on("mouseup", function(){
+                                                            debugger;
+                                                            console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
+                                                            var e = d3.event.target;
+                                                            var dim = e.getBoundingClientRect();
+                                                            var x_coordinate = d3.event.clientX - dim.left; // ADD width of the rowdendogram or the left distance of the color map ?
+                                                            var y_coordinate = d3.event.clientY - dim.top; // Add the height of the colDendogram or the top portion of the color map ?
+                                                            var width_increase = x_coordinate - d3.select("#colormap")[0][0].width.baseVal.value;
+                                                            var height_increase =  y_coordinate - d3.select("#colormap")[0][0].height.baseVal.value;
+                                                            var new_width = old_el_style_width + width_increase;
+                                                            var new_height = old_el_style_height + height_increase;
+                                                            self.tempfunction(el,new_width, new_height, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
+                                                        });
+                    var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                         .attr("x",0)
                                         .attr("y",0)
                                         .attr("id", "resizerectangle")
@@ -446,17 +396,25 @@ HTMLWidgets.widget({
                                         .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
                                         .style("opacity", 0.5);
 
-                   var box = d3.select("#colormap").append("rect") // The draggable box 
+                   var box = d3.select("#zoomarea").append("rect") // The draggable box 
                                         .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 20)
                                         .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 20)
+                                        .attr("id","draggablebox")
                                         .attr("width", 20)
                                         .attr("height", 20)
                                         .attr("opacity", 0.8)
-                                        .call(drag)
-                                        .on("mouseup", function(){
-                                                            self.tempfunction(el,d3.event.x, d3.event.y, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
-                                                        }) ;   // When i release the box, the colormap should be resized.
-                  
+                                        .call(drag);    
+
+                  document.getElementById("zoombox").setAttribute("id", "unzoom");
+                  d3.select("#unzoom")
+                        .on("click", function() {
+                            debugger;
+                            old_html_widget.style.width = "100%";
+                            old_html_widget.style.height = "100%";
+                            x.options.yaxis_width[0] = 120;
+                             document.getElementsByTagName("body")[0].style.overflow = "hidden";
+                            self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
+                        });
             })
             .on("mouseover", function (d, i) {
                     zoombox.style.cssText = hoverCSSText;
@@ -467,7 +425,7 @@ HTMLWidgets.widget({
         }
 
         
-        //**************************************************************************** */
+        //*****************************************************************************/
 
         var hm = heatMapObject[0];
         if (x.dendnw_row[0] != null) { // if row dendogram information is provided.
@@ -493,11 +451,21 @@ HTMLWidgets.widget({
 
     },
 
-    tempfunction: function(el,width,height, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions){
+    calculateDimensions: function(){ // Returns the combined widths and heights of all the elements in the html container.
         debugger;
-        // Width and height should be the plus of the x-axis label and y-axis label.
-        el.style.width = width.toString() + "px"; // should be in a string with px in the end. 
-        el.style.height = height.toString() + "px"; // should be in a string with px in the end. 
+        var width = document.getElementById("rowDend").getBoundingClientRect().width + 
+                        document.getElementById("colormap").getBoundingClientRect().width + 
+                            document.getElementById("yaxis").getBoundingClientRect().width;
+        var height = document.getElementById("coldDend").getBoundingClientRect().height +
+                        document.getElementById("colormap").getBoundingClientRect().height +
+                            document.getElementById("coldDend").getBoundingClientRect().height; // whats wrong with this ?
+        return [width, height];
+    },
+
+    tempfunction: function(el, new_width , new_height, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions){
+        debugger;
+        el.style.width = new_width.toString() + "px"; // Temporary [The calculation is not 100% correct.]
+        el.style.height = new_height.toString() + "px"; // Temporary [The calculation is not 100% correct.]
         // still need to adjust the height of other things
         self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions);
     },
