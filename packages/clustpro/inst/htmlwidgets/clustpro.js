@@ -1,4 +1,4 @@
-/** Last Updated: 20th February
+/** Last Updated: 19th June
     Version: 0.0.3
 */
 HTMLWidgets.widget({
@@ -271,87 +271,6 @@ HTMLWidgets.widget({
         .on("mouseout", function (d, i) {
                 vzoomout.style.cssText = normalCSSText;
         });
-
-        // 5) Horizontal Zoom In
-        var hzoomin = document.createElement("div");
-        hzoomin.setAttribute("id", "hzoomin");
-        hzoomin.setAttribute("title", "Horizontal Zoom In");
-        hzoomin.style.cssText = normalCSSText;
-        // Try to insert a GIF in here....
-        hzoomin.innerHTML = horizontalZoomIn();
-        // GIF INSERTED....
-        sideBar.appendChild(hzoomin);
-
-        d3.select("#hzoomin") // On click for VzoomIn
-            .on("click", function () {
-             debugger;
-            var new_html_widget = el;
-            var old_width = new_html_widget.style.width;
-            if (old_width == "100%") {
-                new_html_widget.style.width = "2500px";
-            }
-            else {
-                old_width = old_width.match(/\d+/g); // get the number value from old height
-                old_width = parseInt(old_width);  //
-                new_width = old_width + 200;
-                new_width = new_width.toString();
-                new_width = new_width + "px";
-                new_html_widget.style.width = new_width;
-                x.options.yaxis_width[0] = x.options.yaxis_width[0] + 100;
-                // AAD AN OPTION TO JUST INCREASE THE Y-AXIS WIDTH
-            }
-            x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-         })
-        .on("mouseover", function (d, i) {
-                hzoomin.style.cssText = hoverCSSText;
-                debugger;
-        })
-        .on("mouseout", function (d, i) {
-                hzoomin.style.cssText = normalCSSText;
-        });
-
-        // 6) Horizontal Zoom OUT
-        var hzoomout = document.createElement("div");
-        hzoomout.setAttribute("id", "hzoomout");
-        hzoomout.setAttribute("title", "Horizontal Zoom Out");
-        hzoomout.style.cssText = normalCSSText;
-        // Try to insert a GIF in here....
-        hzoomout.innerHTML = horizontalZoomOut();
-        // GIF INSERTED....
-        sideBar.appendChild(hzoomout);
-
-        d3.select("#hzoomout") // On click for VzoomIn
-            .on("click", function () {
-             debugger;
-             var new_html_widget = el;
-            var old_width = new_html_widget.style.width;
-            if (old_width == "100%") {
-                new_html_widget.style.width = "1700px";
-            }
-            else {
-                old_width = old_width.match(/\d+/g); // get the number value from old height
-                old_width = parseInt(old_width);  //
-                new_width = old_width - 200;
-                new_width = new_width.toString();
-                new_width = new_width + "px";
-                new_html_widget.style.width = new_width;
-                x.options.yaxis_width[0] = x.options.yaxis_width[0] - 50;
-
-            }
-            //new_html_widget.style.width = "1500px";
-            //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-
-         })
-        .on("mouseover", function (d, i) {
-                hzoomout.style.cssText = hoverCSSText;
-                debugger;
-        })
-        .on("mouseout", function (d, i) {
-                hzoomout.style.cssText = normalCSSText;
-        });
-
         // 5.5) Unscroll all 
         var unscroll = document.createElement("div");
         unscroll.setAttribute("id", "unscroll");
@@ -493,6 +412,7 @@ HTMLWidgets.widget({
                             old_html_widget.style.width = "100%";
                             old_html_widget.style.height = "100%";
                             x.options.yaxis_width[0] = 120;
+                             document.getElementsByTagName("body")[0].style.overflow = "hidden";
                             self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
                         });
             })
