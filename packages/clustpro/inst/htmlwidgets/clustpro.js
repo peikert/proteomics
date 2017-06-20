@@ -17,11 +17,11 @@ HTMLWidgets.widget({
     htmlSideBarInitialize : function (el,x){
         var el = d3.select(el);
         var bbox = el.node().getBoundingClientRect();
-        var height = bbox.height.toString()+"px";
-        var left = "0px";
-        var top = "0px";
-        var width = (bbox.width * 0.12 * 0.25).toString() + "px";
-        return {height:height, left:left, position:"absolute", top:top, width:width};
+        var height = bbox.height;
+        var left = 0;
+        var top = 0;
+        var width = bbox.width * 0.12 * 0.25;
+        return {height:height, left:left, top:top, width:width};
     },
 
     renderValue: function (el, x, instance) {
@@ -196,7 +196,7 @@ HTMLWidgets.widget({
                     colorLegend.style.cssText = normalCSSText;
             }); 
         }
-        
+
         // 5.5) Unscroll all 
         var unscroll = document.createElement("div");
         unscroll.setAttribute("id", "unscroll");
