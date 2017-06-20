@@ -84,7 +84,12 @@ HTMLWidgets.widget({
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
                                 newMerged, scrollable, sidebar_options, sideBarDimensions) {
         console.log("-- Entered doRenderValue() --");
-        if (scrollable) { document.getElementsByTagName("body")[0].style.overflow = "scroll"; }
+        if (scrollable){ 
+            document.getElementsByTagName("body")[0].style.overflow = "scroll";
+        } else {
+            document.getElementsByTagName("body")[0].style.overflow = "hidden";
+        } 
+        window.scrollTo(0, 0);
         self = this;
         instance.lastValue = x;
         el.innerHTML = "";
@@ -192,7 +197,7 @@ HTMLWidgets.widget({
             }); 
         }
 
-        // 3)Vertial Zoom in
+        // 3)Vertial Zoom IN
         {
             var vzoomin = document.createElement("div");
             vzoomin.setAttribute("id", "vzoomin");
@@ -348,15 +353,14 @@ HTMLWidgets.widget({
             d3.select("#zoombox")
                 .on("click", function () {
                     // Put a d3 rectangle here.
-                    debugger;
                     dimensions = self.calculateDimensions();
+                    window.scrollTo(document.getElementById("colormap").getBoundingClientRect().width, document.getElementById("colormap").getBoundingClientRect().height); // Scroll to the bottom right
                     var old_html_widget = el;
                     var old_el_style_width = dimensions[0];
                     var old_el_style_height = dimensions[1];
                     el.style.width = "5000px"; // Increase the over all scrollable area Temporaray value !
                     el.style.height = "5000px"; // Increase the over all scrollable area  Temporaray Value !
                     document.getElementsByTagName("body")[0].style.overflow = "scroll";
-
                     var drag = d3.behavior.drag()
                             .on('drag', function() {
                                  box.attr("x", d3.event.x - 25)
@@ -467,7 +471,7 @@ HTMLWidgets.widget({
         el.style.width = new_width.toString() + "px"; // Temporary [The calculation is not 100% correct.]
         el.style.height = new_height.toString() + "px"; // Temporary [The calculation is not 100% correct.]
         // still need to adjust the height of other things
-        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions);
+        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
     },
 
     showcolorlegend: function (el, x) {
