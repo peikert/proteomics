@@ -29,7 +29,7 @@ HTMLWidgets.widget({
         debugger;
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
-        var sidebar_options = {"colorLegend":true, "rowLabels":true};
+        var sidebar_options = {"colorLegend":true, "rowLabels":true, "zoom_enabled":false};
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         x.matrix.data = [].concat.apply([], x.matrix.data); // Flattening the data array.
         this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options, sideBarDimensions);
@@ -196,86 +196,7 @@ HTMLWidgets.widget({
                     colorLegend.style.cssText = normalCSSText;
             }); 
         }
-
-        // 3)Vertial Zoom IN
-        {
-            var vzoomin = document.createElement("div");
-            vzoomin.setAttribute("id", "vzoomin");
-            vzoomin.setAttribute("title", "Zoom In");
-            vzoomin.style.cssText = normalCSSText;
-            // Try to insert a GIF in here....
-            vzoomin.innerHTML = verticalZoom();
-            // GIF INSERTED....
-            sideBar.appendChild(vzoomin);
-
-            d3.select("#vzoomin") // On click for VzoomIn
-                .on("click", function () {
-                debugger;
-                
-                var new_html_widget = el;
-                var old_height = new_html_widget.style.height;
-                if (old_height == "100%") {
-                        new_html_widget.style.height = "1000px";
-                }
-                else {
-                    old_height = old_height.match(/\d+/g); // get the number value from old height
-                    old_height = parseInt(old_height);
-                    new_height = old_height + 200;
-                    new_height = new_height.toString();
-                    new_height = new_height + "px";
-                    new_html_widget.style.height = new_height;
-
-                }
-                self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-                window.scrollTo(0, 0);
-            })
-            .on("mouseover", function (d, i) {
-                    vzoomin.style.cssText = hoverCSSText;
-            })
-            .on("mouseout", function (d, i) {
-                    vzoomin.style.cssText = normalCSSText;
-            });
-        }
-        // 4)Vertial Zoom OUT
-
-        var vzoomout = document.createElement("div");
-        vzoomout.setAttribute("id", "vzoomout");
-        vzoomout.setAttribute("title", "Zoom Out");
-        vzoomout.style.cssText = normalCSSText;
-        // Try to insert a GIF in here....
-        vzoomout.innerHTML = verticalUnZoom();
-        // GIF INSERTED....
-        sideBar.appendChild(vzoomout);
-
-        d3.select("#vzoomout") // On click for VzoomIn
-            .on("click", function () {
-             debugger;
-             var new_html_widget = el;
-            var old_height = new_html_widget.style.height;
-            if (old_height == "100%") {
-                new_html_widget.style.height = "1000px";
-            }
-            else {
-                old_height = old_height.match(/\d+/g); // get the number value from old height
-                old_height = parseInt(old_height);  //
-                new_height = old_height - 200;
-                new_height = new_height.toString();
-                new_height = new_height + "px";
-                new_html_widget.style.height = new_height;
-
-            }
-            //new_html_widget.style.width = "1500px";
-            //x.options.yaxis_width[0] = 600;
-            self.doRenderValue(new_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
-
-         })
-        .on("mouseover", function (d, i) {
-                vzoomout.style.cssText = hoverCSSText;
-                debugger;
-        })
-        .on("mouseout", function (d, i) {
-                vzoomout.style.cssText = normalCSSText;
-        });
+        
         // 5.5) Unscroll all 
         var unscroll = document.createElement("div");
         unscroll.setAttribute("id", "unscroll");
@@ -350,75 +271,81 @@ HTMLWidgets.widget({
             zoombox.innerHTML = zoomBox();
             // GIF INSERTED....
             sideBar.appendChild(zoombox);
+            var old_html_widget = el.style.width;
+            var old_html_height = el.style.height;
             d3.select("#zoombox")
                 .on("click", function () {
-                    // Put a d3 rectangle here.
-                    dimensions = self.calculateDimensions();
-                    window.scrollTo(document.getElementById("colormap").getBoundingClientRect().width, document.getElementById("colormap").getBoundingClientRect().height); // Scroll to the bottom right
-                    var old_html_widget = el;
-                    var old_el_style_width = dimensions[0];
-                    var old_el_style_height = dimensions[1];
-                    el.style.width = "5000px"; // Increase the over all scrollable area Temporaray value !
-                    el.style.height = "5000px"; // Increase the over all scrollable area  Temporaray Value !
-                    document.getElementsByTagName("body")[0].style.overflow = "scroll";
-                    var drag = d3.behavior.drag()
-                            .on('drag', function() {
-                                 box.attr("x", d3.event.x - 25)
-                                    .attr("y", d3.event.y - 25);
-                                rectangle.attr("width", d3.event.x - 5)
-                                         .attr("height", d3.event.y -5);
-                            });
-                    // Implemetation details:
-                    // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
-                    var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
-                    var zoomAreaSvgContainer = d3.select("#inner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
-                    var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
-                                        .attr("x",0)
-                                        .attr("y",0)
-                                        .attr("id", "zoomAreasvg")
-                                        .attr("width",document.getElementById("zoomarea").getBoundingClientRect().width) // Should be a specific size bigger then the color map
-                                        .attr("height", document.getElementById("zoomarea").getBoundingClientRect().height) // Should be a specific size bigger then the color map
-                                        .style("opacity",0)
-                                        .on("mouseup", function(){
-                                                            debugger;
-                                                            console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
-                                                            var e = d3.event.target;
-                                                            var dim = e.getBoundingClientRect();
-                                                            var x_coordinate = d3.event.clientX - dim.left; // ADD width of the rowdendogram or the left distance of the color map ?
-                                                            var y_coordinate = d3.event.clientY - dim.top; // Add the height of the colDendogram or the top portion of the color map ?
-                                                            var width_increase = x_coordinate - d3.select("#colormap")[0][0].width.baseVal.value;
-                                                            var height_increase =  y_coordinate - d3.select("#colormap")[0][0].height.baseVal.value;
-                                                            var new_width = old_el_style_width + width_increase;
-                                                            var new_height = old_el_style_height + height_increase;
-                                                            self.tempfunction(el,new_width, new_height, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
-                                                        });
-                    var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
-                                        .attr("x",0)
-                                        .attr("y",0)
-                                        .attr("id", "resizerectangle")
-                                        .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
-                                        .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
-                                        .style("opacity", 0.5);
+                    debugger;
+                    if(sidebar_options.zoom_enabled)
+                    {
+                        debugger;
+                        // Just remove the SVGs here and turn the scroll into "hide".
+                        sidebar_options.zoom_enabled = false;
+                        d3.select("#draggablebox").remove();
+                        d3.select("#resizerectangle").remove();
+                        d3.select("#zoomAreasvg").remove();
+                        d3.select("#zoomarea").remove();
+                        el.style.width = old_html_widget;
+                        el.style.height = old_html_height;
 
-                   var box = d3.select("#zoomarea").append("rect") // The draggable box 
-                                        .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 20)
-                                        .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 20)
-                                        .attr("id","draggablebox")
-                                        .attr("width", 20)
-                                        .attr("height", 20)
-                                        .attr("opacity", 0.8)
-                                        .call(drag);    
+                    } else {
+                        sidebar_options.zoom_enabled = true;
+                        dimensions = self.calculateDimensions();
+                        window.scrollTo(document.getElementById("colormap").getBoundingClientRect().width, document.getElementById("colormap").getBoundingClientRect().height); // Scroll to the bottom right
+                        var old_el_style_width = dimensions[0];
+                        var old_el_style_height = dimensions[1];
+                        el.style.width = "5000px"; // Increase the over all scrollable area Temporaray value ! // Should be in some percentage value !
+                        el.style.height = "5000px"; // Increase the over all scrollable area  Temporaray Value !   Should be in some percentage value !
+                        document.getElementsByTagName("body")[0].style.overflow = "scroll";
+                        var drag = d3.behavior.drag()
+                                .on('drag', function() {
+                                    box.attr("x", d3.event.x - 25)
+                                        .attr("y", d3.event.y - 25);
+                                    rectangle.attr("width", d3.event.x - 5)
+                                            .attr("height", d3.event.y -5);
+                                });
+                        // Implemetation details:
+                        // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
+                        var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
+                        var zoomAreaSvgContainer = d3.select("#inner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
+                        var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
+                                            .attr("x",0)
+                                            .attr("y",0)
+                                            .attr("id", "zoomAreasvg")
+                                            .attr("width",document.getElementById("zoomarea").getBoundingClientRect().width) // Should be a specific size bigger then the color map
+                                            .attr("height", document.getElementById("zoomarea").getBoundingClientRect().height) // Should be a specific size bigger then the color map
+                                            .style("opacity",0)
+                                            .on("mouseup", function(){
+                                                                debugger;
+                                                                console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
+                                                                var e = d3.event.target;
+                                                                var dim = e.getBoundingClientRect();
+                                                                var x_coordinate = d3.event.clientX - dim.left; // ADD width of the rowdendogram or the left distance of the color map ?
+                                                                var y_coordinate = d3.event.clientY - dim.top; // Add the height of the colDendogram or the top portion of the color map ?
+                                                                var width_increase = x_coordinate - d3.select("#colormap")[0][0].width.baseVal.value;
+                                                                var height_increase =  y_coordinate - d3.select("#colormap")[0][0].height.baseVal.value;
+                                                                var new_width = old_el_style_width + width_increase;
+                                                                var new_height = old_el_style_height + height_increase;
+                                                                sidebar_options.zoom_enabled = false;
+                                                                self.tempfunction(el,new_width.toString() + "px", new_height.toString() + "px", x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
+                                                            });
+                        var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
+                                            .attr("x",0)
+                                            .attr("y",0)
+                                            .attr("id", "resizerectangle")
+                                            .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
+                                            .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
+                                            .style("opacity", 0.5);
 
-                  document.getElementById("zoombox").setAttribute("id", "unzoom");
-                  d3.select("#unzoom")
-                        .on("click", function() {
-                            debugger;
-                            old_html_widget.style.width = "100%";
-                            old_html_widget.style.height = "100%";
-                            x.options.yaxis_width[0] = 120;
-                             document.getElementsByTagName("body")[0].style.overflow = "hidden";
-                            self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
-                        });
+                    var box = d3.select("#zoomarea").append("rect") // The draggable box 
+                                            .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 20)
+                                            .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 20)
+                                            .attr("id","draggablebox")
+                                            .attr("width", 20)
+                                            .attr("height", 20)
+                                            .attr("opacity", 0.8)
+                                            .call(drag);
+                    }
             })
             .on("mouseover", function (d, i) {
                     zoombox.style.cssText = hoverCSSText;
@@ -426,9 +353,8 @@ HTMLWidgets.widget({
             .on("mouseout", function (d, i) {
                     zoombox.style.cssText = normalCSSText;
             });
-        }
+        } 
 
-        
         //*****************************************************************************/
 
         var hm = heatMapObject[0];
@@ -468,8 +394,8 @@ HTMLWidgets.widget({
 
     tempfunction: function(el, new_width , new_height, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions){
         debugger;
-        el.style.width = new_width.toString() + "px"; // Temporary [The calculation is not 100% correct.]
-        el.style.height = new_height.toString() + "px"; // Temporary [The calculation is not 100% correct.]
+        el.style.width = new_width; // Temporary [The calculation is not 100% correct.]
+        el.style.height = new_height; // Temporary [The calculation is not 100% correct.]
         // still need to adjust the height of other things
         self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
     },
