@@ -197,7 +197,7 @@ HTMLWidgets.widget({
             }); 
         }
 
-        // 5.5) Unscroll all 
+        // 3) Unscroll all 
         var unscroll = document.createElement("div");
         unscroll.setAttribute("id", "unscroll");
         unscroll.setAttribute("title", "UnScroll");
@@ -229,7 +229,7 @@ HTMLWidgets.widget({
 
 
 
-        // 6) Enable Row Label
+        // 4) Enable Row Label
         {
             var enablerowlabel = document.createElement("div");
             enablerowlabel.setAttribute("id", "enablerowlabel");
@@ -261,7 +261,7 @@ HTMLWidgets.widget({
             });
         }
 
-        // 7) Zoom Box (EXPERIMENTAL) [ UNDERDEVELOPMENT ]
+        // 5) Zoom Box (EXPERIMENTAL) [ UNDERDEVELOPMENT ]
         {
             var zoombox = document.createElement("div");
             zoombox.setAttribute("id", "zoombox");
@@ -294,8 +294,8 @@ HTMLWidgets.widget({
                         window.scrollTo(document.getElementById("colormap").getBoundingClientRect().width, document.getElementById("colormap").getBoundingClientRect().height); // Scroll to the bottom right
                         var old_el_style_width = dimensions[0];
                         var old_el_style_height = dimensions[1];
-                        el.style.width = "5000px"; // Increase the over all scrollable area Temporaray value ! // Should be in some percentage value !
-                        el.style.height = "5000px"; // Increase the over all scrollable area  Temporaray Value !   Should be in some percentage value !
+                        el.style.width = heatMapObject[3].width; // Increase the over all scrollable area 
+                        el.style.height = heatMapObject[3].height; // Increase the over all scrollable area
                         document.getElementsByTagName("body")[0].style.overflow = "scroll";
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
