@@ -68,7 +68,7 @@ HTMLWidgets.widget({
         // Calculate the starting point of the first text element
         var startLabelText = startingPoint;
         // Calculate the distance between the label texts
-        var distanceBetweenLabels = (widthOfSVG - startLabelText) / (numberOfLabels - 1);
+        var distanceBetweenLabels = (widthOfSVG - 4 - startLabelText) / (numberOfLabels - 1);  // Issue # 17
         for (var i in labels) {
             xaxis.append("text")
                 .attr("x", startingPoint + (distanceBetweenLabels * i))
