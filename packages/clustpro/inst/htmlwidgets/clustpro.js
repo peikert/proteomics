@@ -299,10 +299,10 @@ HTMLWidgets.widget({
                         document.getElementsByTagName("body")[0].style.overflow = "scroll";
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
-                                    box.attr("x", d3.event.x - 25)
-                                        .attr("y", d3.event.y - 25);
-                                    rectangle.attr("width", d3.event.x - 5)
-                                            .attr("height", d3.event.y -5);
+                                    box.attr("x", d3.event.x - 20)
+                                        .attr("y", d3.event.y - 20);
+                                    rectangle.attr("width", d3.event.x +10)
+                                            .attr("height", d3.event.y +10);
                                 });
                         // Implemetation details:
                         // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
@@ -314,21 +314,7 @@ HTMLWidgets.widget({
                                             .attr("id", "zoomAreasvg")
                                             .attr("width",document.getElementById("zoomarea").getBoundingClientRect().width) // Should be a specific size bigger then the color map
                                             .attr("height", document.getElementById("zoomarea").getBoundingClientRect().height) // Should be a specific size bigger then the color map
-                                            .style("opacity",0)
-                                            .on("mouseup", function(){
-                                                                debugger;
-                                                                console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
-                                                                var e = d3.event.target;
-                                                                var dim = e.getBoundingClientRect();
-                                                                var x_coordinate = d3.event.clientX - dim.left; // ADD width of the rowdendogram or the left distance of the color map ?
-                                                                var y_coordinate = d3.event.clientY - dim.top; // Add the height of the colDendogram or the top portion of the color map ?
-                                                                var width_increase = x_coordinate - d3.select("#colormap")[0][0].width.baseVal.value;
-                                                                var height_increase =  y_coordinate - d3.select("#colormap")[0][0].height.baseVal.value;
-                                                                var new_width = old_el_style_width + width_increase;
-                                                                var new_height = old_el_style_height + height_increase;
-                                                                sidebar_options.zoom_enabled = false;
-                                                                self.tempfunction(el,new_width.toString() + "px", new_height.toString() + "px", x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions)
-                                                            });
+                                            .style("opacity",0);
                         var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                             .attr("x",0)
                                             .attr("y",0)
@@ -336,15 +322,31 @@ HTMLWidgets.widget({
                                             .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
                                             .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
                                             .style("opacity", 0.5);
-
                     var box = d3.select("#zoomarea").append("rect") // The draggable box 
-                                            .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 20)
-                                            .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 20)
+                                            .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 30)
+                                            .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 30)
                                             .attr("id","draggablebox")
-                                            .attr("width", 20)
-                                            .attr("height", 20)
+                                            .attr("width", 30)
+                                            .attr("height", 30)
                                             .attr("opacity", 0.8)
-                                            .call(drag);
+                                            .call(drag)
+                                            .on("mouseup", function(){
+                                                                debugger;
+                                                                console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
+                                                                var e = d3.event.target;
+                                                                var dim = e.getBoundingClientRect();
+                                                                var x_coordinate = d3.event.clientX - 
+                                                                                            document.getElementById("colormap").getBoundingClientRect().left + 
+                                                                                            document.getElementById("inner").getBoundingClientRect().left ; // Subtract width of the rowdendogram or the left distance of the color map ?
+                                                                var y_coordinate = d3.event.clientY - 
+                                                                                            document.getElementById("colormap").getBoundingClientRect().top // Subtract the height of the colDendogram or the top portion of the color map ?
+                                                                var width_increase = x_coordinate - d3.select("#colormap")[0][0].width.baseVal.value;
+                                                                var height_increase =  y_coordinate - d3.select("#colormap")[0][0].height.baseVal.value;
+                                                                var new_width = old_el_style_width + width_increase;
+                                                                var new_height = old_el_style_height + height_increase;
+                                                                sidebar_options.zoom_enabled = false;
+                                                                self.tempfunction(el,new_width.toString() + "px", new_height.toString() + "px", x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
+                                                            });
                     }
             })
             .on("mouseover", function (d, i) {
