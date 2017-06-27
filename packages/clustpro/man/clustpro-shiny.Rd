@@ -28,3 +28,4 @@ is useful if you want to save an expression in a variable.}
 Output and render functions for using clustpro within Shiny
 applications and interactive Rmd documents.
 }
+

@@ -3,5 +3,6 @@
 export(clustpro)
 export(clustproOutput)
 export(clustpro_example)
+export(get_best_k)
 export(renderClustpro)
 export(setHeatmapColors)

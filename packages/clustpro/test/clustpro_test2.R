@@ -23,9 +23,12 @@ graphic_type <<- "tif"
 # matrix <- iris[-ncol(iris)]
 #
 
-msdata <- readRDS('data/sample_data.rds')
-min(msdata[,c(3:6)])
-max(msdata[,c(3:6)])
+# msdata <- readRDS('data/sample_data.rds')
+msdata <- read.csv('D:/git/proteomics/packages/clustpro/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+colnames(msdata)
+
+min(msdata[,c(1:6)])
+max(msdata[,c(1:6)])
 intervals <- c(-10.1,-5.0,-2.5,2.5,5.0,10.1)
 color_list <- c("blue","lightblue","white","yellow", "red")
 

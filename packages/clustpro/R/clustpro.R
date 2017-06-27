@@ -5,7 +5,7 @@
 #' @export
 #'
 clustpro_example <- function(){
-  graphic_type <<- "tif"
+  # graphic_type <<- "tif"
   matrix <- iris[-ncol(iris)]
   max(matrix)
   # intervals <- c(-0.1,2,4,6,8.1)
@@ -33,6 +33,7 @@ clustpro_example <- function(){
                     color_legend = heatmap_color,
                     width = NULL,
                     height = NULL,
+                    graphics_export = FALSE,
                     export_dir = NA,
                     export_type = 'svg',
                     seed=1
@@ -40,7 +41,7 @@ clustpro_example <- function(){
   )
 
 
-  return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
+  # return(clustering(matrix,method = "kmeans",  min_k = 2, max_k = 10))
 }
 
 
@@ -77,6 +78,7 @@ clustpro <- function(matrix,
                      color_legend = NULL,
                      width = NULL,
                      height = NULL,
+                     graphics_export = FALSE,
                      export_dir = NA,
                      export_type = 'svg',
                      seed = NULL) {
@@ -105,6 +107,7 @@ clustpro <- function(matrix,
     rows = TRUE
     cols = TRUE
     color_legend = heatmap_color
+    graphics_export = FALSE
     export_dir = NA
     export_type = 'svg'
     seed = 1
@@ -190,7 +193,8 @@ clustpro <- function(matrix,
       max_k = max_k,
       fixed_k = fixed_k,
       no_cores = no_cores,
-      seed = seed
+      seed = seed,
+      graphics_export = graphics_export
     )
 
     matrix = rs$data[, !colnames(rs$data) %in% 'cluster']
@@ -280,26 +284,31 @@ clustpro <- function(matrix,
         ncolumns = 1,
         append = FALSE)
   write.table(cbind(matrix,clusters),file = "clustered_matrix.txt",sep="\t", col.names=NA, row.names=T)
-  widget <- htmlwidgets::createWidget(
+  # widget <-
+  htmlwidgets::createWidget(
     'clustpro',
     json_payload,
     width = width,
     height = height,
+    package = 'clustpro',
     sizingPolicy = sizingPolicy(browser.fill = TRUE)
   )
-  show(widget)
-  if (save_widget) {
-    saveWidget(widget, file = paste(getwd(), 'widget.html', sep = '/'))
-  }
-  return(
-    list(
-      datatable = data,
-      cobject = cobject,
-      cluster_centers = cluster_centers,
-      col_dend_hclust = col_dend_hclust,
-      row_dend_hclust = row_dend_hclust
-    )
-  )
+  # show(widget)
+  # if (save_widget) {
+  #   saveWidget(widget, file = paste(getwd(), 'widget.html', sep = '/'))
+  # }
+
+
+
+  # return(
+  #   list(
+  #     datatable = data,
+  #     cobject = cobject,
+  #     cluster_centers = cluster_centers,
+  #     col_dend_hclust = col_dend_hclust,
+  #     row_dend_hclust = row_dend_hclust
+  #   )
+  # )
 }
 
 #' Shiny bindings for clustpro
@@ -347,7 +356,7 @@ renderClustpro <-
 distributions_histograms <- function(matrix) {
   for (i in 1:ncol(matrix)) {
     x <- matrix[, i, drop = FALSE]
-  initialize_graphic(paste('distribution_column_',colnames(matrix)[i], sep = "_"), type = 'tif')
+  initialize_graphic(paste('distribution_column_',colnames(matrix)[i], sep = "_"), type = export_type)
     g <-
       ggplot(x, aes_string(x = colnames(x))) +
       geom_density(fill = 'blue',alpha = 0.2) +
@@ -457,7 +466,8 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 #' @param no_cores
 #' @param seed
 #' @examples
-
+#' @export
+#'
 get_best_k <-
   function(matrix,
            min_k,
@@ -524,9 +534,10 @@ clustering <- function(matrix,
                        fixed_k = -1,
                        method = "kmeans",
                        no_cores = 2,
-                       seed = NULL) {
+                       seed = NULL,
+                       graphics_export = FALSE) {
 
-  distributions_histograms(matrix)
+  if(graphics_export)distributions_histograms(matrix)
 
   if (fixed_k > 0) {
     k <- fixed_k
@@ -540,7 +551,8 @@ clustering <- function(matrix,
     }
     k <- as.numeric(db_list[db_list[, 2] == max(db_list[, 2], na.rm = TRUE),][1])
     colnames(db_list) <- c('k','score')
-    initialize_graphic('best k estimation', type = 'tif')
+    if(graphics_export){
+    initialize_graphic('best k estimation', type = export_type)
     g <-
       ggplot(db_list, aes(x = k, y=score)) +
       geom_line()+
@@ -559,6 +571,7 @@ clustering <- function(matrix,
    ggtitle('best k estimation')
     show(g)
    dev.off()
+    }
   }
   if (!is.null(seed))
     set.seed(seed)
