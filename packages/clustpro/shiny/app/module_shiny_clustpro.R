@@ -1,45 +1,76 @@
 clustProPanelUI <- function(id) {
   ns <- NS(id)
   tagList(
-  column(3,offset=2,div(style = "height:40px; padding-top: 16px;", h4("number of clusters (k)", style=""))),
-  column(3,div(style = "height:40px;", numericInput(ns("clustering_k_numericInput"), "", value =2, min = 5, max =100))),
-  column(3,offset=2,div(style = "height:40px; padding-top: 16px;", h4("minimal k", style=""))),
-  column(3,div(style = "height:40px;", numericInput(ns("clustering_max_k_numericInput"), "", value =30, min = 3, max =100))),
-  column(3,offset=2,div(style = "height:40px; padding-top: 16px;", h4("maximal k", style=""))),
-  column(3,div(style = "height:40px;", numericInput(ns("clustering_min_k_numericInput"), "", value =2, min = 2, max =99))),
-  column(3,offset=2,div(style = "height:40px; padding-top: 16px;", h4("set seed", style=""))),
-  column(3,div(style = "height:40px;", numericInput(ns("clustering_seed_numericInput"), "", value =2, min = 2, max =99))),
-  column(3,offset=2,div(style = "height:40px; padding-top: 16px;", h4("select method", style=""))),
-  column(3,div(style = "height:40px;",  selectInput(ns("clustering_method_selectInput"), "", choices = c('kmeans','cmenas'), selected = 'kmenas'))),
-  column(12,div(style = "height:40px;",  actionButton(ns("clustering_run_button"), "run"))),
-
-
-
-  div(style = 'width: 100% ; height:80%',
-      div(style = 'float:left',tags$h4("Choose Columns")),
-      div(style = 'float:right',
-          actionButton(inputId = ns("clustering_aTOz"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet", lib = "glyphicon")),
-          actionButton(inputId = ns("clustering_zTOa"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet-alt", lib = "glyphicon")),
-          actionButton(inputId = ns("clustering_selectionToggle"), label = "", icon = icon("glyphicon glyphicon-adjust", lib = "glyphicon"))
-      )
+  column(4,
+         fluidRow(
+           column(6,
+                  fluidRow(
+                  column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("current k", style=""))),
+                  column(5,align="right",div(style = "height:40px;", numericInput(ns("clustering_k_numericInput"), "", value =2, min = 5, max =100)))
+                  ),
+                  fluidRow(
+                  column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("minimal k", style=""))),
+                  column(5,align="right",div(style = "height:40px;", numericInput(ns("clustering_max_k_numericInput"), "", value =30, min = 3, max =100)))
+                  ),
+                  fluidRow(
+                  column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("maximal k", style=""))),
+                  column(5,align="right",div(style = "height:40px;", numericInput(ns("clustering_min_k_numericInput"), "", value =2, min = 2, max =99)))
+                  )
+                  ),
+          column(6,
+                 column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("set seed", style=""))),
+                 column(5,align="right",div(style = "height:40px;", numericInput(ns("clustering_seed_numericInput"), "", value =2, min = 2, max =99))),
+                 column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("select method", style=""))),
+                 column(5,align="right",div(style = "height:40px;",  selectInput(ns("clustering_method_selectInput"), "", choices = c('kmeans','cmenas'), selected = 'kmenas')))
+          )
+          ),
+         br(),
+         fluidRow(
+           div(stle = 'width: 100% ; height:100%',
+               div(style = 'float:left',tags$h4("Choose Columns")),
+               div(style = 'float:right',
+                   actionButton(inputId = ns("clustering_aTOz"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet", lib = "glyphicon")),
+                   actionButton(inputId = ns("clustering_zTOa"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet-alt", lib = "glyphicon")),
+                   actionButton(inputId = ns("clustering_selectionToggle"), label = "", icon = icon("glyphicon glyphicon-adjust", lib = "glyphicon"))
+               )
+           ),
+           div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:150px',
+               checkboxGroupInput(inputId = ns("clustering_columns"), label = "", choices = NULL, selected = NULL)
+           )),
+           # div(actionButton(
+           #   ns("clustering_run_button"),
+           #   label = "run",
+           #   icon = icon("glyphicon glyphicon-play", lib = "glyphicon")
+           #   ,style="color: #fff; background-color: #337ab7; border-color: #2e6da4, width: 20%; height:40px;"
+           #   )
+           #   ),
+           clustPlotUI(ns('clustPlot'))
   ),
-  #br(),
-  div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:150px',
-      checkboxGroupInput(inputId = ns("clustering_columns"), label = "", choices = colnames(iris), selected = colnames(iris)[1:2])
-  ),
-  clustPlotUI(ns('clustPlot')),
-  clustProMainUI(ns('clustProMain')),
-  div(style = 'width: 70%; margin: 0 auto;',gradientPickerD3Output(ns('gradientPickerD3')))
+  column(8,
+         div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:100%',clustProMainUI(ns('clustProMain'))),
+          div(style = 'width: 70%; margin: 0 auto;',gradientPickerD3Output(ns('gradientPickerD3')))
+  )
   )
 }
 
 
 clustProPanel <- function(input, output, session, ldf) {
   ns <- session$ns
+
+  #ldf <- reactive(iris)
+  c2p <-  reactive(as.vector(colnames(ldf())[unlist(lapply(ldf(),class))=='numeric']))
+#  local_df <- ldf()
+  observe({
+
+    updateCheckboxGroupInput(
+      session = session, inputId = "clustering_columns", choices = c2p(), selected = c2p()[1:2]
+    )
+    })
+
   out_clustProMain <- callModule(clustProMain,"clustProMain",clust_parameters)
   out_clustPlot <- callModule(clustPlot,"clustPlot",best_k,reactive(input$clustering_k_numericInput))
   output$gradientPickerD3 <- renderGradientPickerD3({
-    payload <- list(colors=c("purple 0%","blue 25%", "green 50%", "yellow 75%", "pink 100%"),test='test')
+    payload <- list(colors=c("blue 0%","DeepSkyBlue 25%", "white 50%", "yellow 75%", "red 100%"),test='test')
     gradientPickerD3(payload)
   })
 
@@ -47,10 +78,38 @@ observe({
   updateNumericInput(session,'clustering_k_numericInput',value=out_clustPlot())
 })
 
+##
 
 
-  best_k <- eventReactive(input$clustering_run_button, {
-      local_df <- get_best_k(matrix = as.matrix(iris[1:4]),
+observeEvent(input$clustering_aTOz, {
+  updateCheckboxGroupInput(
+    session = session, inputId = "clustering_columns", choices = c2p(), selected = input$clustering_columns
+  )
+})
+
+observeEvent(input$clustering_zTOa, {
+  updateCheckboxGroupInput(
+    session = session, inputId = "clustering_columns", choices = rev(c2p()), selected = input$clustering_columns
+  )
+})
+
+observeEvent(input$clustering_selectionToggle, {
+  if (is.null(input$clustering_columns)) {
+    updateCheckboxGroupInput(
+      session = session, inputId = "clustering_columns", selected = c2p()
+    )
+  } else {
+    updateCheckboxGroupInput(
+      session = session, inputId = "clustering_columns", selected = ""
+    )
+  }
+})
+
+##
+#  best_k <- eventReactive(input$clustering_run_button, {
+best_k <- reactive({
+  req(input$clustering_columns)
+      local_df <- get_best_k(matrix = as.matrix(iris[,input$clustering_columns]),
                  min_k = input$clustering_min_k_numericInput ,
                  max_k = input$clustering_max_k_numericInput,
                  method = input$clustering_method_selectInput,
@@ -64,7 +123,8 @@ observe({
   })
 
   clust_parameters = list(
-    data = iris,
+    data = ldf,
+    selected_cols =  reactive(input$clustering_columns),
     fixed_k = reactive(input$clustering_k_numericInput),
     method = reactive(input$clustering_method_selectInput),
     seed = reactive(input$clustering_seed_numericInput)
@@ -92,22 +152,58 @@ clustPlot <- function(input, output, session, best_k, nik) {
     #   as.data.frame(best_k()$db_list)
     # print(local_df)
     # print(nik())
-    local_df$color <- 'black'
-    local_df$color[local_df$k==nik()] <- 'red'
+    col_vec <- rep('black',nrow(local_df))
+
+    best <- which(max(local_df$db_index)==local_df$db_index)
+    col_vec[local_df$k==nik()] <- 'red'
+
+
+
+  #gg <- ggplot(local_df,aes(x=k, y=db_index, group=1))+ geom_line() + geom_point(aes(colour=color))+scale_colour_manual(values=c("blue", "red"))
+    # ggplotly(gg
+    #
+    #          )
+
+
+ #    ggplotly(gg) %>%
+ #      # ggplotly(tooltip = c('k','db_index')) %>%
+ # #     add_markers(color = ~color) %>%
+ #      config(displayModeBar = F) %>%
+ #      layout(showlegend = FALSE)
+
+
     plot_ly(local_df,
             x = ~k,
             y = ~db_index,
             type = 'scatter',
             mode = 'lines',
-            colors = c('black','red')
-            # ,tooltip = c('k','db_index')
+            colors = c('black','red'),
+            hoverinfo = 'text',
+            text = ~paste(
+                          'k: ', k,
+                          '</br>db-index: ', round(db_index,2))
             ) %>%
-            add_markers(color = ~color) %>%
-            config(displayModeBar = F)
+            # ggplotly(tooltip = c('k','db_index')) %>%
+            add_markers(color = col_vec) %>%
+            config(displayModeBar = F) %>%
+            layout(
+              showlegend = FALSE,
+              xaxis = list(title = "Number of cluster (k)"),
+              yaxis = list(title = "Davies-Bouldin index")
+              )%>%
+      add_annotations(x = local_df$k[best],
+                      y = local_df$db_index[best],
+                      text = 'best k',
+                      xref = "x",
+                      yref = "y",
+                      showarrow = TRUE,
+                      arrowhead = 4,
+                      arrowsize = .5,
+                      ax = 20,
+                      ay = -40)
 
 
     })
-
   # output$event <- renderPrint({
   #
   # })
@@ -136,26 +232,29 @@ clustProMainUI <- function(id) {
 
 clustProMain <- function(input, output, session, clust_parameters) {
   ns <- session$ns
-  observe({
-    print(clust_parameters$method())
-    print(clust_parameters$fixed_k())
-  })
+  # observe({
+  #   print(clust_parameters$method())
+  #   print(clust_parameters$fixed_k())
+  #   print(clust_parameters$data())
+  # })
   output$clustProMain   <- renderClustpro({
   req(clust_parameters$method())
-    req(clust_parameters$fixed_k())
-    data  <-  clust_parameters$matrix
+  req(clust_parameters$fixed_k())
+  req(clust_parameters$data())
+  req(clust_parameters$selected_cols())
+    data  <-  clust_parameters$data()[,clust_parameters$selected_cols()]
     fixed_k = clust_parameters$fixed_k()
     method = clust_parameters$method()
 
 
     #fixed_k = 13
-    method = 'kmeans'
-    data=iris[,1:4]
+  #  method = 'kmeans'
+  #  data=iris[,1:4]
 
     intervals <- c(-9.1,-0.5,-0.1,0.1,0.5,9.1)
     color_list <- c("blue","lightblue","white","yellow", "red")
 
-
+    print(dim(data))
     heatmap_color <- setHeatmapColors(data=data, color_list = color_list,auto=TRUE)
     info_list <- list()
     info_list[['id']]  <- rownames(data)
@@ -220,48 +319,48 @@ clustProMain <- function(input, output, session, clust_parameters) {
 
 
 
-heatmapColorSelectorsUI <- function(id) {
-  ns <- NS(id)
-    uiOutput(ns('heatmapColorSelectors'))
-}
-
-heatmapColorSelectors <- function(input, output, session,ldf) {
-  ns <- session$ns
-  others <- 'others'
-  # col_var <- c("POI","others")
-  col_var <- reactive(c(others,input$pieSelection_cols))
-
-  cols <- reactive({
-    cols_list <- lapply(1:length(col_var()), function(i) {
-      fluidRow(
-        column(6,div(style = "height:40px; padding-top: 16px;", h4(paste0("Choose color for ",col_var()[i],": "), style=""))),
-        column(6,div(style = "height:40px;", colourInput(ns(paste("col", i, sep="_")), "", randomColor(count = 1),allowTransparent = FALSE)))
-      )
-    })
-    cols_list
-  })
-
-  output$pieColorSelectors <- renderUI({
-    req(col_var())
-    cols()
-  })
-
-  colors <- reactive({
-    lapply(1:length(col_var()), function(i) {
-      input[[paste("col", i, sep="_")]]
-    })
-  })
-
-  colors <- reactive({
-    setNames(lapply(1:length(col_var()), function(i) {input[[paste("col", i, sep="_")]]}),col_var())
-  })
-
-
-
-
-  return(list(col_var=col_var,colors=colors))
-
-}
+# heatmapColorSelectorsUI <- function(id) {
+#   ns <- NS(id)
+#     uiOutput(ns('heatmapColorSelectors'))
+# }
+#
+# heatmapColorSelectors <- function(input, output, session,ldf) {
+#   ns <- session$ns
+#   others <- 'others'
+#   # col_var <- c("POI","others")
+#   col_var <- reactive(c(others,input$pieSelection_cols))
+#
+#   cols <- reactive({
+#     cols_list <- lapply(1:length(col_var()), function(i) {
+#       fluidRow(
+#         column(6,div(style = "height:40px; padding-top: 16px;", h4(paste0("Choose color for ",col_var()[i],": "), style=""))),
+#         column(6,div(style = "height:40px;", colourInput(ns(paste("col", i, sep="_")), "", randomColor(count = 1),allowTransparent = FALSE)))
+#       )
+#     })
+#     cols_list
+#   })
+#
+#   output$pieColorSelectors <- renderUI({
+#     req(col_var())
+#     cols()
+#   })
+#
+#   colors <- reactive({
+#     lapply(1:length(col_var()), function(i) {
+#       input[[paste("col", i, sep="_")]]
+#     })
+#   })
+#
+#   colors <- reactive({
+#     setNames(lapply(1:length(col_var()), function(i) {input[[paste("col", i, sep="_")]]}),col_var())
+#   })
+#
+#
+#
+#
+#   return(list(col_var=col_var,colors=colors))
+#
+# }
 
 
 

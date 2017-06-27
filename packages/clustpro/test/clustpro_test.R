@@ -43,6 +43,8 @@ info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',s
 info_list[['description']] <- rep('no description', nrow(matrix))
 
 color_legend <- heatmap_color
+
+get_best_k(matrix,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
 cluster_results <- clustpro(matrix=matrix,
                   method = "kmeans",
                   min_k = 2,

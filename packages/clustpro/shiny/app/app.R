@@ -17,16 +17,16 @@ ui <- fluidPage(
 
 
       # Show a plot of the generated distribution
-      mainPanel(
+   #   mainPanel(
         #div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:150px',clustproOutput("clustpro"))
         clustProPanelUI('clustProPanel')
-      )
+   #   )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
-  out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
+  out_clustProPanel <- callModule(clustProPanel,"clustProPanel",reactive(iris))
 
 
 
