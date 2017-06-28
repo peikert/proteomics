@@ -30,6 +30,7 @@ clustpro_example <- function(){
                     cols = TRUE,
                     tooltip = info_list,
                     save_widget = TRUE,
+                    show_legend = FALSE,
                     color_legend = heatmap_color,
                     width = NULL,
                     height = NULL,
@@ -61,6 +62,7 @@ clustpro_example <- function(){
 #' @param export_dir
 #' @param export_type
 #' @param seed
+#' @param cores
 #' @return see clustpro() function output
 #' @examples
 #' @export
@@ -81,7 +83,8 @@ clustpro <- function(matrix,
                      graphics_export = FALSE,
                      export_dir = NA,
                      export_type = 'svg',
-                     seed = NULL) {
+                     seed = NULL,
+                     cores = 2) {
   if (F) {
     library(htmlwidgets)
     library(ggplot2)
@@ -100,7 +103,7 @@ clustpro <- function(matrix,
     max_k = 100
     fixed_k = -1
     method = "kmeans"
-    no_cores = 2
+    cores = 2
     perform_clustering = TRUE
     cluster_ids = NULL
     tooltip = info_list
@@ -192,7 +195,7 @@ clustpro <- function(matrix,
       min_k = min_k,
       max_k = max_k,
       fixed_k = fixed_k,
-      no_cores = no_cores,
+      cores = cores,
       seed = seed,
       graphics_export = graphics_export
     )
@@ -273,6 +276,7 @@ clustpro <- function(matrix,
 
   payload[['export_dir']] <- export_dir
   payload[['export_type']] <- export_type
+  payload[['show_legend']] <- export_type
 
   json_payload = toJSON(payload, pretty = TRUE)
   write(json_payload,
@@ -409,7 +413,12 @@ findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
   tryCatch({
     if (!is.null(seed))
       set.seed(seed)
-    cluster <- mfuzz(minimalSet, c = k, m = fp)$cluster
+    #k = 19
+    cluster <- as.vector(mfuzz(minimalSet, c = k, m = fp)$cluster)
+    # table(cluster)
+    # length(cluster)
+    # cluster)
+    # class(cluster)
     db_score <- index.DB(matrix,
                          cluster,
                          centrotypes = "centroids",
@@ -463,7 +472,7 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 #' @param matrix
 #' @param min_k,max_k,fixed_k
 #' @param method
-#' @param no_cores
+#' @param cores
 #' @param seed
 #' @examples
 #' @export
@@ -473,7 +482,7 @@ get_best_k <-
            min_k,
            max_k,
            method,
-           no_cores,
+           cores = 1,
            seed = NULL) {
     if (nrow(matrix) < max_k) {
       max_k <- nrow(matrix)
@@ -496,23 +505,36 @@ get_best_k <-
 
            },
            cmeans = {
+             oldw <- getOption("warn")
+             options(warn = -1)
+             cl <- makeCluster(cores, type = "SOCK")
+             registerDoParallel(cl)
              minimalSet <- ExpressionSet(assayData = as.matrix(matrix))
              fp <- mestimate(minimalSet)
              findk <- findk_cmeans
-             clusterExport(cl, c("matrix", "findk", "seed"))
-             clusterEvalQ(cl, c(library('clusterSim'), library('Mfuzz'), library('e1071'), library('clustpro'), library('Biobase')))
-             db_list <- t(foreach(
+             #clusterExport(cl, c("findk", "seed"))
+           #   findk_cmeans(matrix, 19, minimalSet, fp,seed)
+             # findk_kmeans(matrix, 3)
+             # clusterExport(cl, c("minimalSet", "fp","matrix", "findk", "seed"))
+           #  clusterExport(cl, c("matrix", "findk", "seed"))
+          #   clusterEvalQ(cl, c(library('clusterSim'), library('Mfuzz'), library('e1071'), library('clustpro'), library('Biobase')))
+
+              db_list <- t(foreach(
                k = c(min_k:iterations),
                .combine = "cbind",
-               .export = c("mfuzz", "index.DB", "minimalSet", "fp")
+               .export = c("matrix", "findk", "seed","minimalSet", "fp"),
+               .packages = c("clusterSim","Mfuzz")
              ) %dopar% {
-               findk(matrix, k, minimalSet, fp)
+               findk(matrix = matrix, k = k, minimalSet = minimalSet, fp = fp,seed = seed)
+             #  findk()
              })
+             stopCluster(cl)
              return(list(
                db_list = db_list,
                minimalSet = minimalSet,
                fp = fp
              ))
+             options(warn = oldw)
            })
 
 
@@ -525,7 +547,7 @@ get_best_k <-
 #' @param matrix
 #' @param min_k,max_k,fixed_k
 #' @param method
-#' @param no_cores
+#' @param cores
 #' @param seed
 #' @examples
 clustering <- function(matrix,
@@ -533,7 +555,7 @@ clustering <- function(matrix,
                        max_k = 100,
                        fixed_k = -1,
                        method = "kmeans",
-                       no_cores = 2,
+                       cores = 2,
                        seed = NULL,
                        graphics_export = FALSE) {
 
@@ -541,15 +563,20 @@ clustering <- function(matrix,
 
   if (fixed_k > 0) {
     k <- fixed_k
+    if (method == 'cmeans') {
+      minimalSet <- ExpressionSet(assayData = as.matrix(matrix))
+      fp <- mestimate(minimalSet)
+    }
   } else {
     rv <-
-      get_best_k(matrix, min_k, max_k, method, no_cores = no_cores, seed)
+      get_best_k(matrix, min_k, max_k, method, cores = cores, seed)
     db_list <- as.data.frame(rv$db_list)
     if (method == 'cmeans') {
       minimalSet <- rv$minimalSet
       fp <- rv$fp
     }
-    k <- as.numeric(db_list[db_list[, 2] == max(db_list[, 2], na.rm = TRUE),][1])
+    filtered_db_list <- db_list[complete.cases(db_list),]
+    k <- as.numeric(filtered_db_list[filtered_db_list[, 2] == max(filtered_db_list[, 2], na.rm = TRUE),1])
     colnames(db_list) <- c('k','score')
     if(graphics_export){
     initialize_graphic('best k estimation', type = export_type)
@@ -575,8 +602,8 @@ clustering <- function(matrix,
   }
   if (!is.null(seed))
     set.seed(seed)
-  cluster_cols <- F
-  cluster_rows <- T
+  # cluster_cols <- F
+  # cluster_rows <- T
 
   switch(method, kmeans = {
     clustering_result <- kmeans(matrix, k, iter.max = 1000)
@@ -596,7 +623,7 @@ clustering <- function(matrix,
     sapply(cluster_centers$cluster, as.character)
   cluster_centers$cluster <- NULL
 
-  set.seed(1234)
+  # set.seed(1234)
   d_rows <-
     dist(cluster_centers, method = "euclidean") # distance matrix
   d_cols <-

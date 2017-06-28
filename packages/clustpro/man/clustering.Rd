@@ -5,7 +5,7 @@
 \title{Clustering}
 \usage{
 clustering(matrix, min_k = 2, max_k = 100, fixed_k = -1,
-  method = "kmeans", no_cores = 2, seed = NULL)
+  method = "kmeans", cores = 2, seed = NULL, graphics_export = FALSE)
 }
 \description{
 This function allows you to initialize a graphic

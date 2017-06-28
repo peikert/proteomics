@@ -2,6 +2,7 @@ clustProPanelUI <- function(id) {
   ns <- NS(id)
   tagList(
   column(4,
+         fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')),
          fluidRow(
            column(6,
                   fluidRow(
@@ -21,7 +22,7 @@ clustProPanelUI <- function(id) {
                  column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("set seed", style=""))),
                  column(5,align="right",div(style = "height:40px;", numericInput(ns("clustering_seed_numericInput"), "", value =2, min = 2, max =99))),
                  column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("select method", style=""))),
-                 column(5,align="right",div(style = "height:40px;",  selectInput(ns("clustering_method_selectInput"), "", choices = c('kmeans','cmenas'), selected = 'kmenas')))
+                 column(5,align="right",div(style = "height:40px;",  selectInput(ns("clustering_method_selectInput"), "", choices = c('kmeans','cmeans'), selected = 'kmenas')))
           )
           ),
          br(),
@@ -47,8 +48,11 @@ clustProPanelUI <- function(id) {
            clustPlotUI(ns('clustPlot'))
   ),
   column(8,
-         div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:100%',clustProMainUI(ns('clustProMain'))),
-          div(style = 'width: 70%; margin: 0 auto;',gradientPickerD3Output(ns('gradientPickerD3')))
+          div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:85vh',
+             clustProMainUI(ns('clustProMain'))
+            )
+         ,
+          div(style = 'width: 70%; height:15vh; margin: 0 auto;',gradientPickerD3Output(ns('gradientPickerD3')))
   )
   )
 }
@@ -56,7 +60,16 @@ clustProPanelUI <- function(id) {
 
 clustProPanel <- function(input, output, session, ldf) {
   ns <- session$ns
-
+  ldf <- reactive({
+    infile <- input$datafile
+    if (is.null(infile)) {
+      # User has not uploaded a file yet
+      return(NULL)
+    }
+    csv <- read.csv(infile$datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+    print(head(csv))
+    csv
+  })
   #ldf <- reactive(iris)
   c2p <-  reactive(as.vector(colnames(ldf())[unlist(lapply(ldf(),class))=='numeric']))
 #  local_df <- ldf()
@@ -109,7 +122,14 @@ observeEvent(input$clustering_selectionToggle, {
 #  best_k <- eventReactive(input$clustering_run_button, {
 best_k <- reactive({
   req(input$clustering_columns)
-      local_df <- get_best_k(matrix = as.matrix(iris[,input$clustering_columns]),
+  if(length(input$clustering_columns)<2)return(NULL)
+  local_df <- ldf()
+  local_df  <-  local_df[,input$clustering_columns]
+  ccases <- complete.cases(local_df)
+  if(nrow(local_df)>sum(ccases)){showNotification(paste0((nrow(local_df)-sum(ccases))," rows containing missing values were removed"))}
+  local_df <-  local_df[ccases,]
+
+      local_df <- get_best_k(matrix = as.matrix(local_df),
                  min_k = input$clustering_min_k_numericInput ,
                  max_k = input$clustering_max_k_numericInput,
                  method = input$clustering_method_selectInput,
@@ -117,7 +137,8 @@ best_k <- reactive({
                  )
       local_df <- as.data.frame(local_df$db_list)
       colnames(local_df) <- c('k','db_index')
-      k <- local_df$k[which(max(local_df$db_index)==local_df$db_index)]
+      filtered_local_df <- local_df[!is.na(local_df$db_index),]
+      k <- filtered_local_df$k[which(max(filtered_local_df$db_index)==filtered_local_df$db_index)]
       updateNumericInput(session,'clustering_k_numericInput',value=k)
       local_df
   })
@@ -148,13 +169,18 @@ clustPlot <- function(input, output, session, best_k, nik) {
 
   output$clustPlot <- renderPlotly({
     req(best_k())
+
     local_df <-  best_k()
+    print(local_df)
+    if(is.null(best_k()))return(NULL)
     #   as.data.frame(best_k()$db_list)
     # print(local_df)
     # print(nik())
     col_vec <- rep('black',nrow(local_df))
 
-    best <- which(max(local_df$db_index)==local_df$db_index)
+    filtered_local_df <- local_df[!is.na(local_df$db_index),]
+    best <- which(max(filtered_local_df$db_index)==filtered_local_df$db_index)
+ #   best <- which(max(local_df$db_index,na.rm=T)==local_df$db_index)
     col_vec[local_df$k==nik()] <- 'red'
 
 
@@ -226,7 +252,7 @@ clustPlot <- function(input, output, session, best_k, nik) {
 
 clustProMainUI <- function(id) {
   ns <- NS(id)
-  clustproOutput(ns('clustProMain'))
+  clustproOutput(ns('clustProMain'),height='100%')
 }
 
 
@@ -237,34 +263,33 @@ clustProMain <- function(input, output, session, clust_parameters) {
   #   print(clust_parameters$fixed_k())
   #   print(clust_parameters$data())
   # })
+  #output$clustProMain   <- renderClustpro({clustpro_example()})
   output$clustProMain   <- renderClustpro({
   req(clust_parameters$method())
   req(clust_parameters$fixed_k())
   req(clust_parameters$data())
   req(clust_parameters$selected_cols())
+  if(length(clust_parameters$selected_cols())<2)return(NULL)
     data  <-  clust_parameters$data()[,clust_parameters$selected_cols()]
+    ccases <- complete.cases(data)
+    if(nrow(data)>sum(ccases)){showNotification(paste0((nrow(data)-sum(ccases))," rows containing missing values were removed"))}
+    data <-  data[ccases,]
+
+
     fixed_k = clust_parameters$fixed_k()
     method = clust_parameters$method()
 
-
-    #fixed_k = 13
-  #  method = 'kmeans'
-  #  data=iris[,1:4]
-
-    intervals <- c(-9.1,-0.5,-0.1,0.1,0.5,9.1)
     color_list <- c("blue","lightblue","white","yellow", "red")
 
-    print(dim(data))
     heatmap_color <- setHeatmapColors(data=data, color_list = color_list,auto=TRUE)
     info_list <- list()
     info_list[['id']]  <- rownames(data)
    # info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
-    info_list[['description']] <- rep('no description', nrow(matrix))
+ #   print(nrow(data))
+    info_list[['description']] <- rep('no description', nrow(data))
 
     color_legend <- heatmap_color
-
-
-
+    print(dim(data))
              clustpro(matrix=data,
                       method =method,
                       min_k = 2,
@@ -282,34 +307,21 @@ clustProMain <- function(input, output, session, clust_parameters) {
                       graphics_export = FALSE,
                       export_dir = NA,
                       export_type = 'svg',
-                      seed=1
+                      seed=1,
+                      cores = 2
              )
 
-             # clustpro(matrix=matrix,
-             #          method = "kmeans",
-             #          min_k = 2,
-             #          max_k = 100,
-             #          fixed_k = -1,
-             #          perform_clustering = TRUE,
-             #          cluster_ids = NULL,
-             #          rows = TRUE,
-             #          cols = TRUE,
-             #          tooltip = info_list,
-             #          save_widget = TRUE,
-             #          color_legend = heatmap_color,
-             #          width = NULL,
-             #          height = NULL,
-             #          graphics_export = FALSE,
-             #          export_dir = NA,
-             #          export_type = 'svg',
-             #          seed=1
-             # )
+
+
+
+
+
 
 
 
 
              })
-
+#
 }
 
 

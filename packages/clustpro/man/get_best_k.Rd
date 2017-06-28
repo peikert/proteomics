@@ -4,7 +4,7 @@
 \alias{get_best_k}
 \title{Get best k}
 \usage{
-get_best_k(matrix, min_k, max_k, method, no_cores, seed = NULL)
+get_best_k(matrix, min_k, max_k, method, cores = 1, seed = NULL)
 }
 \description{
 .................

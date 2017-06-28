@@ -24,7 +24,7 @@ clustpro_example()
 graphic_type <<- "tif"
 matrix <- iris[-ncol(iris)]
 
-test_data = read.csv('D:/git/proteomics/packages/clustpro/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+test_data = read.csv('D:/git/proteomics/packages/clustpro/data/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
 rownames(test_data) <- test_data[,1]
 test_data[,1] <- NULL
 min(test_data)
@@ -44,12 +44,46 @@ info_list[['description']] <- rep('no description', nrow(matrix))
 
 color_legend <- heatmap_color
 
+
+
+no_cores = 12
+seed = 1234
+min_k = 2
+max_k = 20
+method = 'cmeans'
+
 get_best_k(matrix,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
-cluster_results <- clustpro(matrix=matrix,
-                  method = "kmeans",
+
+get_best_k(matrix,min_k = 2,max_k = 20,method = 'cmeans', seed=1234, cores = 2)
+
+
+matrix
+
+method = "cmeans"
+min_k = 2
+max_k = 100
+fixed_k = 5
+perform_clustering = TRUE
+cluster_ids = NULL
+rows = TRUE
+cols = TRUE
+tooltip = info_list
+save_widget = TRUE
+color_legend = heatmap_color
+width = NULL
+height = NULL
+export_dir = NA
+export_type = 'svg'
+seed=1234
+cores = 2
+graphics_export = FALSE
+
+
+clustpro(matrix=matrix,
+                  method = "cmeans",
                   min_k = 2,
                   max_k = 100,
-                  fixed_k = -1,
+                  fixed_k = 5,
                   perform_clustering = TRUE,
                   cluster_ids = NULL,
                   rows = TRUE,
@@ -61,5 +95,6 @@ cluster_results <- clustpro(matrix=matrix,
                   height = NULL,
                   export_dir = NA,
                   export_type = 'svg',
-                  seed=1
+                  seed=1,
+                  cores = 2
                   )
