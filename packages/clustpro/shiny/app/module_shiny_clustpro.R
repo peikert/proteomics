@@ -90,26 +90,32 @@ clustProPanel <- function(input, output, session, ldf=NULL) {
 
 
   heatmapColors <- reactive({
+    req(input$gradientPickerD3_selected)
+    req(ldf())
+    req(input$clustering_columns)
     gcolors <- input$gradientPickerD3_selected
     if(is.null(gcolors)) return(NULL)
 
-    df_gcolors <- as.data.frame(str_match_all(gcolors,'([A-Za-z]+) (\\d{1,3})%')[[1]][,2:3],stringsAsFactors=FALSE)
+    df_gcolors <- as.data.frame(str_match_all(gcolors,'([^ ]+) (\\d{1,3})%')[[1]][,2:3],stringsAsFactors=FALSE)
     colnames(df_gcolors) <- c("color","interval")
 
-
+     # print(input$clustering_columns)
     local_df <- ldf()[,input$clustering_columns]
+    local_df <- as.data.frame(apply(local_df,c(1,2), as.numeric))
+
+    # print(head(ldf()))
     minv <- min(local_df,na.rm=TRUE)#-0.00000001
     maxv <- max(local_df,na.rm=TRUE)#+0.00000001
     diff_value <- diff(c(minv,maxv))
     df_gcolors$interval <- as.numeric(df_gcolors$interval)
-    print(df_gcolors$interval)
+    # print(df_gcolors$interval)
  #   rownames(df_gcolors) <- NULL
   # df_gcolors_mod <- data.frame(color=character(0),interval=numeric(0))
     if(df_gcolors$interval[1]>0){
       temp_df <- df_gcolors[1,,drop=FALSE]
 
       temp_df[1,2] <- 0
-      print(temp_df)
+      # print(temp_df)
       df_gcolors <- rbind(temp_df,df_gcolors)
     }
 
@@ -120,11 +126,11 @@ clustProPanel <- function(input, output, session, ldf=NULL) {
     }
 
     df_gcolors$interval_mod <- sapply(df_gcolors$interval,function(x){minv+diff_value*x/100})
-    print(df_gcolors$interval_mod)
+    # print(df_gcolors$interval_mod)
 
     setHeatmapColors(data=NULL,color_list=df_gcolors$color,intervals=df_gcolors$interval_mod)
   })
-  observe(print(heatmapColors()))
+ # observe(print(heatmapColors()))
 
 
 observe({
