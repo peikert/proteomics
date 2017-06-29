@@ -4,10 +4,10 @@
 \alias{color_spectrum}
 \title{Function to to define the color spectrum for heatmaps}
 \usage{
-color_spectrum(values, color_spect, shift_factor = 1e-10)
+color_spectrum(intervals, color_spect)
 }
 \arguments{
-\item{values}{should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.}
+\item{intervals}{should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.}
 }
 \description{
 This function allows you to define the color spectrum for heatmaps.

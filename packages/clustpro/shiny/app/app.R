@@ -3,6 +3,7 @@ library('clustpro')
 library('gradientPickerD3')
 source('module_shiny_clustpro.R')
 library("plotly")
+library('stringr')
 
 #' @export
 shinyClustPro = function(data){
@@ -16,10 +17,10 @@ ui <- fluidPage(
 shinyServer(function(input, output) {
 
   out_clustProPanel <- callModule(clustProPanel,"clustProPanel",reactive(data))
+  #out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
 
 
-
-
+diff(2,4)
 })
   )}
 

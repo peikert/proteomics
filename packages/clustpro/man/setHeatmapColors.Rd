@@ -8,7 +8,7 @@ setHeatmapColors(data, color_list = c("red", "yellow", "green"), intervals,
   auto = FALSE)
 }
 \arguments{
-\item{data}{todo}
+\item{data}{todo If submitted used for proofing}
 
 \item{color_list}{todo}
 

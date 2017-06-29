@@ -30,11 +30,17 @@ test_data[,1] <- NULL
 min(test_data)
 max(test_data)
 
-intervals <- c(-1.1,-0.5,-0.1,0.1,0.5,1.1)
+intervals <- c(-1.1,-0.5,0,0.5,1.1)
 color_list <- c("blue","lightblue","white","yellow", "red")
 data  <- test_data
 
 heatmap_color <- setHeatmapColors(data=data, color_list = color_list,auto=TRUE)
+sapply(heatmap_color,length)
+heatmap_color <- setHeatmapColors(data=data, color_list = color_list, intervals = intervals,auto=FALSE)
+sapply(heatmap_color,length)
+
+heatmap_color <- setHeatmapColors(data=NULL, color_list = color_list, intervals = intervals,auto=FALSE)
+sapply(heatmap_color,length)
 matrix <- test_data
 
 info_list <- list()

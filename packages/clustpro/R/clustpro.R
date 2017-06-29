@@ -77,6 +77,7 @@ clustpro <- function(matrix,
                      cols = TRUE,
                      tooltip = NULL,
                      save_widget = TRUE,
+                     show_legend = FALSE,
                      color_legend = NULL,
                      width = NULL,
                      height = NULL,
@@ -276,7 +277,7 @@ clustpro <- function(matrix,
 
   payload[['export_dir']] <- export_dir
   payload[['export_type']] <- export_type
-  payload[['show_legend']] <- export_type
+  payload[['show_legend']] <- show_legend
 
   json_payload = toJSON(payload, pretty = TRUE)
   write(json_payload,
@@ -730,29 +731,32 @@ get_color <- function(x, ticks, colors) {
   return(colors[i - 1])
 }
 
+
 #' Function to to define the color spectrum for heatmaps
 #'
 #' This function allows you to define the color spectrum for heatmaps.
-#' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
+#' @param intervals should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
 #' @param color_spect
-#' @param shift_factor
 #' @examples
 #' color_spectrum()
 color_spectrum <-
-  function(values, color_spect, shift_factor = 0.0000000001) {
+  function(intervals, color_spect) {
     index <- 1
     colors <- c()
     ticks <- c()
-    while (index < length(values)) {
+    while (index < length(intervals)) {
       ticks <-
         c(ticks,
-          seq(values[index] + shift_factor, values[index + 1] - shift_factor, length =
-                100))
+          seq(intervals[index], intervals[index + 1] , length = 100))
+      colors <- c(colors,colorRampPalette(color_spect[c(index,index + 1)])(n = 100-1))
+
       index <- index + 1
     }
+    length(ticks)
+    length(colors)
     ticks <- unique(ticks)
-    colors <-
-      colorRampPalette(color_spect)(n = ((length(values) - 1) * 100) - 1)
+    # colors <-
+    #   colorRampPalette(color_spect)(n = ((length(values) - 1) * 100) - 1)
     return(list(ticks = ticks, colors = colors))
   }
 
@@ -761,14 +765,13 @@ color_spectrum <-
 #' Function to set heatmap color
 #'
 #' This function allows you to define the color spectrum for heatmaps.
-#' @param data todo
+#' @param data todo If submitted used for proofing
 #' @param color_list todo
 #' @param intervals todo
 #' @param auto todo
 #' @keywords color spectrum heatmaps
 #' @export
 #' @examples setHeatmapColors()
-
 setHeatmapColors <-
   function(data,
            color_list = c("red", "yellow", "green"),
@@ -781,8 +784,8 @@ setHeatmapColors <-
       heatmap_color <- list(ticks = seq(d_min, d_max, steps),
                             colors = colorRampPalette(color_list)(n = 299))
     } else{
-      if (min(intervals) > min(data, na.rm = TRUE) |
-          max(data, na.rm = TRUE) > max(intervals)) {
+      if (!is.null(data) &&  (min(intervals) > min(data, na.rm = TRUE) |
+          max(data, na.rm = TRUE) > max(intervals))) {
         stop(
           paste(
             "intervals borders doesn't fit to the data. min value:",
@@ -793,10 +796,10 @@ setHeatmapColors <-
           )
         )
       }
-      br <- min(diff(intervals) / 40)
-      heatmap_color <- color_spectrum(intervals, color_list, br)
-      heatmap_color$ticks[1]
-      heatmap_color$ticks[301]
-      sapply(heatmap_color, length)
+      intervals[1] <- intervals[1]-0.00000001
+      intervals[length(intervals)] <- intervals[length(intervals)] +0.00000001
+      return(color_spectrum(intervals, color_list))
+
     }
   }
+

@@ -2,7 +2,7 @@ clustProPanelUI <- function(id) {
   ns <- NS(id)
   tagList(
   column(4,
-         fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')),
+        uiOutput(ns('datafile')),
          fluidRow(
            column(6,
                   fluidRow(
@@ -58,18 +58,19 @@ clustProPanelUI <- function(id) {
 }
 
 
-clustProPanel <- function(input, output, session, ldf) {
+clustProPanel <- function(input, output, session, ldf=NULL) {
   ns <- session$ns
+
+  if(is.null(ldf)){
+  output$datafile <-  renderUI(fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')))
   ldf <- reactive({
     infile <- input$datafile
     if (is.null(infile)) {
-      # User has not uploaded a file yet
       return(NULL)
     }
-    csv <- read.csv(infile$datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
-    print(head(csv))
-    csv
+    read.csv(infile$datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
   })
+  }
   #ldf <- reactive(iris)
   c2p <-  reactive(as.vector(colnames(ldf())[unlist(lapply(ldf(),class))=='numeric']))
 #  local_df <- ldf()
@@ -86,6 +87,45 @@ clustProPanel <- function(input, output, session, ldf) {
     payload <- list(colors=c("blue 0%","DeepSkyBlue 25%", "white 50%", "yellow 75%", "red 100%"),test='test')
     gradientPickerD3(payload)
   })
+
+
+  heatmapColors <- reactive({
+    gcolors <- input$gradientPickerD3_selected
+    if(is.null(gcolors)) return(NULL)
+
+    df_gcolors <- as.data.frame(str_match_all(gcolors,'([A-Za-z]+) (\\d{1,3})%')[[1]][,2:3],stringsAsFactors=FALSE)
+    colnames(df_gcolors) <- c("color","interval")
+
+
+    local_df <- ldf()[,input$clustering_columns]
+    minv <- min(local_df,na.rm=TRUE)#-0.00000001
+    maxv <- max(local_df,na.rm=TRUE)#+0.00000001
+    diff_value <- diff(c(minv,maxv))
+    df_gcolors$interval <- as.numeric(df_gcolors$interval)
+    print(df_gcolors$interval)
+ #   rownames(df_gcolors) <- NULL
+  # df_gcolors_mod <- data.frame(color=character(0),interval=numeric(0))
+    if(df_gcolors$interval[1]>0){
+      temp_df <- df_gcolors[1,,drop=FALSE]
+
+      temp_df[1,2] <- 0
+      print(temp_df)
+      df_gcolors <- rbind(temp_df,df_gcolors)
+    }
+
+    if(df_gcolors$interval[nrow(df_gcolors)]<100){
+      temp_df <- df_gcolors[nrow(df_gcolors),,drop=FALSE]
+      temp_df$interval <- 100
+      df_gcolors <- rbind(df_gcolors,temp_df)
+    }
+
+    df_gcolors$interval_mod <- sapply(df_gcolors$interval,function(x){minv+diff_value*x/100})
+    print(df_gcolors$interval_mod)
+
+    setHeatmapColors(data=NULL,color_list=df_gcolors$color,intervals=df_gcolors$interval_mod)
+  })
+  observe(print(heatmapColors()))
+
 
 observe({
   updateNumericInput(session,'clustering_k_numericInput',value=out_clustPlot())
@@ -148,7 +188,8 @@ best_k <- reactive({
     selected_cols =  reactive(input$clustering_columns),
     fixed_k = reactive(input$clustering_k_numericInput),
     method = reactive(input$clustering_method_selectInput),
-    seed = reactive(input$clustering_seed_numericInput)
+    seed = reactive(input$clustering_seed_numericInput),
+    heatmap_colors = heatmapColors
   )
 }
 
@@ -171,7 +212,7 @@ clustPlot <- function(input, output, session, best_k, nik) {
     req(best_k())
 
     local_df <-  best_k()
-    print(local_df)
+   # print(local_df)
     if(is.null(best_k()))return(NULL)
     #   as.data.frame(best_k()$db_list)
     # print(local_df)
@@ -269,6 +310,8 @@ clustProMain <- function(input, output, session, clust_parameters) {
   req(clust_parameters$fixed_k())
   req(clust_parameters$data())
   req(clust_parameters$selected_cols())
+  req(clust_parameters$heatmap_colors())
+
   if(length(clust_parameters$selected_cols())<2)return(NULL)
     data  <-  clust_parameters$data()[,clust_parameters$selected_cols()]
     ccases <- complete.cases(data)
@@ -279,9 +322,11 @@ clustProMain <- function(input, output, session, clust_parameters) {
     fixed_k = clust_parameters$fixed_k()
     method = clust_parameters$method()
 
-    color_list <- c("blue","lightblue","white","yellow", "red")
+    # color_list <- c("blue","lightblue","white","yellow", "red")
+    #
+    # heatmap_color <- setHeatmapColors(data=data, color_list = color_list,auto=TRUE)
 
-    heatmap_color <- setHeatmapColors(data=data, color_list = color_list,auto=TRUE)
+    heatmap_color <-  clust_parameters$heatmap_colors()
     info_list <- list()
     info_list[['id']]  <- rownames(data)
    # info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')

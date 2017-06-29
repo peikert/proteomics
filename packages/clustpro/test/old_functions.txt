@@ -1,0 +1,70 @@
+#' Function to to define the color spectrum for heatmaps
+#'
+#' This function allows you to define the color spectrum for heatmaps.
+#' @param values should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
+#' @param color_spect
+#' @param shift_factor
+#' @examples
+#' color_spectrum()
+color_spectrum <-
+  function(values, color_spect, shift_factor = 0.0000000001) {
+    index <- 1
+    colors <- c()
+    ticks <- c()
+    while (index < length(values)) {
+      ticks <-
+        c(ticks,
+          seq(values[index] + shift_factor, values[index + 1] - shift_factor, length =
+                100))
+      index <- index + 1
+    }
+    ticks <- unique(ticks)
+    colors <-
+      colorRampPalette(color_spect)(n = ((length(values) - 1) * 100) - 1)
+    return(list(ticks = ticks, colors = colors))
+  }
+
+####
+
+#' Function to set heatmap color
+#'
+#' This function allows you to define the color spectrum for heatmaps.
+#' @param data todo
+#' @param color_list todo
+#' @param intervals todo
+#' @param auto todo
+#' @keywords color spectrum heatmaps
+#' @export
+#' @examples setHeatmapColors()
+
+setHeatmapColors <-
+  function(data,
+           color_list = c("red", "yellow", "green"),
+           intervals,
+           auto = FALSE) {
+    if (auto) {
+      d_min <- round(min(data, na.rm = TRUE), 8) - 0.00000001
+      d_max <- round(max(data, na.rm = TRUE), 8) + 0.00000001
+      steps <- (d_max - d_min) / 299
+      heatmap_color <- list(ticks = seq(d_min, d_max, steps),
+                            colors = colorRampPalette(color_list)(n = 299))
+    } else{
+      if (min(intervals) > min(data, na.rm = TRUE) |
+          max(data, na.rm = TRUE) > max(intervals)) {
+        stop(
+          paste(
+            "intervals borders doesn't fit to the data. min value:",
+            min(data, na.rm = TRUE),
+            ", max value:",
+            max(data, na.rm = TRUE),
+            sep = ''
+          )
+        )
+      }
+      br <- min(diff(intervals) / 40)
+      heatmap_color <- color_spectrum(intervals, color_list, br)
+      heatmap_color$ticks[1]
+      heatmap_color$ticks[301]
+      sapply(heatmap_color, length)
+    }
+  }
