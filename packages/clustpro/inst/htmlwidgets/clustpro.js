@@ -23,6 +23,16 @@ HTMLWidgets.widget({
         var width = bbox.width * 0.12 * 0.25;
         return {height:height, left:left, top:top, width:width};
     },
+    workspaceDimensionsInitialize : function(el,x){
+        var el = d3.select(el);
+        var bbox = el.node().getBoundingClientRect();
+        var height = bbox.height;
+        var left = bbox.width * 0.12 * 0.25;
+        var top = 0;
+        var width = bbox.width - left;
+        return {height:height, left:left, top:top, width:width};
+
+    },
 
     renderValue: function (el, x, instance) {
         console.log("-- Entered renderValue() --");
@@ -31,8 +41,9 @@ HTMLWidgets.widget({
         var colNewickString = x.dendnw_col[0];
         var sidebar_options = {"colorLegend":true, "rowLabels":true, "zoom_enabled":false};
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
+        var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
         x.matrix.data = [].concat.apply([], x.matrix.data); // Flattening the data array.
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options, sideBarDimensions);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options, sideBarDimensions, workSpaceDimensions);
     },
     resize: function (el, width, height, instance) {
         d3.select(el).select("svg")
@@ -82,7 +93,7 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
-                                newMerged, scrollable, sidebar_options, sideBarDimensions) {
+                                newMerged, scrollable, sidebar_options, sideBarDimensions, workSpaceDimensions) {
         console.log("-- Entered doRenderValue() --");
         if (scrollable){ 
             document.getElementsByTagName("body")[0].style.overflow = "scroll";
@@ -119,7 +130,9 @@ HTMLWidgets.widget({
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
         console.log("Initializing ClustPro()");
-        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, cluster, rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions);
+        var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, 
+                                        cluster, rowDendLinesListner, colDendLinesListner, 
+                                            sidebar_options, sideBarDimensions, workSpaceDimensions);
         console.log("Exited ClustPro()");
         // ******************* Color Legend *****************************************
         // Check from the options object if colorLegend is "true". If yes, then draw color legend.
@@ -287,16 +300,16 @@ HTMLWidgets.widget({
                         d3.select("#zoomarea").remove();
                         el.style.width = old_html_widget;
                         el.style.height = old_html_height;
-
                     } else {
                         sidebar_options.zoom_enabled = true;
                         dimensions = self.calculateDimensions();
-                        window.scrollTo(document.getElementById("colormap").getBoundingClientRect().width, document.getElementById("colormap").getBoundingClientRect().height); // Scroll to the bottom right
+                        // No need for this currently
+                        // window.scrollTo(document.getElementById("colormap").getBoundingClientRect().width, document.getElementById("colormap").getBoundingClientRect().height); // Scroll to the bottom right
                         var old_el_style_width = dimensions[0];
                         var old_el_style_height = dimensions[1];
                         el.style.width = heatMapObject[3].width; // Increase the over all scrollable area 
                         el.style.height = heatMapObject[3].height; // Increase the over all scrollable area
-                        document.getElementsByTagName("body")[0].style.overflow = "scroll";
+                        document.getElementById("workspace").style.overflow="scroll";
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
                                     box.attr("x", d3.event.x - 20)
@@ -307,7 +320,7 @@ HTMLWidgets.widget({
                         // Implemetation details:
                         // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
                         var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
-                        var zoomAreaSvgContainer = d3.select("#inner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
+                        var zoomAreaSvgContainer = d3.select("#workspace").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
                         var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                             .attr("x",0)
                                             .attr("y",0)
