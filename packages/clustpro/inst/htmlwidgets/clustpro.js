@@ -8,6 +8,16 @@ HTMLWidgets.widget({
     initialize: function (el, width, height) {
         console.log("-- Entered initialize() --");
         debugger;
+        // Disable zoom 
+        (function(){
+        setInterval("document.body.style.zoom=1/window.devicePixelRatio",1);
+        var viewport=document.createElement("meta");
+        viewport.id="viewport";
+        viewport.name="viewport";
+        viewport.content="width=device-width, initial-scale=1";
+        document.body.parentElement.children[0].appendChild(viewport);
+        })()
+        
         return {
             lastTheme: null,
             lastValue: null
@@ -50,8 +60,8 @@ HTMLWidgets.widget({
         d3.select(el).select("svg")
             .attr("width", width)
             .attr("height", height);
-        instance.force.size([width, height]).resume();
-        this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
+        // instance.force.size([width, height]).resume();
+        // this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
 
     drawColorLegend : function(el,x){
@@ -249,16 +259,15 @@ HTMLWidgets.widget({
                     debugger;
                     if(sidebar_options.rowLabels){
                         sidebar_options.rowLabels = false;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
                     }else{
                         sidebar_options.rowLabels = true;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
                     }
                 
             })
             .on("mouseover", function (d, i) {
                     enablerowlabel.style.cssText = hoverCSSText;
-                    debugger;
             })
             .on("mouseout", function (d, i) {
                     enablerowlabel.style.cssText = normalCSSText;
@@ -726,4 +735,6 @@ HTMLWidgets.widget({
         });
         return cluster_change_rows;
     }
+
+
 });
