@@ -42,8 +42,9 @@ HTMLWidgets.widget({
         var sidebar_options = {"colorLegend":true, "rowLabels":true, "zoom_enabled":false};
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
+        var innerworkSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
         x.matrix.data = [].concat.apply([], x.matrix.data); // Flattening the data array.
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options, sideBarDimensions, workSpaceDimensions);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
     resize: function (el, width, height, instance) {
         d3.select(el).select("svg")
@@ -93,14 +94,9 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
-                                newMerged, scrollable, sidebar_options, sideBarDimensions, workSpaceDimensions) {
+                                newMerged, scrollable, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
         console.log("-- Entered doRenderValue() --");
-        if (scrollable){ 
-            document.getElementsByTagName("body")[0].style.overflow = "scroll";
-        } else {
-            document.getElementsByTagName("body")[0].style.overflow = "hidden";
-        } 
-        window.scrollTo(0, 0);
+        if(scrollable){document.getElementById("workspace").style.overflow="scroll";}
         self = this;
         instance.lastValue = x;
         el.innerHTML = "";
@@ -132,7 +128,7 @@ HTMLWidgets.widget({
         console.log("Initializing ClustPro()");
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, 
                                         cluster, rowDendLinesListner, colDendLinesListner, 
-                                            sidebar_options, sideBarDimensions, workSpaceDimensions);
+                                            sidebar_options,scrollable, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
         console.log("Exited ClustPro()");
         // ******************* Color Legend *****************************************
         // Check from the options object if colorLegend is "true". If yes, then draw color legend.
@@ -320,7 +316,7 @@ HTMLWidgets.widget({
                         // Implemetation details:
                         // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
                         var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
-                        var zoomAreaSvgContainer = d3.select("#workspace").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
+                        var zoomAreaSvgContainer = d3.select("#workspaceinner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
                         var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                             .attr("x",0)
                                             .attr("y",0)
@@ -355,10 +351,11 @@ HTMLWidgets.widget({
                                                                                             document.getElementById("colormap").getBoundingClientRect().top // Subtract the height of the colDendogram or the top portion of the color map ?
                                                                 var width_increase = x_coordinate - d3.select("#colormap")[0][0].width.baseVal.value;
                                                                 var height_increase =  y_coordinate - d3.select("#colormap")[0][0].height.baseVal.value;
-                                                                var new_width = old_el_style_width + width_increase;
-                                                                var new_height = old_el_style_height + height_increase;
+                                                                innerworkSpaceDimensions.width = innerworkSpaceDimensions.width + width_increase;
+                                                                innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + height_increase;
                                                                 sidebar_options.zoom_enabled = false;
-                                                                self.tempfunction(el,new_width.toString() + "px", new_height.toString() + "px", x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
+                                                                self.tempfunction(el, x, rowNewickSting, colNewickString, 
+                                                                                            instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
                                                             });
                     }
             })
@@ -407,12 +404,10 @@ HTMLWidgets.widget({
         return [width, height];
     },
 
-    tempfunction: function(el, new_width , new_height, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions){
+    tempfunction: function(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions){
         debugger;
-        el.style.width = new_width; // Temporary [The calculation is not 100% correct.]
-        el.style.height = new_height; // Temporary [The calculation is not 100% correct.]
         // still need to adjust the height of other things
-        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions);
+        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
 
     showcolorlegend: function (el, x) {

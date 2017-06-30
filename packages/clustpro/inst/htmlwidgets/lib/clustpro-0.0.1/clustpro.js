@@ -2,7 +2,7 @@
     Version: 0.0.3
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
-    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions) {
+    rowDendLinesListner, colDendLinesListner, sidebar_options,scrollable, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================
@@ -132,8 +132,8 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     // Set option defaults
     var opts = {};
     options = options || {};
-    opts.width = workSpaceDimensions.width;
-    opts.height = workSpaceDimensions.height;
+    opts.width = innerworkSpaceDimensions.width;
+    opts.height = innerworkSpaceDimensions.height;
     opts.xclust_height = options.xclust_height || opts.height * 0.12;
     opts.yclust_width = options.yclust_width || opts.width * 0.12;
     opts.link_color = opts.link_color || "#AAA";
@@ -199,7 +199,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         var inner = el.append("div").attr("id", "inner").classed("inner", true);
         var sidebar = inner.append("div").attr({ "id": "myTopnav" }).classed("topnav", true).style(cssify(sideBarDimensions));
         var workspace = inner.append("div").attr({"id":"workspace"}).classed("workspace", true).style(cssify(workSpaceDimensions));
-        var workspaceInner = workspace.append("div").attr("id", "workspaceinner").classed("workspaceinner", true);
+        var workspaceInner = workspace.append("div").attr("id", "workspaceinner").classed("workspaceinner", true).style(cssify(innerworkSpaceDimensions));
         var colDend = workspaceInner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
         // update the dimensions of row dendogram to compensate for the side bar.   GITHUB ISSUE # 13
         rowDendBounds.width = rowDendBounds.width - (sideBarDimensions.width * 0.7); 
@@ -209,6 +209,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         var xaxis = workspaceInner.append("svg").attr("id", "xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = workspaceInner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         
+        if(scrollable) {document.getElementById("workspace").style.overflow="scroll";}
 
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
         // QtWebkit viewer won't allow svg elements to overflow:visible.
