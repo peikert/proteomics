@@ -178,8 +178,8 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     var xaxisBounds = gridSizer.getCellBounds(1, 2);
     var zoomAreaBounds = gridSizer.getCellBounds(1, 1); // To be one of the things returned by this function
     // Hack Zoom Area Bound. Height and width should be 20 % bigger.
-    zoomAreaBounds.height = zoomAreaBounds.height * 2;
-    zoomAreaBounds.width = zoomAreaBounds.width * 2;
+    zoomAreaBounds.height = zoomAreaBounds.height * 5;
+    zoomAreaBounds.width = zoomAreaBounds.width * 5;
 
     xaxisBounds.height = 200;
 
