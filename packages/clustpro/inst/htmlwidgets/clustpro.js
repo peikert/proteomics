@@ -203,7 +203,7 @@ HTMLWidgets.widget({
             })
             .on("mouseout", function (d, i) {
                     colorLegend.style.cssText = normalCSSText;
-            }); 
+            });
         }
 
         // 3) Unscroll all 
@@ -219,18 +219,13 @@ HTMLWidgets.widget({
         d3.select("#unscroll") // On click for VzoomIn
             .on("click", function () {
                 debugger;
-                // REFRESH HERE: MAKE THE WhOLE DIAGRAM AGAIN !!
-                var old_html_widget = el;
-                old_html_widget.style.width = "100%";
-                old_html_widget.style.height = "100%";
-                x.options.yaxis_width[0] = 120;
-                self.doRenderValue(old_html_widget, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions);
-
-             
+                // Make the inner workspace height equal to the normal workspace height.
+                innerworkSpaceDimensions.width = workSpaceDimensions.width;
+                innerworkSpaceDimensions.height = workSpaceDimensions.height;
+                self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, false, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
          })
         .on("mouseover", function (d, i) {
                 unscroll.style.cssText = hoverCSSText;
-                debugger;
         })
         .on("mouseout", function (d, i) {
                 unscroll.style.cssText = normalCSSText;
@@ -354,7 +349,7 @@ HTMLWidgets.widget({
                                                                 innerworkSpaceDimensions.width = innerworkSpaceDimensions.width + width_increase;
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + height_increase;
                                                                 sidebar_options.zoom_enabled = false;
-                                                                self.tempfunction(el, x, rowNewickSting, colNewickString, 
+                                                                self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
                                                             });
                     }
@@ -402,12 +397,6 @@ HTMLWidgets.widget({
                         document.getElementById("colormap").getBoundingClientRect().height +
                             document.getElementById("coldDend").getBoundingClientRect().height; // whats wrong with this ?
         return [width, height];
-    },
-
-    tempfunction: function(el, x, rowNewickSting, colNewickString, instance, newMerged, scrollable, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions){
-        debugger;
-        // still need to adjust the height of other things
-        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
 
     showcolorlegend: function (el, x) {

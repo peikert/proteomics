@@ -209,7 +209,11 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         var xaxis = workspaceInner.append("svg").attr("id", "xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = workspaceInner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         
-        if(scrollable) {document.getElementById("workspace").style.overflow="scroll";}
+        if(scrollable) 
+            {document.getElementById("workspace").style.overflow="scroll";}
+        else {
+            document.getElementById("workspace").style.overflow="hidden";
+        }
 
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
         // QtWebkit viewer won't allow svg elements to overflow:visible.
