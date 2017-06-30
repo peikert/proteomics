@@ -8,7 +8,7 @@ clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = -1,
   perform_clustering = TRUE, cluster_ids = NULL, rows = TRUE,
   cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
   color_legend = NULL, width = NULL, height = NULL,
-  graphics_export = FALSE, export_dir = NA, export_type = "svg",
+  graphics_export = FALSE, export_dir = NULL, export_type = "svg",
   seed = NULL, cores = 2)
 }
 \value{

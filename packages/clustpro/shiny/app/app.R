@@ -16,8 +16,8 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-#out_clustProPanel <- callModule(clustProPanel,"clustProPanel",reactive(data))
-  out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
+out_clustProPanel <- callModule(clustProPanel,"clustProPanel",reactive(data))
+ # out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
 
 
 diff(2,4)

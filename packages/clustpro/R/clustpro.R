@@ -35,7 +35,7 @@ clustpro_example <- function(){
                     width = NULL,
                     height = NULL,
                     graphics_export = FALSE,
-                    export_dir = NA,
+                    export_dir = NULL,
                     export_type = 'svg',
                     seed=1
     )
@@ -82,10 +82,36 @@ clustpro <- function(matrix,
                      width = NULL,
                      height = NULL,
                      graphics_export = FALSE,
-                     export_dir = NA,
+                     export_dir = NULL,
                      export_type = 'svg',
                      seed = NULL,
                      cores = 2) {
+
+  #### proofing #####
+  if(!class(matrix) %in% c('data.frame'))stop('matrix is no data.frame')
+  if(class(method) != 'character' | !method %in% c("kmeans","cmeans"))stop('method must be a string. options:"kmeans","cmeans"')
+  if(!is.numeric(min_k))stop('min_k must be numeric')
+  if(!is.numeric(min_k))stop('max_k must be numeric')
+  if(!is.numeric(min_k))stop('fixed_k must be numeric')
+  if(!is.logical(perform_clustering))
+  if(!is.null(cluster_ids) || !class(cluster_ids) %in% c("list","vector")) stop('"cluster_ids" must be NULL or of type "list/vector"')
+  if(!is.logical(rows)) stop('"rows" must be logical')
+  if(!is.logical(cols)) stop('"cols" must be logical')
+  if(!is.null(tooltip) && class(tooltip)!='list') stop('"tooltip" must be NULL or of type "list"')
+  if(!is.logical(save_widget)) stop('"save_widget" must be logical')
+  if(!is.logical(show_legend)) stop('"show_legend" must be logical')
+  if(!is.null(color_legend) && class(color_legend)!='list') stop('"color_legend" must be NULL or of type "list"')
+  if(!is.null(cluster_ids) && !is.numeric(width)) stop('"width" must be numeric')
+  if(!is.null(cluster_ids) && !is.numeric(height)) stop('"height" must be numeric')
+  if(!is.logical(graphics_export)) stop('"graphics_export" must be logical')
+  if(!is.null(export_dir) && (class(export_dir) != 'character' || !dir.exists(file.path(export_dir))))stop('"export_dir" must be NULL or an exsisting directory')
+  if(class(export_type) != 'character' || !export_type %in% c("svg","png","jpg"))stop('"export_type" must be a string. options:"svg","png","jpg"')
+  if(!is.null(seed) && (!is.numeric(seed) && seed != round(seed))) stop('"seed" must be integer')
+  if(is.null(cores) || (!is.numeric(cores) && cores != round(cores))) stop('"cores" must be integer')
+
+
+
+
   if (F) {
     library(htmlwidgets)
     library(ggplot2)
@@ -112,7 +138,7 @@ clustpro <- function(matrix,
     cols = TRUE
     color_legend = heatmap_color
     graphics_export = FALSE
-    export_dir = NA
+    export_dir = NULL
     export_type = 'svg'
     seed = 1
   }
@@ -125,6 +151,8 @@ clustpro <- function(matrix,
     cols = TRUE
   }
 
+
+  # static default values
   xaxis_height = 80
   yaxis_width = 120
   xaxis_font_size = NULL

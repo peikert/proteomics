@@ -2,6 +2,7 @@ clustProPanelUI <- function(id) {
   ns <- NS(id)
   tagList(
   column(4,
+        br(),
         uiOutput(ns('datafile')),
          fluidRow(
            column(6,
