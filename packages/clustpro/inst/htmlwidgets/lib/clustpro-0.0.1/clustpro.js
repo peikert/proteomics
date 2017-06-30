@@ -2,7 +2,7 @@
     Version: 0.0.3
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
-    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions) {
+    rowDendLinesListner, colDendLinesListner, sidebar_options,scrollable, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================
@@ -132,8 +132,8 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     // Set option defaults
     var opts = {};
     options = options || {};
-    opts.width = options.width || bbox.width;
-    opts.height = options.height || bbox.height;
+    opts.width = innerworkSpaceDimensions.width;
+    opts.height = innerworkSpaceDimensions.height;
     opts.xclust_height = options.xclust_height || opts.height * 0.12;
     opts.yclust_width = options.yclust_width || opts.width * 0.12;
     opts.link_color = opts.link_color || "#AAA";
@@ -178,8 +178,8 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     var xaxisBounds = gridSizer.getCellBounds(1, 2);
     var zoomAreaBounds = gridSizer.getCellBounds(1, 1); // To be one of the things returned by this function
     // Hack Zoom Area Bound. Height and width should be 20 % bigger.
-    zoomAreaBounds.height = zoomAreaBounds.height * 2;
-    zoomAreaBounds.width = zoomAreaBounds.width * 2;
+    zoomAreaBounds.height = zoomAreaBounds.height * 5;
+    zoomAreaBounds.width = zoomAreaBounds.width * 5;
 
     xaxisBounds.height = 200;
 
@@ -195,17 +195,25 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
     // Create DOM structure
     (function () {
+        debugger;
         var inner = el.append("div").attr("id", "inner").classed("inner", true);
-        var info = inner.append("div").classed("info", true);
-        var colDend = inner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
+        var sidebar = inner.append("div").attr({ "id": "myTopnav" }).classed("topnav", true).style(cssify(sideBarDimensions));
+        var workspace = inner.append("div").attr({"id":"workspace"}).classed("workspace", true).style(cssify(workSpaceDimensions));
+        var workspaceInner = workspace.append("div").attr("id", "workspaceinner").classed("workspaceinner", true).style(cssify(innerworkSpaceDimensions));
+        var colDend = workspaceInner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
         // update the dimensions of row dendogram to compensate for the side bar.   GITHUB ISSUE # 13
         rowDendBounds.width = rowDendBounds.width - (sideBarDimensions.width * 0.7); 
         rowDendBounds.left = sideBarDimensions.width * 0.7;
-        var rowDend = inner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
-        var colmap = inner.append("svg").attr("id", "colormap").classed("colormap", true).style(cssify(colormapBounds));
-        var xaxis = inner.append("svg").attr("id", "xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
-        var yaxis = inner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
-        var sidebar = inner.append("div").attr({ "id": "myTopnav" }).classed("topnav", true).style(cssify(sideBarDimensions));
+        var rowDend = workspaceInner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
+        var colmap = workspaceInner.append("svg").attr("id", "colormap").classed("colormap", true).style(cssify(colormapBounds));
+        var xaxis = workspaceInner.append("svg").attr("id", "xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
+        var yaxis = workspaceInner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
+        
+        if(scrollable) 
+            {document.getElementById("workspace").style.overflow="scroll";}
+        else {
+            document.getElementById("workspace").style.overflow="hidden";
+        }
 
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
         // QtWebkit viewer won't allow svg elements to overflow:visible.
