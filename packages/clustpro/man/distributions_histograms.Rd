@@ -6,7 +6,13 @@
 \usage{
 distributions_histograms(matrix)
 }
+\arguments{
+\item{matrix}{numeric data.frame}
+}
 \description{
 .................
+}
+\examples{
+distributions_histograms()
 }
 

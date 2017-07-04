@@ -5,16 +5,50 @@
 \title{Clustpro main function}
 \usage{
 clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = -1,
-  perform_clustering = TRUE, cluster_ids = NULL, rows = TRUE,
+  perform_clustering = TRUE, clusterVector = NULL, rows = TRUE,
   cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
   color_legend = NULL, width = NULL, height = NULL,
   graphics_export = FALSE, export_dir = NULL, export_type = "svg",
   seed = NULL, cores = 2)
+}
+\arguments{
+\item{matrix}{numeric data.frame}
+
+\item{method}{character; one of the following cluster methods: kmeans, cmeans}
+
+\item{min_k, max_k, fixed_k}{number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.}
+
+\item{perform_clustering}{boolean; if true a clustering is performed}
+
+\item{clusterVector}{list or vector of natural number; for each row a cluster has to been given}
+
+\item{rows, cols}{boolean; if true a hierarchical clustering for row / columns of the clustered matrix is performed}
+
+\item{tooltip}{list of lists; list of lists containing information of each row e.g. a list for name, description.}
+
+\item{save_widget}{boolean; if to TRUE html widget is saved as html page}
+
+\item{color_legend}{list of lists; required lists: ticks and colors; ticks is a list of n breaks for the heatmap; colors is a list of n-1 colors; in addition a list for of position for shown labels can added  call label_position}
+
+\item{width, height}{Must be a valid CSS unit (like \code{'100\%'},
+\code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
+string and have \code{'px'} appended.}
+
+\item{export_dir}{character; storage directory}
+
+\item{export_type}{character; type of exported graphics, tested for tif and svg}
+
+\item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
+
+\item{cores}{natural number, number of nodes/cores used for parallelisation}
 }
 \value{
 see clustpro() function output
 }
 \description{
 This function is used to start the clustering and visualisation process.
+}
+\examples{
+clustpro()
 }
 

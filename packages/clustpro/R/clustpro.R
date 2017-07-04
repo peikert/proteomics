@@ -25,7 +25,7 @@ clustpro_example <- function(){
                     max_k = 100,
                     fixed_k = -1,
                     perform_clustering = TRUE,
-                    cluster_ids = NULL,
+                    clusterVector = NULL,
                     rows = TRUE,
                     cols = TRUE,
                     tooltip = info_list,
@@ -49,22 +49,24 @@ clustpro_example <- function(){
 #' Clustpro main function
 #'
 #' This function is used to start the clustering and visualisation process.
-#' @param matrix
-#' @param method
-#' @param min_k,max_k,fixed_k
-#' @param perform_clustering
-#' @param cluster_ids
-#' @param rows,cols
-#' @param tooltip
-#' @param save_widget
-#' @param color_legend
-#' @param width,height
-#' @param export_dir
-#' @param export_type
-#' @param seed
-#' @param cores
+#' @param matrix 	numeric data.frame
+#' @param method character; one of the following cluster methods: kmeans, cmeans
+#' @param min_k,max_k,fixed_k number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.
+#' @param perform_clustering boolean; if true a clustering is performed
+#' @param clusterVector list or vector of natural number; for each row a cluster has to been given
+#' @param rows,cols boolean; if true a hierarchical clustering for row / columns of the clustered matrix is performed
+#' @param tooltip list of lists; list of lists containing information of each row e.g. a list for name, description.
+#' @param save_widget boolean; if to TRUE html widget is saved as html page
+#' @param color_legend list of lists; required lists: ticks and colors; ticks is a list of n breaks for the heatmap; colors is a list of n-1 colors; in addition a list for of position for shown labels can added  call label_position
+#' @param width,height Must be a valid CSS unit (like \code{'100\%'},
+#'   \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
+#'   string and have \code{'px'} appended.
+#' @param export_dir character; storage directory
+#' @param export_type character; type of exported graphics, tested for tif and svg
+#' @param seed natural number, useful for creating simulations or random objects that can be reproduced
+#' @param cores natural number, number of nodes/cores used for parallelisation
 #' @return see clustpro() function output
-#' @examples
+#' @examples clustpro()
 #' @export
 clustpro <- function(matrix,
                      method = "kmeans",
@@ -72,7 +74,7 @@ clustpro <- function(matrix,
                      max_k = 10,
                      fixed_k = -1,
                      perform_clustering = TRUE,
-                     cluster_ids = NULL,
+                     clusterVector = NULL,
                      rows = TRUE,
                      cols = TRUE,
                      tooltip = NULL,
@@ -89,68 +91,26 @@ clustpro <- function(matrix,
 
   #### proofing #####
   if(!class(matrix) %in% c('data.frame'))stop('matrix is no data.frame')
+  if(!all(complete.cases(matrix)))stop('matrix is contains missing values')
   if(class(method) != 'character' | !method %in% c("kmeans","cmeans"))stop('method must be a string. options:"kmeans","cmeans"')
   if(!is.numeric(min_k))stop('min_k must be numeric')
   if(!is.numeric(min_k))stop('max_k must be numeric')
   if(!is.numeric(min_k))stop('fixed_k must be numeric')
   if(!is.logical(perform_clustering))
-  if(!is.null(cluster_ids) || !class(cluster_ids) %in% c("list","vector")) stop('"cluster_ids" must be NULL or of type "list/vector"')
+  if(!is.null(clusterVector) || (!class(clusterVector) %in% c("list","vector")) && length(clusterVector) != nrow(matrix)) stop('"clusterVector" must be NULL or of type "list/vector" with a length equal to the rows of the matrix')
   if(!is.logical(rows)) stop('"rows" must be logical')
   if(!is.logical(cols)) stop('"cols" must be logical')
   if(!is.null(tooltip) && class(tooltip)!='list') stop('"tooltip" must be NULL or of type "list"')
   if(!is.logical(save_widget)) stop('"save_widget" must be logical')
   if(!is.logical(show_legend)) stop('"show_legend" must be logical')
   if(!is.null(color_legend) && class(color_legend)!='list') stop('"color_legend" must be NULL or of type "list"')
-  if(!is.null(cluster_ids) && !is.numeric(width)) stop('"width" must be numeric')
-  if(!is.null(cluster_ids) && !is.numeric(height)) stop('"height" must be numeric')
+  if(!is.null(width) && !is.numeric(width)) stop('"width" must be numeric')
+  if(!is.null(width) && !is.numeric(height)) stop('"height" must be numeric')
   if(!is.logical(graphics_export)) stop('"graphics_export" must be logical')
   if(!is.null(export_dir) && (class(export_dir) != 'character' || !dir.exists(file.path(export_dir))))stop('"export_dir" must be NULL or an exsisting directory')
   if(class(export_type) != 'character' || !export_type %in% c("svg","png","jpg"))stop('"export_type" must be a string. options:"svg","png","jpg"')
   if(!is.null(seed) && (!is.numeric(seed) && seed != round(seed))) stop('"seed" must be integer')
   if(is.null(cores) || (!is.numeric(cores) && cores != round(cores))) stop('"cores" must be integer')
-
-
-
-
-  if (F) {
-    library(htmlwidgets)
-    library(ggplot2)
-    library(pracma)
-    library(Biobase)
-    library(Mfuzz)
-    library(clusterSim)
-    library(pheatmap)
-    library(gplots)
-    library(ctc)
-    library(jsonlite)
-    library(foreach)
-
-    matrix <- matrix
-    min_k = 2
-    max_k = 100
-    fixed_k = -1
-    method = "kmeans"
-    cores = 2
-    perform_clustering = TRUE
-    cluster_ids = NULL
-    tooltip = info_list
-    rows = TRUE
-    cols = TRUE
-    color_legend = heatmap_color
-    graphics_export = FALSE
-    export_dir = NULL
-    export_type = 'svg'
-    seed = 1
-  }
-  if (F) {
-    matrix = matrix
-    col_dend_hclust = data2$col_dend_hclust
-    cluster_ids = cluster_ids
-    perform_clustering = FALSE
-    rows = FALSE
-    cols = TRUE
-  }
-
 
   # static default values
   xaxis_height = 80
@@ -188,7 +148,7 @@ clustpro <- function(matrix,
 
 
   if (!perform_clustering) {
-    clusters <- cluster_ids
+    clusters <- clusterVector
     cobject <- NA
     row_dend_nw <- NULL
     col_dend_nw <- NULL
@@ -200,10 +160,8 @@ clustpro <- function(matrix,
     if (!is.logical(cols) & class(cols) != 'hclust') {
       stop('col_dend is not of type hclust')
     }
-    if (is.null(cluster_ids) ||
-        class(cluster_ids) != 'integer' ||
-        length(cluster_ids) != nrow(matrix)) {
-      stop('cluster_ids has to been a numeric vector of same length as the data matrix!')
+    if (is.null(clusterVector)) {
+      stop('clusterVector has to been a numeric vector of same length as the data matrix!')
     }
     if (!is.logical(rows) &&
         !is.null(rows) && class(rows) == "hclust") {
@@ -383,8 +341,8 @@ renderClustpro <-
 #' distributions_histograms
 #'
 #' .................
-#' @param matrix
-#' @examples
+#' @param matrix numeric data.frame
+#' @examples distributions_histograms()
 
 distributions_histograms <- function(matrix) {
   for (i in 1:ncol(matrix)) {
@@ -411,11 +369,11 @@ distributions_histograms <- function(matrix) {
 #' order_dataframe_by_list
 #'
 #' .................
-#' @param x
-#' @param list
-#' @param col
-#' @param reverse
-#' @examples
+#' @param x numeric data.frame
+#' @param list list, unique list of numbers or character in whished order
+#' @param col character or numerical, col with should be ordered in accordance to list
+#' @param reverse boolean, if TRUE reverse order of list
+#' @examples order_dataframe_by_list()
 
 order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
   if (reverse) {
@@ -431,12 +389,12 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
 #' findk_cmeans
 #'
 #' .................
-#' @param matrix
-#' @param k
-#' @param minimalSet
-#' @param fp
-#' @param seed
-#' @examples
+#' @param matrix numeric data.frame
+#' @param k number of clusters, k
+#' @param minimalSet object of the class “minimalSet”
+#' @param fp fuzzification parameter
+#' @param seed natural number, useful for creating simulations or random objects that can be reproduced
+#' @examples findk_cmeans()
 
 findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
   tryCatch({
@@ -466,10 +424,10 @@ findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
 #' findk_kmeans
 #'
 #' .................
-#' @param matrix
-#' @param k
-#' @param seed
-#' @examples
+#' @param matrix numeric data.frame
+#' @param k number of clusters, k
+#' @param seed natural number, useful for creating simulations or random objects that can be reproduced
+#' @examples findk_kmeans()
 
 findk_kmeans <- function(matrix, k, seed = NULL) {
   tryCatch({
@@ -498,12 +456,12 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 #' Get best k
 #'
 #' .................
-#' @param matrix
-#' @param min_k,max_k,fixed_k
-#' @param method
-#' @param cores
-#' @param seed
-#' @examples
+#' @param matrix numeric data.frame
+#' @param min_k,max_k,fixed_k number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.
+#' @param method character; one of the following cluster methods: kmeans, cmeans
+#' @param cores natural number, number of nodes/cores used for parallelisation
+#' @param seed natural number, useful for creating simulations or random objects that can be reproduced
+#' @examples get_best_k()
 #' @export
 #'
 get_best_k <-
@@ -573,12 +531,12 @@ get_best_k <-
 #' Clustering
 #'
 #' This function allows you to initialize a graphic
-#' @param matrix
-#' @param min_k,max_k,fixed_k
-#' @param method
-#' @param cores
-#' @param seed
-#' @examples
+#' @param matrix numeric data.frame
+#' @param min_k,max_k,fixed_k number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.
+#' @param method character; one of the following cluster methods: kmeans, cmeans
+#' @param cores natural number, number of nodes/cores used for parallelisation
+#' @param seed natural number, useful for creating simulations or random objects that can be reproduced
+#' @examples clustering()
 clustering <- function(matrix,
                        min_k = 2,
                        max_k = 100,
@@ -710,13 +668,11 @@ clustering <- function(matrix,
 #' Function to initialize a graphic
 #'
 #' This function allows you to initialize a graphic
-#' @param title
-#' @param project
-#' @param type
-#' @param number
-#' @examples
-initialize_graphic <- function(title, type = graphic_type, ...) {
-  gap_free_title <- gsub('\\s', '_', title)
+#' @param filename character; filename for saving
+#' @param type character; type of exported graphics, tif, svg or pdf
+#' @examples initialize_graphic()
+initialize_graphic <- function(filename, type = 'tif', ...) {
+  gap_free_title <- gsub('\\s', '_', filename)
   switch(type,
          svg = {
            svg(paste(gap_free_title, '.svg', sep = ''),
@@ -744,10 +700,10 @@ initialize_graphic <- function(title, type = graphic_type, ...) {
 #' Function to get color
 #'
 #' ..............
-#' @param x
-#' @param ticks
-#' @param colors
-#' @examples
+#' @param x numeric; value in range of the ticks
+#' @param ticks numeric vector breaks/ticks for a gradient
+#' @param colors character vector of colors for a gradient
+#' @examples get_color()
 
 get_color <- function(x, ticks, colors) {
   i = 1
@@ -759,14 +715,12 @@ get_color <- function(x, ticks, colors) {
   return(colors[i - 1])
 }
 
-
 #' Function to to define the color spectrum for heatmaps
 #'
 #' This function allows you to define the color spectrum for heatmaps.
-#' @param intervals should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.
-#' @param color_spect
-#' @examples
-#' color_spectrum()
+#' @param intervals list of numerical vaules which define the breaks of the color space
+#' @param color_spect list of colors
+#' @examples color_spectrum()
 color_spectrum <-
   function(intervals, color_spect) {
     index <- 1
@@ -793,10 +747,10 @@ color_spectrum <-
 #' Function to set heatmap color
 #'
 #' This function allows you to define the color spectrum for heatmaps.
-#' @param data todo If submitted used for proofing
-#' @param color_list todo
-#' @param intervals todo
-#' @param auto todo
+#' @param data numeric data.frame, list or vector
+#' @param intervals list of numerical vaules which define the breaks of the color space
+#' @param color_list list of colors
+#' @param auto boolean, if TRUE automatical gerneates ticks for the dataset
 #' @keywords color spectrum heatmaps
 #' @export
 #' @examples setHeatmapColors()

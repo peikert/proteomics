@@ -24,7 +24,7 @@ graphic_type <<- "tif"
 #
 
 # msdata <- readRDS('data/sample_data.rds')
-msdata <- read.csv('D:/git/proteomics/packages/clustpro/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+msdata <- read.csv('D:/git/proteomics/packages/clustpro/data/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
 colnames(msdata)
 
 min(msdata[,c(1:6)])
@@ -36,6 +36,7 @@ heatmap_color <- setHeatmapColors(data = msdata[,c(3:6)],color_list = color_list
 
 heatmap_color <- setHeatmapColors(data=msdata[,c(3:6)],color_list = color_list ,auto=TRUE)
 heatmap_color$label_position <- c(-8,0,8)
+
 
 
 info_list <- list()

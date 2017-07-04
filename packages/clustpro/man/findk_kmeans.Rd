@@ -6,7 +6,17 @@
 \usage{
 findk_kmeans(matrix, k, seed = NULL)
 }
+\arguments{
+\item{matrix}{numeric data.frame}
+
+\item{k}{number of clusters, k}
+
+\item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
+}
 \description{
 .................
+}
+\examples{
+findk_kmeans()
 }
 

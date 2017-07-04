@@ -7,7 +7,9 @@
 color_spectrum(intervals, color_spect)
 }
 \arguments{
-\item{intervals}{should be a list which define the breaks of the color space. color_spect should be a list of color. Keep in mean that there must be 1 more board in the vaules list than color in color_spect.}
+\item{intervals}{list of numerical vaules which define the breaks of the color space}
+
+\item{color_spect}{list of colors}
 }
 \description{
 This function allows you to define the color spectrum for heatmaps.

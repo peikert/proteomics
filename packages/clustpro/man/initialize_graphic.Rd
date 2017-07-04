@@ -4,9 +4,17 @@
 \alias{initialize_graphic}
 \title{Function to initialize a graphic}
 \usage{
-initialize_graphic(title, type = graphic_type, ...)
+initialize_graphic(filename, type = "tif", ...)
+}
+\arguments{
+\item{filename}{character; filename for saving}
+
+\item{type}{character; type of exported graphics, tif, svg or pdf}
 }
 \description{
 This function allows you to initialize a graphic
+}
+\examples{
+initialize_graphic()
 }
 

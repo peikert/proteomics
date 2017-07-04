@@ -49,7 +49,8 @@ clustProPanelUI <- function(id) {
            clustPlotUI(ns('clustPlot'))
   ),
   column(8,
-          div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:85vh',
+         # div(style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:85vh',
+          div(style = 'width: 100% ; height:85vh',
              clustProMainUI(ns('clustProMain'))
             )
          ,
@@ -348,7 +349,7 @@ clustProMain <- function(input, output, session, clust_parameters) {
                       max_k = 100,
                       fixed_k = fixed_k,
                       perform_clustering = TRUE,
-                      cluster_ids = NULL,
+                      clusterVector = NULL,
                       rows = TRUE,
                       cols = TRUE,
                       tooltip = info_list,
@@ -357,7 +358,7 @@ clustProMain <- function(input, output, session, clust_parameters) {
                       width = NULL,
                       height = NULL,
                       graphics_export = FALSE,
-                      export_dir = NA,
+                      export_dir = NULL,
                       export_type = 'svg',
                       seed=1,
                       cores = 2

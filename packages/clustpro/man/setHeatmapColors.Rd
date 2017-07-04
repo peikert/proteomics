@@ -8,13 +8,13 @@ setHeatmapColors(data, color_list = c("red", "yellow", "green"), intervals,
   auto = FALSE)
 }
 \arguments{
-\item{data}{todo If submitted used for proofing}
+\item{data}{numeric data.frame, list or vector}
 
-\item{color_list}{todo}
+\item{color_list}{list of colors}
 
-\item{intervals}{todo}
+\item{intervals}{list of numerical vaules which define the breaks of the color space}
 
-\item{auto}{todo}
+\item{auto}{boolean, if TRUE automatical gerneates ticks for the dataset}
 }
 \description{
 This function allows you to define the color spectrum for heatmaps.

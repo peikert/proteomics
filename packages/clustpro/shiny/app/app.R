@@ -12,17 +12,18 @@ shinyClustPro = function(data){
 ui <- fluidPage(
         clustProPanelUI('clustProPanel')
   ),
-
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
 out_clustProPanel <- callModule(clustProPanel,"clustProPanel",reactive(data))
- # out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
-
-
-diff(2,4)
+# out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
 })
   )}
 
+#proteomics_data <- read.csv('D:/proteomics_data.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+#devtools::use_data(proteomics_data,overwrite = TRUE)
 # Run the application
-shinyClustPro(iris)
+#shinyClustPro(iris)
+#shinyClustPro()
+data("proteomics_data")
+shinyClustPro(proteomics_data)

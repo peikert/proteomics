@@ -6,7 +6,17 @@
 \usage{
 get_color(x, ticks, colors)
 }
+\arguments{
+\item{x}{numeric; value in range of the ticks}
+
+\item{ticks}{numeric vector breaks/ticks for a gradient}
+
+\item{colors}{character vector of colors for a gradient}
+}
 \description{
 ..............
+}
+\examples{
+get_color()
 }
 

@@ -7,7 +7,21 @@
 clustering(matrix, min_k = 2, max_k = 100, fixed_k = -1,
   method = "kmeans", cores = 2, seed = NULL, graphics_export = FALSE)
 }
+\arguments{
+\item{matrix}{numeric data.frame}
+
+\item{min_k, max_k, fixed_k}{number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.}
+
+\item{method}{character; one of the following cluster methods: kmeans, cmeans}
+
+\item{cores}{natural number, number of nodes/cores used for parallelisation}
+
+\item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
+}
 \description{
 This function allows you to initialize a graphic
+}
+\examples{
+clustering()
 }
 
