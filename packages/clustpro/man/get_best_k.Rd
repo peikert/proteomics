@@ -9,7 +9,7 @@ get_best_k(matrix, min_k, max_k, method, cores = 1, seed = NULL)
 \arguments{
 \item{matrix}{numeric data.frame}
 
-\item{min_k, max_k, fixed_k}{number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.}
+\item{min_k, max_k}{number of clusters, k; if the  function is called its tries to find the optimal k for this data in the range defined by the minimum and maximal k.}
 
 \item{method}{character; one of the following cluster methods: kmeans, cmeans}
 
@@ -19,8 +19,5 @@ get_best_k(matrix, min_k, max_k, method, cores = 1, seed = NULL)
 }
 \description{
 .................
-}
-\examples{
-get_best_k()
 }
 

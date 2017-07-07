@@ -4,11 +4,11 @@
 \alias{clustpro}
 \title{Clustpro main function}
 \usage{
-clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = -1,
-  perform_clustering = TRUE, clusterVector = NULL, rows = TRUE,
-  cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
-  color_legend = NULL, width = NULL, height = NULL,
-  graphics_export = FALSE, export_dir = NULL, export_type = "svg",
+clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10,
+  fixed_k = NULL, perform_clustering = TRUE, clusterVector = NULL,
+  rows = TRUE, cols = TRUE, tooltip = NULL, save_widget = TRUE,
+  show_legend = FALSE, color_legend = NULL, width = NULL, height = NULL,
+  export_graphics = FALSE, export_dir = NULL, export_type = "svg",
   seed = NULL, cores = 2)
 }
 \arguments{
@@ -28,11 +28,15 @@ clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10, fixed_k = -1,
 
 \item{save_widget}{boolean; if to TRUE html widget is saved as html page}
 
+\item{show_legend}{boolean; if TRUE color legend is shown}
+
 \item{color_legend}{list of lists; required lists: ticks and colors; ticks is a list of n breaks for the heatmap; colors is a list of n-1 colors; in addition a list for of position for shown labels can added  call label_position}
 
 \item{width, height}{Must be a valid CSS unit (like \code{'100\%'},
 \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
 string and have \code{'px'} appended.}
+
+\item{export_graphics}{boolean; if TRUE grephics are exported}
 
 \item{export_dir}{character; storage directory}
 
@@ -47,8 +51,5 @@ see clustpro() function output
 }
 \description{
 This function is used to start the clustering and visualisation process.
-}
-\examples{
-clustpro()
 }
 

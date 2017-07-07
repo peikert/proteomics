@@ -4,8 +4,9 @@
 \alias{clustering}
 \title{Clustering}
 \usage{
-clustering(matrix, min_k = 2, max_k = 100, fixed_k = -1,
-  method = "kmeans", cores = 2, seed = NULL, graphics_export = FALSE)
+clustering(matrix, min_k = 2, max_k = 100, fixed_k = NULL,
+  method = "kmeans", cores = 2, seed = NULL, export_graphics = FALSE,
+  export_type = "svg")
 }
 \arguments{
 \item{matrix}{numeric data.frame}
@@ -17,11 +18,12 @@ clustering(matrix, min_k = 2, max_k = 100, fixed_k = -1,
 \item{cores}{natural number, number of nodes/cores used for parallelisation}
 
 \item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
+
+\item{export_graphics}{boolean; if TRUE grephics are exported}
+
+\item{export_type}{character; type of exported graphics, tested for tif and svg}
 }
 \description{
 This function allows you to initialize a graphic
-}
-\examples{
-clustering()
 }
 

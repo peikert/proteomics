@@ -11,7 +11,7 @@ findk_cmeans(matrix, k, minimalSet, fp, seed = NULL)
 
 \item{k}{number of clusters, k}
 
-\item{minimalSet}{object of the class “minimalSet”}
+\item{minimalSet}{object of the class minimalSet}
 
 \item{fp}{fuzzification parameter}
 
@@ -19,8 +19,5 @@ findk_cmeans(matrix, k, minimalSet, fp, seed = NULL)
 }
 \description{
 .................
-}
-\examples{
-findk_cmeans()
 }
 

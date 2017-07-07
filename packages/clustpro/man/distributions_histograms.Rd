@@ -4,15 +4,14 @@
 \alias{distributions_histograms}
 \title{distributions_histograms}
 \usage{
-distributions_histograms(matrix)
+distributions_histograms(matrix, export_type)
 }
 \arguments{
 \item{matrix}{numeric data.frame}
+
+\item{export_type}{character; type of exported graphics, tested for tif and svg}
 }
 \description{
 .................
-}
-\examples{
-distributions_histograms()
 }
 

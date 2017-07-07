@@ -10,11 +10,10 @@ initialize_graphic(filename, type = "tif", ...)
 \item{filename}{character; filename for saving}
 
 \item{type}{character; type of exported graphics, tif, svg or pdf}
+
+\item{...}{further parameters}
 }
 \description{
 This function allows you to initialize a graphic
-}
-\examples{
-initialize_graphic()
 }
 

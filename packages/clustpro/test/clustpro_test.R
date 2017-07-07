@@ -16,7 +16,7 @@ get_first_split_element <- function(x,split){
 }
 
 
-setwd("D:/git/proteomics/packages/clustpro/output")
+setwd("D:/git/proteomics/packages/clustpro")
 library("clustpro")
 ##help(package = clustpro)
 clustpro_example()
@@ -70,7 +70,7 @@ min_k = 2
 max_k = 100
 fixed_k = 5
 perform_clustering = TRUE
-cluster_ids = NULL
+clusterVector = NULL
 rows = TRUE
 cols = TRUE
 tooltip = info_list
@@ -89,9 +89,9 @@ clustpro(matrix=matrix,
                   method = "cmeans",
                   min_k = 2,
                   max_k = 100,
-                  fixed_k = 5,
+                  fixed_k = NULL,
                   perform_clustering = TRUE,
-                  cluster_ids = NULL,
+                  clusterVector = NULL,
                   rows = TRUE,
                   cols = TRUE,
                   tooltip = info_list,
@@ -100,7 +100,8 @@ clustpro(matrix=matrix,
                   width = NULL,
                   height = NULL,
                   export_dir = NULL,
-                  export_type = 'svg',
+                  export_type = 'tif',
+                  export_graphics = TRUE,
                   seed=1,
                   cores = 2
                   )

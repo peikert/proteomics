@@ -16,7 +16,4 @@ get_color(x, ticks, colors)
 \description{
 ..............
 }
-\examples{
-get_color()
-}
 

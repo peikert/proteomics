@@ -16,7 +16,4 @@ findk_kmeans(matrix, k, seed = NULL)
 \description{
 .................
 }
-\examples{
-findk_kmeans()
-}
 

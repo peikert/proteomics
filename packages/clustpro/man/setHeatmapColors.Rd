@@ -19,9 +19,6 @@ setHeatmapColors(data, color_list = c("red", "yellow", "green"), intervals,
 \description{
 This function allows you to define the color spectrum for heatmaps.
 }
-\examples{
-setHeatmapColors()
-}
 \keyword{color}
 \keyword{heatmaps}
 \keyword{spectrum}
