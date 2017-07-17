@@ -59,6 +59,10 @@ max_k = 20
 method = 'cmeans'
 
 get_best_k(matrix,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
+data <- matrix[,1,drop=FALSE]
+class(data)
+get_best_k(data,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
+
 
 get_best_k(matrix,min_k = 2,max_k = 20,method = 'cmeans', seed=1234, cores = 2)
 
@@ -84,11 +88,11 @@ seed=1234
 cores = 2
 graphics_export = FALSE
 
-
-clustpro(matrix=matrix,
-                  method = "cmeans",
+nrow(matrix[,1,drop=FALSE])
+clustpro(matrix=matrix[,1,drop=FALSE],
+                  method = "kmeans",
                   min_k = 2,
-                  max_k = 100,
+                  max_k = 30,
                   fixed_k = NULL,
                   perform_clustering = TRUE,
                   clusterVector = NULL,
@@ -100,8 +104,44 @@ clustpro(matrix=matrix,
                   width = NULL,
                   height = NULL,
                   export_dir = NULL,
-                  export_type = 'tif',
-                  export_graphics = TRUE,
+                  export_type = 'svg',
+                  export_graphics = FALSE,
                   seed=1,
                   cores = 2
                   )
+
+
+if(F){
+  matrix=matrix[,1,drop=FALSE]
+  method = "kmeans"
+  min_k = 2
+  max_k = 30
+  fixed_k = NULL
+  perform_clustering = TRUE
+  clusterVector = NULL
+  rows = TRUE
+  cols = TRUE
+  tooltip = info_list
+  save_widget = TRUE
+  show_legend = FALSE
+  color_legend = setHeatmapColors(matrix, color_list = color_list,auto=TRUE)
+  width = NULL
+  height = NULL
+  export_dir = NULL
+  export_type = 'svg'
+  export_graphics = FALSE
+  seed=1
+  cores = 2
+
+  library(htmlwidgets)
+  library(ggplot2)
+  library(pracma)
+  library(Biobase)
+  library(Mfuzz)
+  library(clusterSim)
+  library(pheatmap)
+  library(gplots)
+  library(ctc)
+  library(jsonlite)
+  library(foreach)
+}

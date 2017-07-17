@@ -86,12 +86,20 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
     updateCheckboxGroupInput(
       session = session, inputId = "clustering_columns", choices = c2p(), selected = c2p()[1:2]
     )
+
+  #   runjs(
+  #     paste0("if('#",ns('gradientPickerD3'),".length') {
+  #            $('#",ns('gradientPickerD3'),"').remove();
+  # }")
+  #         )
     })
 
   out_clustProMain <- callModule(clustProMain,"clustProMain",clust_parameters)
   out_clustPlot <- callModule(clustPlot,"clustPlot",best_k,reactive(input$clustering_k_numericInput))
+
   output$gradientPickerD3 <- renderGradientPickerD3({
     req(input$clustering_columns)
+    # removeUI(ns('gradientPickerD3'),session=session)
     vmin <- min(ldf()[,input$clustering_columns],na.rm=TRUE)
     vmax <- max(ldf()[,input$clustering_columns],na.rm=TRUE)
     delta <- vmax - vmin
@@ -102,56 +110,61 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
       colors=colors,
       ticks= ticks
                     )
+    print(payload)
     # payload <- list(colors=c("blue 0%","DeepSkyBlue 25%", "white 50%", "yellow 75%", "red 100%"))
     gradientPickerD3(payload)
   })
-
 
   heatmapColors <- reactive({
     req(input$gradientPickerD3_selected)
     req(ldf())
     req(input$clustering_columns)
     gcolors <- input$gradientPickerD3_selected
-    print('test')
-    gticks <- input$gradientPickerD3_ticks
-    print(gticks)
     if(is.null(gcolors)) return(NULL)
-    df_gcolors <- as.data.frame(matrix(unlist(gcolors), ncol = 2, byrow = TRUE))
-    colnames(df_gcolors) <- c('interval','color')
+    df_gcolors <- as.data.frame(matrix(unlist(gcolors), ncol = 3, byrow = TRUE),stringsAsFactors = FALSE)
+    colnames(df_gcolors) <- c('interval','color','ticks')
     print(df_gcolors)
+  #  df_gcolors$ticks <- NULL
+    df_gcolors$interval <- as.numeric(df_gcolors$interval)
+    df_gcolors$ticks <- as.numeric(df_gcolors$ticks)
+    # print(df_gcolors)
+    # df_gcolors$ticks <- NULL
     # df_gcolors <- as.data.frame(str_match_all(gcolors,'([^ ]+) (\\d{1,3})%')[[1]][,2:3],stringsAsFactors=FALSE)
     # colnames(df_gcolors) <- c("color","interval")
 
      # print(input$clustering_columns)
-    local_df <- ldf()[,input$clustering_columns]
-    local_df <- as.data.frame(apply(local_df,c(1,2), as.numeric))
+ #    local_df <- ldf()[,input$clustering_columns]
+ #    local_df <- as.data.frame(apply(local_df,c(1,2), as.numeric))
+ #
+ #    # print(head(ldf()))
+ #    minv <- min(local_df,na.rm=TRUE)#-0.00000001
+ #    maxv <- max(local_df,na.rm=TRUE)#+0.00000001
+ #    diff_value <- diff(c(minv,maxv))
+ #
+ #    # print(df_gcolors$interval)
+ # #   rownames(df_gcolors) <- NULL
+ #  # df_gcolors_mod <- data.frame(color=character(0),interval=numeric(0))
+ #    if(df_gcolors$interval[1]>0){
+ #      temp_df <- df_gcolors[1,,drop=FALSE]
+ #
+ #      temp_df$interval[1] <- 0
+ #      temp_df$ticks[1] <- minv -0.00000001
+ #      # print(temp_df)
+ #      df_gcolors <- rbind(temp_df,df_gcolors)
+ #    }
+ #
+ #    if(df_gcolors$interval[nrow(df_gcolors)]<1){
+ #      temp_df <- df_gcolors[nrow(df_gcolors),,drop=FALSE]
+ #      temp_df$interval <- 1
+ #      temp_df$interval[1] <- 1
+ #      temp_df$ticks[1] <- maxv + 0.00000001
+ #      df_gcolors <- rbind(df_gcolors,temp_df)
+ #    }
+ #
+ #    df_gcolors$interval_mod <- sapply(df_gcolors$interval,function(x){minv+diff_value*x/100})
+ #    print(df_gcolors)
 
-    # print(head(ldf()))
-    minv <- min(local_df,na.rm=TRUE)#-0.00000001
-    maxv <- max(local_df,na.rm=TRUE)#+0.00000001
-    diff_value <- diff(c(minv,maxv))
-    df_gcolors$interval <- as.numeric(df_gcolors$interval)
-    # print(df_gcolors$interval)
- #   rownames(df_gcolors) <- NULL
-  # df_gcolors_mod <- data.frame(color=character(0),interval=numeric(0))
-    if(df_gcolors$interval[1]>0){
-      temp_df <- df_gcolors[1,,drop=FALSE]
-
-      temp_df[1,2] <- 0
-      # print(temp_df)
-      df_gcolors <- rbind(temp_df,df_gcolors)
-    }
-
-    if(df_gcolors$interval[nrow(df_gcolors)]<100){
-      temp_df <- df_gcolors[nrow(df_gcolors),,drop=FALSE]
-      temp_df$interval <- 100
-      df_gcolors <- rbind(df_gcolors,temp_df)
-    }
-
-    df_gcolors$interval_mod <- sapply(df_gcolors$interval,function(x){minv+diff_value*x/100})
-    # print(df_gcolors$interval_mod)
-
-    setHeatmapColors(data=NULL,color_list=df_gcolors$color,intervals=df_gcolors$interval_mod)
+    setHeatmapColors(data=NULL,color_list=df_gcolors$color,intervals=df_gcolors$ticks)
   })
 
   # observe(print(heatmapColors()))

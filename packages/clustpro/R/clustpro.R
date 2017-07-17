@@ -107,11 +107,16 @@ clustpro <- function(matrix,
   if(!is.logical(save_widget)) stop('"save_widget" must be logical')
   if(!is.logical(show_legend)) stop('"show_legend" must be logical')
   if(!is.null(color_legend) && class(color_legend)!='list') stop('"color_legend" must be NULL or of type "list"')
+  if(class(color_legend)=='list') {
+    if(!all(c('ticks','colors') %in% names(color_legend)))stop('"color_legend" did not contain correct lists')
+    if(min(matrix)<min(color_legend$ticks))stop('"color_legend" min ticks out of range')
+    if(max(matrix)>max(color_legend$ticks))stop('"color_legend" max ticks out of range')
+    }
   if(!is.null(width) && !is.numeric(width)) stop('"width" must be numeric')
   if(!is.null(width) && !is.numeric(height)) stop('"height" must be numeric')
   if(!is.logical(export_graphics)) stop('"export_graphics" must be logical')
   if(!is.null(export_dir) && (class(export_dir) != 'character' || !dir.exists(file.path(export_dir))))stop('"export_dir" must be NULL or an exsisting directory')
-  if(class(export_type) != 'character' || !export_type %in% c("tif","svg","png","jpg"))stop('"export_type" must be a string. options:"tif","svg","png","jpg"')
+  if(class(export_type) != 'character' || !export_type %in% c("tiff","svg","png","jpg"))stop('"export_type" must be a string. options:"tiff","svg","png","jpg"')
   if(!is.null(seed) && (!is.numeric(seed) && seed != round(seed))) stop('"seed" must be integer')
   if(is.null(cores) || (!is.numeric(cores) && cores != round(cores))) stop('"cores" must be integer')
 
@@ -191,7 +196,7 @@ clustpro <- function(matrix,
       export_type = export_type
     )
 
-    matrix = rs$data[, !colnames(rs$data) %in% 'cluster']
+    matrix = rs$data[, !colnames(rs$data) %in% 'cluster', drop=FALSE]
     clusters = rs$clusters
     cluster_centers = rs$cluster_centers
     row_dend_nw = rs$dendnw_row_nw
@@ -201,13 +206,14 @@ clustpro <- function(matrix,
     data = rs$data
     cobject = rs$cobject
   }
+  if(is.null(rownames(matrix)))rownames(matrix) <- 1:nrow(matrix)
   new_order <-
     sapply(rownames(matrix), function(x)
       which(x == tooltip[['id']]))
   reordered_tooltip <- lapply(tooltip, function(x)
     x[new_order])
   reordered_tooltip[['id']] <- NULL
-
+  # sapply(color_legend,length)
   color_matrix <-
     as.data.frame(
       apply(
@@ -443,7 +449,7 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
   tryCatch({
     if (!is.null(seed))
       set.seed(seed)
-    cluster <- kmeans(matrix, k, iter.max = 1000)
+    cluster <- kmeans(matrix, k, iter.max = 1000, algorithm="Lloyd")
     db_score <-
       clusterSim::index.DB(
         matrix,
@@ -607,7 +613,7 @@ clustering <- function(matrix,
             panel.background = element_blank(),
             axis.line = element_line(colour = "black")) +
    ggtitle('best k estimation')
-    ggsave(paste0('best k estimation.',export_type))
+    ggsave(paste0('best_k_estimation.',export_type),plot = g)
     # show(g)
     # grDevices::dev.off()
     }
@@ -635,22 +641,34 @@ clustering <- function(matrix,
     sapply(cluster_centers$cluster, as.character)
   cluster_centers$cluster <- NULL
 
+  # print(cluster_centers)
   # set.seed(1234)
+
+  row_dend_nw = NULL
+  col_dend_nw = NULL
+  col_dend_hclust = NULL
+  row_dend_hclust = NULL
+  col_dend = NULL
+  row_dend = NULL
+
+  if(nrow(cluster_centers)>1){
   d_rows <-
     dist(cluster_centers, method = "euclidean") # distance matrix
-  d_cols <-
-    dist(t(cluster_centers), method = "euclidean") # distance matrix
-
   row_dend_hclust <- hclust(d_rows, method = "ward.D2")
-  col_dend_hclust <- hclust(d_cols, method = "ward.D2")
-
-  col_dend_nw <- ctc::hc2Newick(col_dend_hclust)
-  col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
-
   row_dend_nw <- ctc::hc2Newick(row_dend_hclust)
   row_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", row_dend_nw)
-  col_dend <- as.dendrogram(col_dend_hclust)
   row_dend <- as.dendrogram(row_dend_hclust)
+}
+
+  if(ncol(cluster_centers)>1){
+  d_cols <-
+    dist(t(cluster_centers), method = "euclidean") # distance matrix
+  col_dend_hclust <- hclust(d_cols, method = "ward.D2")
+  col_dend_nw <- ctc::hc2Newick(col_dend_hclust)
+  col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
+  col_dend <- as.dendrogram(col_dend_hclust)
+}
+
 
   ordered_df <- NULL
   if (class(row_dend) == "dendrogram") {
