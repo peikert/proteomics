@@ -1,5 +1,5 @@
 library('shiny')
-library('shinyjs')
+# library('shinyjs')
 library('clustpro')
 library('gradientPickerD3')
 source('module_shiny_clustpro.R')
@@ -22,7 +22,7 @@ shinyClustPro = function(data,  data_columns, info_columns){
   calls = match.call()
   shinyApp(
 ui <- fluidPage(
-      useShinyjs(),
+      # useShinyjs(),
       #extendShinyjs(text = jsCode),
         clustProPanelUI('clustProPanel')
   ),

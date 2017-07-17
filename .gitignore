@@ -2,3 +2,13 @@
 .Rhistory
 .RData
 .Ruserdata
+
+packages/clustpro/version_0\.03a
+
+packages/clustpro/payload\.json
+
+packages/clustpro/clustered_matrix\.txt
+
+packages/clustpro/best_k_estimation\.tiff
+
+packages/clustpro/best_k_estimation\.svg
