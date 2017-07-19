@@ -316,10 +316,6 @@ HTMLWidgets.widget({
                                         .attr("y", d3.event.y - 20);
                                     rectangle.attr("width", d3.event.x +10)
                                             .attr("height", d3.event.y +10);
-                                            console.log("--------");
-                                            console.log(d3.event.x);
-                                            console.log(d3.event.y);
-                                            console.log("--------");
                                 });
                         // Implemetation details:
                         // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
@@ -410,7 +406,7 @@ HTMLWidgets.widget({
                 console.log("you clicked a line");
                 console.log(i);
                 console.log(d);
-                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions);
+                self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
             });
         }
 
@@ -421,7 +417,7 @@ HTMLWidgets.widget({
                 console.log("you clicked a column dendogram line");
                 console.log(i);
                 console.log(d);
-                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions);
+                self.refreshColDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
             });
         }
 
@@ -595,7 +591,7 @@ HTMLWidgets.widget({
         saveAs(new Blob([source], { type: "application/svg+xml" }), "clustpro_heatmap." + export_type); // saving in the user passed format.
     },
 
-    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions) {
+    refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
         var clusterSwapArray_1 = x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow + 1);
         var clusterSwapArray_2 = x.clusters.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow + 1);
         var matrixDataArray_1 = x.matrix.data.slice(d.rowRange.startRow * x.matrix.cols.length, ((d.rowRange.endRow + 1) * x.matrix.cols.length));
@@ -614,10 +610,10 @@ HTMLWidgets.widget({
             this.dataMatrixSwap(x, matrixDataArray_2, matrixDataArray_1, matrixMergeArray_2, matrixMergeArray_1, matrixDataCounter, matrixMergeCounter); // If the line clicked is the upper sibling.
         rowNewickSting = this.stringSwap(d, rowNewickSting); //refresh newick string.
         x.dendnw_row[0] = rowNewickSting;
-        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions);
+        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
 
-    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions) {
+    refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
         var columnRangeClicked = d.columnRange;
         var siblingColumnRange = d.siblingColumnRange;
         if (columnRangeClicked.start < siblingColumnRange.start) {
@@ -630,7 +626,7 @@ HTMLWidgets.widget({
         }
         colNewickString = this.stringSwap(d, colNewickString); //refresh newick string.
         x.dendnw_col[0] = colNewickString; //refresh newick string.
-        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions);
+        this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, false, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
 
 
