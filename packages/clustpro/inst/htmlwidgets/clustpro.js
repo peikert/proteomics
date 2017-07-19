@@ -43,7 +43,8 @@ HTMLWidgets.widget({
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
         var innerworkSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
-        x.matrix.data = [].concat.apply([], x.matrix.data); // Flattening the data array.
+        innerworkSpaceDimensions.left = 0; 
+        x.matrix.data = [].concat.apply([], x.matrix.data);
         this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, false, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
     resize: function (el, width, height, instance) {
