@@ -298,8 +298,10 @@ HTMLWidgets.widget({
                     } else {
                         sidebar_options.zoom_enabled = true;
                         dimensions = self.calculateDimensions();
-                        // No need for this currently
-                        // window.scrollTo(document.getElementById("colormap").getBoundingClientRect().width, document.getElementById("colormap").getBoundingClientRect().height); // Scroll to the bottom right
+
+                        initialBoxLocation = {x:null, y:null};
+                        initialScrollValues = {scrollTop: null, scrollLeft:null};
+
                         var old_el_style_width = dimensions[0];
                         var old_el_style_height = dimensions[1];
                         el.style.width = heatMapObject[3].width; // Increase the over all scrollable area 
@@ -307,21 +309,21 @@ HTMLWidgets.widget({
                         document.getElementById("workspace").style.overflow="scroll";
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
-                                    document.getElementById("workspace").scrollLeft = d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value - 30;
-                                    document.getElementById("workspace").scrollTop = d3.event.y - d3.select("#colormap")[0][0].height.baseVal.value - 30;                                    
+                                    // somehow initially remember the starting scroll values.
+                                    document.getElementById("workspace").scrollLeft = d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value + initialScrollValues.scrollLeft + 30; // 
+                                    document.getElementById("workspace").scrollTop = d3.event.y - d3.select("#colormap")[0][0].height.baseVal.value + initialScrollValues.scrollTop - 30;                                    
                                     box.attr("x", d3.event.x - 20)
                                         .attr("y", d3.event.y - 20);
                                     rectangle.attr("width", d3.event.x +10)
                                             .attr("height", d3.event.y +10);
-                                            console.log("- - -- ");
+                                            console.log("--------");
                                             console.log(d3.event.x);
                                             console.log(d3.event.y);
-                                            console.log("- - -- ");
-
+                                            console.log("--------");
                                 });
                         // Implemetation details:
                         // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
-                        initialBoxLocation = {x:null, y:null};
+                        
                         var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
                         var zoomAreaSvgContainer = d3.select("#workspaceinner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
                         var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
@@ -342,7 +344,6 @@ HTMLWidgets.widget({
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
                                                             });
-
                         var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                             .attr("x",0)
                                             .attr("y",0)
@@ -361,7 +362,6 @@ HTMLWidgets.widget({
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
                                                             });
-                    
                         var box = d3.select("#zoomarea").append("rect") // The draggable box 
                                             .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 30)
                                             .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 30)
@@ -372,6 +372,9 @@ HTMLWidgets.widget({
                                             .call(drag)
                                             .on("mousedown", function(){
                                                 // Get the initial location of the box.
+                                                debugger;
+                                                initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
+                                                initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
                                                 var e = d3.event.target;
                                                 initialBoxLocation.x = e.x.baseVal.value;
                                                 initialBoxLocation.y = e.y.baseVal.value;
