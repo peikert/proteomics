@@ -280,7 +280,10 @@ HTMLWidgets.widget({
             var old_html_height = el.style.height;
             d3.select("#zoombox")
                 .on("click", function () {
+                    // scroll to the draggable box
                     debugger;
+                    document.getElementById("workspace").scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
+                    document.getElementById("workspace").scrollTop = d3.select("#colormap")[0][0].height.baseVal.value;
                     if(sidebar_options.zoom_enabled)
                     {
                         debugger;
@@ -304,13 +307,21 @@ HTMLWidgets.widget({
                         document.getElementById("workspace").style.overflow="scroll";
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
+                                    document.getElementById("workspace").scrollLeft = d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value - 30;
+                                    document.getElementById("workspace").scrollTop = d3.event.y - d3.select("#colormap")[0][0].height.baseVal.value - 30;                                    
                                     box.attr("x", d3.event.x - 20)
                                         .attr("y", d3.event.y - 20);
                                     rectangle.attr("width", d3.event.x +10)
                                             .attr("height", d3.event.y +10);
+                                            console.log("- - -- ");
+                                            console.log(d3.event.x);
+                                            console.log(d3.event.y);
+                                            console.log("- - -- ");
+
                                 });
                         // Implemetation details:
                         // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
+                        initialBoxLocation = {x:null, y:null};
                         var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
                         var zoomAreaSvgContainer = d3.select("#workspaceinner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
                         var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
@@ -319,16 +330,39 @@ HTMLWidgets.widget({
                                             .attr("id", "zoomAreasvg")
                                             .attr("width",document.getElementById("zoomarea").getBoundingClientRect().width) // Should be a specific size bigger then the color map
                                             .attr("height", document.getElementById("zoomarea").getBoundingClientRect().height) // Should be a specific size bigger then the color map
-                                            .style("opacity",0);
+                                            .style("opacity",0)
+                                            .on("mouseup", function(){ // temporary solution
+                                                                debugger;
+                                                                console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
+                                                                var changeInX = d3.select("#draggablebox")[0][0].x.baseVal.value - initialBoxLocation.x;
+                                                                var changeInY = d3.select("#draggablebox")[0][0].y.baseVal.value - initialBoxLocation.y;
+                                                                innerworkSpaceDimensions.width = innerworkSpaceDimensions.width + changeInX;
+                                                                innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
+                                                                sidebar_options.zoom_enabled = false;
+                                                                self.doRenderValue(el, x, rowNewickSting, colNewickString, 
+                                                                                            instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                                                            });
+
                         var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                             .attr("x",0)
                                             .attr("y",0)
                                             .attr("id", "resizerectangle")
                                             .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
                                             .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
-                                            .style("opacity", 0.5);
-                    initialBoxLocation = {x:null, y:null};
-                    var box = d3.select("#zoomarea").append("rect") // The draggable box 
+                                            .style("opacity", 0.5)
+                                            .on("mouseup", function(){ // temporary solution
+                                                                debugger;
+                                                                console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
+                                                                var changeInX = d3.select("#draggablebox")[0][0].x.baseVal.value - initialBoxLocation.x;
+                                                                var changeInY = d3.select("#draggablebox")[0][0].y.baseVal.value - initialBoxLocation.y;
+                                                                innerworkSpaceDimensions.width = innerworkSpaceDimensions.width + changeInX;
+                                                                innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
+                                                                sidebar_options.zoom_enabled = false;
+                                                                self.doRenderValue(el, x, rowNewickSting, colNewickString, 
+                                                                                            instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                                                            });
+                    
+                        var box = d3.select("#zoomarea").append("rect") // The draggable box 
                                             .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 30)
                                             .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 30)
                                             .attr("id","draggablebox")
