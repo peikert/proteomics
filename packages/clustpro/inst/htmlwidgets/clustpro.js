@@ -310,8 +310,8 @@ HTMLWidgets.widget({
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
                                     // somehow initially remember the starting scroll values.
-                                    document.getElementById("workspace").scrollLeft = d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value + initialScrollValues.scrollLeft + 30; // 
-                                    document.getElementById("workspace").scrollTop = d3.event.y - d3.select("#colormap")[0][0].height.baseVal.value + initialScrollValues.scrollTop - 30;                                    
+                                    document.getElementById("workspace").scrollLeft = d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value + initialScrollValues.scrollLeft + 30 // 
+                                    document.getElementById("workspace").scrollTop =  d3.event.y- d3.select("#colormap")[0][0].height.baseVal.value + initialScrollValues.scrollTop + 30;
                                     box.attr("x", d3.event.x - 20)
                                         .attr("y", d3.event.y - 20);
                                     rectangle.attr("width", d3.event.x +10)
