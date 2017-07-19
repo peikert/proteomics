@@ -338,17 +338,16 @@ HTMLWidgets.widget({
                                             .call(drag)
                                             .on("mousedown", function(){
                                                 // Get the initial location of the box.
-                                                var e = d3.event.clientX;
-                                                initialBoxLocation.x = d3.event.clientX;
-                                                initialBoxLocation.y = d3.event.clientY;
+                                                var e = d3.event.target;
+                                                initialBoxLocation.x = e.x.baseVal.value;
+                                                initialBoxLocation.y = e.y.baseVal.value;
                                             })
                                             .on("mouseup", function(){
                                                                 debugger;
                                                                 console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
                                                                 var e = d3.event.target;
-                                                                var dim = e.getBoundingClientRect();
-                                                                var changeInX = d3.event.clientX - initialBoxLocation.x; // delta x
-                                                                var changeInY = d3.event.clientY - initialBoxLocation.y; // delta y
+                                                                var changeInX = e.x.baseVal.value - initialBoxLocation.x;
+                                                                var changeInY = e.y.baseVal.value - initialBoxLocation.y;
                                                                 innerworkSpaceDimensions.width = innerworkSpaceDimensions.width + changeInX;
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
