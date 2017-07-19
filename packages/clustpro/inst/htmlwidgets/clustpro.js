@@ -327,6 +327,7 @@ HTMLWidgets.widget({
                                             .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
                                             .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
                                             .style("opacity", 0.5);
+                    initialBoxLocation = {x:null, y:null};
                     var box = d3.select("#zoomarea").append("rect") // The draggable box 
                                             .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 30)
                                             .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 30)
@@ -335,20 +336,21 @@ HTMLWidgets.widget({
                                             .attr("height", 30)
                                             .attr("opacity", 0.8)
                                             .call(drag)
+                                            .on("mousedown", function(){
+                                                // Get the initial location of the box.
+                                                var e = d3.event.clientX;
+                                                initialBoxLocation.x = d3.event.clientX;
+                                                initialBoxLocation.y = d3.event.clientY;
+                                            })
                                             .on("mouseup", function(){
                                                                 debugger;
                                                                 console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
                                                                 var e = d3.event.target;
                                                                 var dim = e.getBoundingClientRect();
-                                                                var x_coordinate = d3.event.clientX - 
-                                                                                            document.getElementById("colormap").getBoundingClientRect().left + 
-                                                                                            document.getElementById("inner").getBoundingClientRect().left ; // Subtract width of the rowdendogram or the left distance of the color map ?
-                                                                var y_coordinate = d3.event.clientY - 
-                                                                                            document.getElementById("colormap").getBoundingClientRect().top // Subtract the height of the colDendogram or the top portion of the color map ?
-                                                                var width_increase = x_coordinate - d3.select("#colormap")[0][0].width.baseVal.value;
-                                                                var height_increase =  y_coordinate - d3.select("#colormap")[0][0].height.baseVal.value;
-                                                                innerworkSpaceDimensions.width = innerworkSpaceDimensions.width + width_increase;
-                                                                innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + height_increase;
+                                                                var changeInX = d3.event.clientX - initialBoxLocation.x; // delta x
+                                                                var changeInY = d3.event.clientY - initialBoxLocation.y; // delta y
+                                                                innerworkSpaceDimensions.width = innerworkSpaceDimensions.width + changeInX;
+                                                                innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, true, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
