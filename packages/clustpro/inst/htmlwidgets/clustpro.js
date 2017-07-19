@@ -7,6 +7,7 @@ HTMLWidgets.widget({
 
     initialize: function (el, width, height) {
         console.log("-- Entered initialize() --");
+        document.getElementsByTagName("body")[0].style.overflow = "hidden";
         debugger;      
         return {
             lastTheme: null,
@@ -39,7 +40,7 @@ HTMLWidgets.widget({
         debugger;
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
-        var sidebar_options = {"colorLegend":true, "rowLabels":true, "zoom_enabled":false};
+        var sidebar_options = {"colorLegend":false, "rowLabels":true, "zoom_enabled":false};
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
         var innerworkSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
