@@ -16,4 +16,3 @@ findk_kmeans(matrix, k, seed = NULL)
 \description{
 .................
 }
-

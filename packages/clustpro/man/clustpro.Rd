@@ -9,7 +9,7 @@ clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10,
   rows = TRUE, cols = TRUE, tooltip = NULL, save_widget = TRUE,
   show_legend = FALSE, color_legend = NULL, width = NULL, height = NULL,
   export_graphics = FALSE, export_dir = NULL, export_type = "svg",
-  seed = NULL, cores = 2)
+  seed = NULL, cores = 2, useShiny = TRUE)
 }
 \arguments{
 \item{matrix}{numeric data.frame}
@@ -45,6 +45,8 @@ string and have \code{'px'} appended.}
 \item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
 
 \item{cores}{natural number, number of nodes/cores used for parallelisation}
+
+\item{useShiny}{if TRUE html widget is usable for shiny apps, otherwise clustering is returned to R}
 }
 \value{
 see clustpro() function output
@@ -52,4 +54,3 @@ see clustpro() function output
 \description{
 This function is used to start the clustering and visualisation process.
 }
-

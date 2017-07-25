@@ -21,7 +21,8 @@ Imports:
     doParallel,
     foreach,
     ctc,
-    jsonlite
+    jsonlite,
+	e1071
 Suggests:
     shiny,
     knitr
@@ -29,5 +30,7 @@ VignetteBuilder: knitr
 LazyData: true
 Collate:
     'clustpro.R'
-    'runExample.R'
-RoxygenNote: 5.0.1
+    'datasets.R'
+    'runExample01.R'
+    'runExample02.R'
+RoxygenNote: 6.0.1

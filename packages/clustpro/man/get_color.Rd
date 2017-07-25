@@ -16,4 +16,3 @@ get_color(x, ticks, colors)
 \description{
 ..............
 }
-

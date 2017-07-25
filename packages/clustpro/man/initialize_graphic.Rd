@@ -16,4 +16,3 @@ initialize_graphic(filename, type = "tif", ...)
 \description{
 This function allows you to initialize a graphic
 }
-

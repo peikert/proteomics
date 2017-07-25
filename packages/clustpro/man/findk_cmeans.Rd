@@ -20,4 +20,3 @@ findk_cmeans(matrix, k, minimalSet, fp, seed = NULL)
 \description{
 .................
 }
-

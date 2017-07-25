@@ -64,21 +64,47 @@ clustProPanelUI <- function(id) {
 clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, info_columns=NULL) {
   ns <- session$ns
 
-  if(is.null(data_columns)) data_columns <- colnames(ldf)
 
-  if(is.null(ldf)){
+
+    observe({
+      print(ldf())
+  if(is.null(ldf()) || is.null(ldf)){
+    print("in")
   output$datafile <-  renderUI(fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')))
-  ldf <- reactive({
-    infile <- input$datafile
-    if (is.null(infile)) {
-      return(NULL)
-    }
-    read.csv(infile$datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
-  })
   }
+  })
+    observe({
+    ldf <-
+      req(input$datafile)
+      datapath <- input$datafile$datapath
+      if (is.null(datapath) | !file.exists(datapath)) {return(NULL)}else{
+      return(reactive(read.csv(datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)))
+      }
+    })
+
+    observe({print(ldf())})
+  # ldf <- reactive({
+  #   req(input$datafile)
+  #   print(output$datafile)
+  #
+  #       if (is.null(input$datafile)) {
+  #         return(NULL)
+  #       }else return(read.csv(infile$datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE))
+  #     })
+
+
+
+
+  if(is.null(data_columns)){
+    data_columns <- reactive(colnames(ldf()))
+  }
+
   #ldf <- reactive(iris)
   # c2p <-  reactive(as.vector(colnames(ldf())[unlist(lapply(ldf(),class))=='numeric']))
-  c2p <-  reactive(as.vector(colnames(ldf()[,data_columns])[unlist(lapply(ldf()[,data_columns],class))=='numeric']))
+  c2p <-  eventReactive(ldf,{
+    print('update')
+    as.vector(colnames(ldf()[,data_columns()])[unlist(lapply(ldf()[,data_columns()],class))=='numeric'])
+    })
 
 #  local_df <- ldf()
   observe({
@@ -102,6 +128,8 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
     # removeUI(ns('gradientPickerD3'),session=session)
     vmin <- min(ldf()[,input$clustering_columns],na.rm=TRUE)
     vmax <- max(ldf()[,input$clustering_columns],na.rm=TRUE)
+    print(vmin)
+    print(vmax)
     delta <- vmax - vmin
     totalTicks <- 5
     ticks= seq(vmin,vmax,(delta/(totalTicks-1)))
@@ -176,8 +204,11 @@ observe({
 
 
 observe({
+  req(ldf())
   # updateNumericInput(session,'clustering_min_k_numericInput ',value=2)
-  updateNumericInput(session,'clustering_max_k_numericInput ',value=ceiling(nrow(ldf())/2))
+  vmax <- ceiling(nrow(ldf())/2)
+  if(vmax>100)vmax <- 100
+  updateNumericInput(session,'clustering_max_k_numericInput ',value=vmax)
 })
 
 ##
@@ -185,13 +216,13 @@ observe({
 
 observeEvent(input$clustering_aTOz, {
   updateCheckboxGroupInput(
-    session = session, inputId = "clustering_columns", choices = c2p(), selected = input$clustering_columns
+    session = session, inputId = "clustering_columns", choices = sort(c2p()), selected = input$clustering_columns
   )
 })
 
 observeEvent(input$clustering_zTOa, {
   updateCheckboxGroupInput(
-    session = session, inputId = "clustering_columns", choices = rev(c2p()), selected = input$clustering_columns
+    session = session, inputId = "clustering_columns", choices = rev(sort(c2p())), selected = input$clustering_columns
   )
 })
 
@@ -388,8 +419,8 @@ clustProMain <- function(input, output, session, clust_parameters) {
     info_list[['description']] <- rep('no description', nrow(data))
       # print(info_list)
     if(!is.null(clust_parameters$info_columns)){
-      temp_list <- lapply(clust_parameters$info_columns,function(x){clust_parameters$data()[,x]})
-      names(temp_list) <- clust_parameters$info_columns
+      temp_list <- lapply(clust_parameters$info_columns(),function(x){clust_parameters$data()[,x]})
+      names(temp_list) <- clust_parameters$info_columns()
 
       info_list <- c(info_list, temp_list)
 
@@ -414,7 +445,8 @@ clustProMain <- function(input, output, session, clust_parameters) {
                       export_dir = NULL,
                       export_type = 'svg',
                       seed=clust_parameters$seed(),
-                      cores = 2
+                      cores = 2,
+                      useShiny = TRUE
              )
 
 

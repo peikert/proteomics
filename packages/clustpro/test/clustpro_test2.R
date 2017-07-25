@@ -24,7 +24,7 @@ graphic_type <<- "tif"
 #
 
 # msdata <- readRDS('data/sample_data.rds')
-msdata <- read.csv('D:/git/proteomics/packages/clustpro/data/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+msdata <- read.csv('D:/for_clustering.txt',sep='\t',header=TRUE,check.names=FALSE, row.names = 1 , stringsAsFactors = FALSE)
 colnames(msdata)
 
 min(msdata[,c(1:6)])

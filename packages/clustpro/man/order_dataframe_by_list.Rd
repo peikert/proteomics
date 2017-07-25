@@ -18,4 +18,3 @@ order_dataframe_by_list(x, list, col, reverse = FALSE)
 \description{
 .................
 }
-

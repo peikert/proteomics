@@ -24,6 +24,5 @@ clustering(matrix, min_k = 2, max_k = 100, fixed_k = NULL,
 \item{export_type}{character; type of exported graphics, tested for tif and svg}
 }
 \description{
-This function allows you to initialize a graphic
+Inner function performing the clustering
 }
-

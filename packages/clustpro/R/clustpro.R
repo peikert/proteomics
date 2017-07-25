@@ -66,6 +66,7 @@ clustpro_example <- function(){
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
 #' @param cores natural number, number of nodes/cores used for parallelisation
 #' @param show_legend boolean; if TRUE color legend is shown
+#' @param useShiny if TRUE html widget is usable for shiny apps, otherwise clustering is returned to R
 #' @return see clustpro() function output
 #' @importFrom htmlwidgets createWidget sizingPolicy
 #' @importFrom ctc hc2Newick
@@ -90,7 +91,8 @@ clustpro <- function(matrix,
                      export_dir = NULL,
                      export_type = 'svg',
                      seed = NULL,
-                     cores = 2) {
+                     cores = 2,
+                     useShiny = TRUE) {
 
   #### proofing #####
   if(!class(matrix) %in% c('data.frame'))stop('matrix is no data.frame')
@@ -101,8 +103,8 @@ clustpro <- function(matrix,
   if(!is.numeric(min_k))stop('fixed_k must be numeric')
   if(!is.logical(perform_clustering))
   if(!is.null(clusterVector) || (!class(clusterVector) %in% c("list","vector")) && length(clusterVector) != nrow(matrix)) stop('"clusterVector" must be NULL or of type "list/vector" with a length equal to the rows of the matrix')
-  if(!is.logical(rows)) stop('"rows" must be logical')
-  if(!is.logical(cols)) stop('"cols" must be logical')
+  if(!is.logical(rows) & class(rows)!="hclust") stop('"rows" must be logical or of class hclust')
+  if(!is.logical(cols) & class(cols)!="hclust") stop('"cols" must be logical or of class hclust')
   if(!is.null(tooltip) && class(tooltip)!='list') stop('"tooltip" must be NULL or of type "list"')
   if(!is.logical(save_widget)) stop('"save_widget" must be logical')
   if(!is.logical(show_legend)) stop('"show_legend" must be logical')
@@ -207,12 +209,18 @@ clustpro <- function(matrix,
     cobject = rs$cobject
   }
   if(is.null(rownames(matrix)))rownames(matrix) <- 1:nrow(matrix)
-  new_order <-
-    sapply(rownames(matrix), function(x)
-      which(x == tooltip[['id']]))
-  reordered_tooltip <- lapply(tooltip, function(x)
-    x[new_order])
-  reordered_tooltip[['id']] <- NULL
+  if(!is.null(tooltip[['id']])){
+    new_order <-
+      sapply(rownames(matrix), function(x)
+        which(x == tooltip[['id']]))
+    reordered_tooltip <- lapply(tooltip, function(x)
+      x[new_order])
+    reordered_tooltip[['id']] <- NULL
+    tooltip <- reordered_tooltip
+  }else{tooltip[['id']] <- rownames(matrix)
+  tooltip[['link']] <- NULL
+  }
+
   # sapply(color_legend,length)
   color_matrix <-
     as.data.frame(
@@ -227,12 +235,22 @@ clustpro <- function(matrix,
   colnames(color_matrix) <- colnames(matrix)
   rownames(color_matrix) <- rownames(matrix)
 
+   ## Test>
+  # payload[['matrix']] <- list(
+  #   data = as.matrix(cluster_centers),
+  #   rows = rownames(cluster_centers),
+  #   cols = colnames(cluster_centers),
+  #   dim = dim(cluster_centers)
+  # )
+  ## <Test
+
   payload[['matrix']] <- list(
     data = as.matrix(matrix),
     rows = rownames(matrix),
     cols = colnames(matrix),
     dim = dim(matrix)
   )
+
 
   payload[['clusters']] <- clusters
 
@@ -269,13 +287,13 @@ clustpro <- function(matrix,
     list(gradient = df_legend,
          label_position = color_legend$label_position)
 
-  payload[['tooltip']] <- reordered_tooltip
+  payload[['tooltip']] <- tooltip
 
   payload[['export_dir']] <- export_dir
   payload[['export_type']] <- export_type
   payload[['show_legend']] <- show_legend
 
-  json_payload = jsonlite ::toJSON(payload, pretty = TRUE)
+  json_payload <- jsonlite::toJSON(payload, pretty = TRUE)
   write(json_payload,
         file = "payload.json",
         ncolumns = 1,
@@ -286,6 +304,8 @@ clustpro <- function(matrix,
         append = FALSE)
   utils::write.table(cbind(matrix,clusters),file = "clustered_matrix.txt",sep="\t", col.names=NA, row.names=T)
   # widget <-
+  if(useShiny){
+  return(
   htmlwidgets::createWidget(
     'clustpro',
     json_payload,
@@ -294,22 +314,22 @@ clustpro <- function(matrix,
     package = 'clustpro',
     sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
+  )
   # show(widget)
   # if (save_widget) {
   #   saveWidget(widget, file = paste(getwd(), 'widget.html', sep = '/'))
   # }
-
-
-
-  # return(
-  #   list(
-  #     datatable = data,
-  #     cobject = cobject,
-  #     cluster_centers = cluster_centers,
-  #     col_dend_hclust = col_dend_hclust,
-  #     row_dend_hclust = row_dend_hclust
-  #   )
-  # )
+  }else{
+  return(
+    list(
+      datatable = data,
+      cobject = cobject,
+      cluster_centers = cluster_centers,
+      col_dend_hclust = col_dend_hclust,
+      row_dend_hclust = row_dend_hclust
+    )
+  )
+  }
 }
 
 #' Shiny bindings for clustpro
@@ -375,7 +395,7 @@ distributions_histograms <- function(matrix, export_type) {
             axis.line = element_line(colour = "black")) +
       ggtitle(paste('column: ',colnames(matrix)[i],sep=''))
 
-    ggsave(paste('distribution_column_',colnames(matrix)[i],'.',export_type, sep = "_"))
+    ggsave(paste('distribution_column_',colnames(matrix)[i],'.',export_type, sep = ""),plot = g, device =export_type)
   #   show(g)
   # grDevices::dev.off()
   }
@@ -408,7 +428,8 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
 #' @param minimalSet object of the class minimalSet
 #' @param fp fuzzification parameter
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
-#' @importFrom Mfuzz mfuzz
+#' @import Mfuzz
+#' @import e1071
 #' @importFrom clusterSim index.DB
 #'
 
@@ -416,18 +437,21 @@ findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
   tryCatch({
     if (!is.null(seed))
       set.seed(seed)
-    #k = 19
-    cluster <- as.vector(Mfuzz::mfuzz(minimalSet, c = k, m = fp)$cluster)
+
+    rs <- mfuzz(minimalSet, c = k, m = fp)
+    cluster <- as.vector(rs$cluster)
+    # print(cluster)
     # table(cluster)
     # length(cluster)
     # cluster)
     # class(cluster)
+  #  print(paste0("k: ",rs$withinerror))
     db_score <- clusterSim::index.DB(matrix,
                          cluster,
                          centrotypes = "centroids",
                          p = 2,
                          q = 2)
-    return(c(k, db_score$DB))
+    return(c(k, db_score$DB,rs$withinerror))
   }, warning = function(w) {
     print(paste('findk_cmeans', w, sep = ': '))
     return(NA)
@@ -479,7 +503,8 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
 #' @import foreach
 #' @importFrom Biobase ExpressionSet
-#' @importFrom Mfuzz mestimate
+#' @import Mfuzz
+#' @import e1071
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster
 #' @export
@@ -520,7 +545,7 @@ get_best_k <-
              cl <- parallel::makeCluster(cores, type = "SOCK")
              doParallel::registerDoParallel(cl)
              minimalSet <- Biobase::ExpressionSet(assayData = as.matrix(matrix))
-             fp <- Mfuzz::mestimate(minimalSet)
+             fp <- mestimate(minimalSet)
              findk <- findk_cmeans
              #clusterExport(cl, c("findk", "seed"))
            #   findk_cmeans(matrix, 19, minimalSet, fp,seed)
@@ -528,7 +553,7 @@ get_best_k <-
              # clusterExport(cl, c("minimalSet", "fp","matrix", "findk", "seed"))
            #  clusterExport(cl, c("matrix", "findk", "seed"))
           #   clusterEvalQ(cl, c(library('clusterSim'), library('Mfuzz'), library('e1071'), library('clustpro'), library('Biobase')))
-
+# library(foreach)
               db_list <- t(foreach(
                k = c(min_k:iterations),
                .combine = "cbind",
@@ -553,7 +578,7 @@ get_best_k <-
 
 #' Clustering
 #'
-#' This function allows you to initialize a graphic
+#' Inner function performing the clustering
 #' @param matrix numeric data.frame
 #' @param min_k,max_k,fixed_k number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.
 #' @param method character; one of the following cluster methods: kmeans, cmeans
@@ -562,9 +587,10 @@ get_best_k <-
 #' @param export_graphics boolean; if TRUE grephics are exported
 #' @param export_type character; type of exported graphics, tested for tif and svg
 #' @import stats
+#' @import Mfuzz
+#' @import e1071
 #' @importFrom ggplot2 ggplot geom_line geom_point geom_text ylab xlab theme ggtitle ggsave aes_string element_text element_blank element_line
 #' @importFrom Biobase ExpressionSet
-#' @importFrom Mfuzz mfuzz
 #' @importFrom ctc hc2Newick
 clustering <- function(matrix,
                        min_k = 2,
@@ -582,7 +608,7 @@ clustering <- function(matrix,
     k <- fixed_k
     if (method == 'cmeans') {
       minimalSet <- Biobase::ExpressionSet(assayData = as.matrix(matrix))
-      fp <- Mfuzz::mestimate(minimalSet)
+      fp <- mestimate(minimalSet)
     }
   } else {
     rv <-
@@ -594,15 +620,20 @@ clustering <- function(matrix,
     }
     filtered_db_list <- db_list[complete.cases(db_list),]
     k <- as.numeric(filtered_db_list[filtered_db_list[, 2] == max(filtered_db_list[, 2], na.rm = TRUE),1])
-    colnames(db_list) <- c('k','score')
+    colnames(db_list) <- c('k','score','withinerror')
     if(export_graphics){
     # initialize_graphic('best k estimation', type = export_type)
+      yfactor <- max(db_list$score,na.rm=T) / max(db_list$withinerror,na.rm=T)
+
+      db_list$withinerror <- db_list$withinerror * yfactor
     g <-
-      ggplot(db_list, aes_string(x = 'k', y='score')) +
-      geom_line()+
-      geom_point()+
+      ggplot(db_list, aes_string(x = 'k')) +
+      geom_line(aes_string(y='score',colour = shQuote("DBI"))) +
+      geom_line(aes_string(y='withinerror', colour = shQuote("SoSE"))) +
+      scale_y_continuous(sec.axis = sec_axis(~./yfactor, name = "withinerror"))+
+      geom_point(aes_string(y='score'))+
       geom_point(data = db_list[which(db_list$k == k),],mapping = aes_string(x='k',y='score'), color="red") +
-      geom_text(data = db_list[which(db_list$k == k),],mapping = aes_string(x='k',y='score'), label = paste('k:',k,';seed:',seed,sep=''), vjust = 0, nudge_y = 0.01, color="red")+
+      geom_text(data = db_list[which(db_list$k == k),],mapping = aes_string(x='k',y='score'), label = paste('k:',k,';seed:',seed,sep=''), vjust = -1, nudge_y = 0.01, color="red")+
       ylab("Davies-Bouldin Index [DBI]") +
       xlab("k") +
       # scale_x_continuous(limits=c(-2, 7),breaks = (-2:7))+
@@ -611,9 +642,13 @@ clustering <- function(matrix,
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             panel.background = element_blank(),
-            axis.line = element_line(colour = "black")) +
-   ggtitle('best k estimation')
-    ggsave(paste0('best_k_estimation.',export_type),plot = g)
+            axis.line = element_line(colour = "black"),
+            legend.position = c(0.8, 0.9)
+            ) +
+   ggtitle('best k estimation') +
+    scale_colour_manual(values = c("blue", "red"))
+
+    ggsave(paste0('best_k_estimation.',export_type),plot = g, device =export_type)
     # show(g)
     # grDevices::dev.off()
     }
@@ -626,9 +661,8 @@ clustering <- function(matrix,
   switch(method, kmeans = {
     clustering_result <- kmeans(matrix, k, iter.max = 1000)
   }, cmeans = {
-    clustering_result <- Mfuzz::mfuzz(minimalSet, c = k, m = fp)
+    clustering_result <- mfuzz(minimalSet, c = k, m = fp)
   })
-
   cluster <- clustering_result$cluster
   df <- cbind(matrix, cluster)
 

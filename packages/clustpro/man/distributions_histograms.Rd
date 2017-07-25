@@ -14,4 +14,3 @@ distributions_histograms(matrix, export_type)
 \description{
 .................
 }
-

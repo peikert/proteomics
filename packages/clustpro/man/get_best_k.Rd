@@ -20,4 +20,3 @@ get_best_k(matrix, min_k, max_k, method, cores = 1, seed = NULL)
 \description{
 .................
 }
-

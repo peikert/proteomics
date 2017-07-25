@@ -22,4 +22,3 @@ This function allows you to define the color spectrum for heatmaps.
 \keyword{color}
 \keyword{heatmaps}
 \keyword{spectrum}
-

@@ -14,4 +14,3 @@ color_spectrum(intervals, color_spect)
 \description{
 This function allows you to define the color spectrum for heatmaps.
 }
-
