@@ -20,7 +20,7 @@ setwd("D:/git/proteomics/packages/clustpro")
 library("clustpro")
 ##help(package = clustpro)
 # clustpro_example()
-data()
+# data()
 graphic_type <<- "tif"
 
 

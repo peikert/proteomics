@@ -482,7 +482,11 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
         p = 2,
         q = 2
       )
-    return(c(k, db_score$DB))
+
+
+    # return(c(k, db_score$DB))
+    # attr(cluster,"tot.withinss")
+    return(c(k, db_score$DB, cluster[["tot.withinss"]]))
   }, warning = function(w) {
     print(paste('findk_kmeans', w, sep = ': '))
     return(NA)
