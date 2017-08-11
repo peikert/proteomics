@@ -1,8 +1,10 @@
 clustProPanelUI <- function(id) {
   ns <- NS(id)
   tagList(
+    # div(style = 'overflow-y: scroll;overflow-x: hidden; height: 100vh, width: 100wh',
   column(4,
         br(),
+
         uiOutput(ns('datafile')),
          fluidRow(
            column(6,
@@ -29,15 +31,29 @@ clustProPanelUI <- function(id) {
          br(),
          fluidRow(
            div(stle = 'width: 100% ; height:100%',
-               div(style = 'float:left',tags$h4("Choose Columns")),
+               div(style = 'float:left',tags$h4("Choose Columns for Clustering")),
                div(style = 'float:right',
-                   actionButton(inputId = ns("clustering_aTOz"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet", lib = "glyphicon")),
-                   actionButton(inputId = ns("clustering_zTOa"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet-alt", lib = "glyphicon")),
-                   actionButton(inputId = ns("clustering_selectionToggle"), label = "", icon = icon("glyphicon glyphicon-adjust", lib = "glyphicon"))
+                   actionButton(inputId = ns("clustering_aTOz_c"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet", lib = "glyphicon")),
+                   actionButton(inputId = ns("clustering_zTOa_c"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet-alt", lib = "glyphicon")),
+                   actionButton(inputId = ns("clustering_selectionToggle_c"), label = "", icon = icon("glyphicon glyphicon-adjust", lib = "glyphicon"))
                )
            ),
-        div(align = 'left', style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:150px',
-                checkboxGroupInput(inputId = ns("clustering_columns"), label = "", choices = NULL, selected = NULL)
+           div(align = 'left', style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:145px',
+               checkboxGroupInput(inputId = ns("clustering_columns"), label = "", choices = NULL, selected = NULL)
+           )
+         ),
+        br(),
+           fluidRow(
+             div(stle = 'width: 100% ; height:100%',
+                 div(style = 'float:left',tags$h4("Choose Columns for Tooltip")),
+                 div(style = 'float:right',
+                     actionButton(inputId = ns("clustering_aTOz_t"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet", lib = "glyphicon")),
+                     actionButton(inputId = ns("clustering_zTOa_t"), label = "", icon = icon("glyphicon glyphicon-sort-by-alphabet-alt", lib = "glyphicon")),
+                     actionButton(inputId = ns("clustering_selectionToggle_t"), label = "", icon = icon("glyphicon glyphicon-adjust", lib = "glyphicon"))
+                 )
+             ),
+        div(align = 'left', style = 'overflow-x: scroll; overflow-y: scroll; width: 100% ; height:145px',
+                checkboxGroupInput(inputId = ns("clustering_tooltips"), label = "", choices = NULL, selected = NULL)
           )
           ),
            # div(actionButton(
@@ -58,6 +74,7 @@ clustProPanelUI <- function(id) {
           div(style = 'width: 70%; height:15vh; margin: 0 auto;',gradientPickerD3Output(ns('gradientPickerD3')))
   )
   )
+  # )
 }
 
 
@@ -67,9 +84,9 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
 
 
     observe({
-      print(ldf())
+      # print(ldf())
   if(is.null(ldf()) || is.null(ldf)){
-    print("in")
+    # print("in")
   output$datafile <-  renderUI(fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')))
   }
   })
@@ -82,7 +99,7 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
       }
     })
 
-    observe({print(ldf())})
+    # observe({print(ldf())})
   # ldf <- reactive({
   #   req(input$datafile)
   #   print(output$datafile)
@@ -102,23 +119,21 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
   #ldf <- reactive(iris)
   # c2p <-  reactive(as.vector(colnames(ldf())[unlist(lapply(ldf(),class))=='numeric']))
   c2p <-  eventReactive(ldf,{
-    print('update')
     as.vector(colnames(ldf()[,data_columns()])[unlist(lapply(ldf()[,data_columns()],class))=='numeric'])
     })
 
 #  local_df <- ldf()
   observe({
-
     updateCheckboxGroupInput(
       session = session, inputId = "clustering_columns", choices = c2p(), selected = c2p()[1:2]
     )
-
-  #   runjs(
-  #     paste0("if('#",ns('gradientPickerD3'),".length') {
-  #            $('#",ns('gradientPickerD3'),"').remove();
-  # }")
-  #         )
     })
+
+  observe({
+    updateCheckboxGroupInput(
+      session = session, inputId = "clustering_tooltips", choices = c2p(), selected = NULL
+    )
+  })
 
   out_clustProMain <- callModule(clustProMain,"clustProMain",clust_parameters)
   out_clustPlot <- callModule(clustPlot,"clustPlot",best_k,reactive(input$clustering_k_numericInput))
@@ -128,8 +143,8 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
     # removeUI(ns('gradientPickerD3'),session=session)
     vmin <- min(ldf()[,input$clustering_columns],na.rm=TRUE)
     vmax <- max(ldf()[,input$clustering_columns],na.rm=TRUE)
-    print(vmin)
-    print(vmax)
+    # print(vmin)
+    # print(vmax)
     delta <- vmax - vmin
     totalTicks <- 5
     ticks= seq(vmin,vmax,(delta/(totalTicks-1)))
@@ -140,7 +155,7 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
                     )
     print(payload)
     # payload <- list(colors=c("blue 0%","DeepSkyBlue 25%", "white 50%", "yellow 75%", "red 100%"))
-    gradientPickerD3(payload)
+    gradientPickerD3(payload, width = '50px')
   })
 
   heatmapColors <- reactive({
@@ -151,7 +166,7 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
     if(is.null(gcolors)) return(NULL)
     df_gcolors <- as.data.frame(matrix(unlist(gcolors), ncol = 3, byrow = TRUE),stringsAsFactors = FALSE)
     colnames(df_gcolors) <- c('interval','color','ticks')
-    print(df_gcolors)
+    # print(df_gcolors)
   #  df_gcolors$ticks <- NULL
     df_gcolors$interval <- as.numeric(df_gcolors$interval)
     df_gcolors$ticks <- as.numeric(df_gcolors$ticks)
@@ -191,7 +206,8 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
  #
  #    df_gcolors$interval_mod <- sapply(df_gcolors$interval,function(x){minv+diff_value*x/100})
  #    print(df_gcolors)
-
+    # rgb(0,104,255)
+    print(df_gcolors$color)
     setHeatmapColors(data=NULL,color_list=df_gcolors$color,intervals=df_gcolors$ticks)
   })
 
@@ -214,19 +230,19 @@ observe({
 ##
 
 
-observeEvent(input$clustering_aTOz, {
+observeEvent(input$clustering_aTOz_c, {
   updateCheckboxGroupInput(
     session = session, inputId = "clustering_columns", choices = sort(c2p()), selected = input$clustering_columns
   )
 })
 
-observeEvent(input$clustering_zTOa, {
+observeEvent(input$clustering_zTOa_c, {
   updateCheckboxGroupInput(
     session = session, inputId = "clustering_columns", choices = rev(sort(c2p())), selected = input$clustering_columns
   )
 })
 
-observeEvent(input$clustering_selectionToggle, {
+observeEvent(input$clustering_selectionToggle_c, {
   if (is.null(input$clustering_columns)) {
     updateCheckboxGroupInput(
       session = session, inputId = "clustering_columns", selected = c2p()
@@ -237,6 +253,32 @@ observeEvent(input$clustering_selectionToggle, {
     )
   }
 })
+
+
+observeEvent(input$clustering_aTOz_t, {
+  updateCheckboxGroupInput(
+    session = session, inputId = "clustering_tooltips", choices = sort(c2p()), selected = input$clustering_columns
+  )
+})
+
+observeEvent(input$clustering_zTOa_t, {
+  updateCheckboxGroupInput(
+    session = session, inputId = "clustering_tooltips", choices = rev(sort(c2p())), selected = input$clustering_columns
+  )
+})
+
+observeEvent(input$clustering_selectionToggle_t, {
+  if (is.null(input$clustering_columns)) {
+    updateCheckboxGroupInput(
+      session = session, inputId = "clustering_tooltips", selected = c2p()
+    )
+  } else {
+    updateCheckboxGroupInput(
+      session = session, inputId = "clustering_tooltips", selected = ""
+    )
+  }
+})
+
 
 ##
 #  best_k <- eventReactive(input$clustering_run_button, {
@@ -256,9 +298,9 @@ best_k <- reactive({
                  seed = input$clustering_seed_numericInput
                  )
       local_df <- as.data.frame(local_df$db_list)
-      colnames(local_df) <- c('k','db_index')
-      filtered_local_df <- local_df[!is.na(local_df$db_index),]
-      k <- filtered_local_df$k[which(max(filtered_local_df$db_index)==filtered_local_df$db_index)]
+      colnames(local_df) <- c('k','score','withinerror')
+      filtered_local_df <- local_df[!is.na(local_df$score),]
+      k <- filtered_local_df$k[which(max(filtered_local_df$score)==filtered_local_df$score)]
       updateNumericInput(session,'clustering_k_numericInput',value=k)
       local_df
   })
@@ -269,8 +311,8 @@ best_k <- reactive({
     fixed_k = reactive(input$clustering_k_numericInput),
     method = reactive(input$clustering_method_selectInput),
     seed = reactive(input$clustering_seed_numericInput),
-    data_columns = data_columns,
-    info_columns = info_columns,
+    # data_columns = data_columns,
+    info_columns = reactive(input$clustering_tooltips),
     heatmap_colors = heatmapColors
   )
 }
@@ -294,28 +336,28 @@ clustPlot <- function(input, output, session, best_k, nik) {
     req(best_k())
 
     local_df <-  best_k()
-   # print(local_df)
+   print(local_df)
     if(is.null(best_k()))return(NULL)
     #   as.data.frame(best_k()$db_list)
     # print(local_df)
     # print(nik())
     col_vec <- rep('black',nrow(local_df))
 
-    filtered_local_df <- local_df[!is.na(local_df$db_index),]
-    best <- which(max(filtered_local_df$db_index)==filtered_local_df$db_index)
- #   best <- which(max(local_df$db_index,na.rm=T)==local_df$db_index)
+    filtered_local_df <- local_df[!is.na(local_df$score),]
+    best <- which(max(filtered_local_df$score)==filtered_local_df$score)
+ #   best <- which(max(local_df$score,na.rm=T)==local_df$score)
     col_vec[local_df$k==nik()] <- 'red'
 
 
 
-  #gg <- ggplot(local_df,aes(x=k, y=db_index, group=1))+ geom_line() + geom_point(aes(colour=color))+scale_colour_manual(values=c("blue", "red"))
+  #gg <- ggplot(local_df,aes(x=k, y=score, group=1))+ geom_line() + geom_point(aes(colour=color))+scale_colour_manual(values=c("blue", "red"))
     # ggplotly(gg
     #
     #          )
 
 
  #    ggplotly(gg) %>%
- #      # ggplotly(tooltip = c('k','db_index')) %>%
+ #      # ggplotly(tooltip = c('k','score')) %>%
  # #     add_markers(color = ~color) %>%
  #      config(displayModeBar = F) %>%
  #      layout(showlegend = FALSE)
@@ -323,16 +365,16 @@ clustPlot <- function(input, output, session, best_k, nik) {
 
     plot_ly(local_df,
             x = ~k,
-            y = ~db_index,
+            y = ~score,
             type = 'scatter',
             mode = 'lines',
             colors = c('black','red'),
             hoverinfo = 'text',
             text = ~paste(
                           'k: ', k,
-                          '</br>db-index: ', round(db_index,2))
+                          '<br>db-index: ', round(score,2))
             ) %>%
-            # ggplotly(tooltip = c('k','db_index')) %>%
+            # ggplotly(tooltip = c('k','score')) %>%
             add_markers(color = col_vec) %>%
             config(displayModeBar = F) %>%
             layout(
@@ -341,7 +383,7 @@ clustPlot <- function(input, output, session, best_k, nik) {
               yaxis = list(title = "Davies-Bouldin index")
               )%>%
       add_annotations(x = local_df$k[best],
-                      y = local_df$db_index[best],
+                      y = local_df$score[best],
                       text = 'best k',
                       xref = "x",
                       yref = "y",
@@ -395,11 +437,11 @@ clustProMain <- function(input, output, session, clust_parameters) {
   req(clust_parameters$heatmap_colors())
   req(clust_parameters$seed())
 
-  if(length(clust_parameters$selected_cols())<2)return(NULL)
-    data  <-  clust_parameters$data()[,clust_parameters$selected_cols()]
+  if(length(clust_parameters$selected_cols())<1)return(NULL)
+    data  <-  clust_parameters$data()[,clust_parameters$selected_cols(),drop=FALSE]
     ccases <- complete.cases(data)
     if(nrow(data)>sum(ccases)){showNotification(paste0((nrow(data)-sum(ccases))," rows containing missing values were removed"))}
-    data <-  data[ccases,]
+    data <-  data[ccases,,drop=FALSE]
 
 
     fixed_k = clust_parameters$fixed_k()
@@ -427,6 +469,7 @@ clustProMain <- function(input, output, session, clust_parameters) {
     }
       # print(info_list)
     color_legend <- heatmap_color
+    print(color_legend)
              clustpro(matrix=data,
                       method =method,
                       min_k = 2,

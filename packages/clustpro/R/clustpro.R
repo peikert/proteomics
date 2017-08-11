@@ -50,8 +50,10 @@ clustpro_example <- function(){
 #' This function is used to start the clustering and visualisation process.
 #' @param matrix 	numeric data.frame
 #' @param method character; one of the following cluster methods: kmeans, cmeans
+#' @param hclust_method character; one of the following cluster methods: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
 #' @param min_k,max_k,fixed_k number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.
 #' @param perform_clustering boolean; if true a clustering is performed
+#' @param simplify_clustering boolean; if true a each cluster is represended by its mean values over all within the cluster itself.
 #' @param clusterVector list or vector of natural number; for each row a cluster has to been given
 #' @param rows,cols boolean; if true a hierarchical clustering for row / columns of the clustered matrix is performed
 #' @param tooltip list of lists; list of lists containing information of each row e.g. a list for name, description.
@@ -74,10 +76,12 @@ clustpro_example <- function(){
 #' @export
 clustpro <- function(matrix,
                      method = "kmeans",
+                     hclust_method = "ward.D2",
                      min_k = 2,
                      max_k = 10,
                      fixed_k = NULL,
                      perform_clustering = TRUE,
+                     simplify_clustering = FALSE,
                      clusterVector = NULL,
                      rows = TRUE,
                      cols = TRUE,
@@ -185,6 +189,10 @@ clustpro <- function(matrix,
       col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
       col_dend <- as.dendrogram(cols)
     }
+    cluster_centers = aggregate(matrix, list(clusters), mean)
+    cluster_centers <- cluster_centers[unique(clusters),]
+    rownames(cluster_centers) <- cluster_centers[,1]
+    cluster_centers[,1] <- NULL
   } else{
     rs <- clustering(
       matrix = matrix,
@@ -201,6 +209,7 @@ clustpro <- function(matrix,
     matrix = rs$data[, !colnames(rs$data) %in% 'cluster', drop=FALSE]
     clusters = rs$clusters
     cluster_centers = rs$cluster_centers
+    cluster_centers <- cluster_centers[unique(clusters),]
     row_dend_nw = rs$dendnw_row_nw
     col_dend_nw = rs$dendnw_col_nw
     row_dend_hclust <- rs$row_dend_hclust
@@ -208,7 +217,19 @@ clustpro <- function(matrix,
     data = rs$data
     cobject = rs$cobject
   }
+  if(simplify_clustering){
+    detailed_matrix <- matrix
+    matrix <- cluster_centers
+    detailed_clusters <- clusters
+    clusters <- unique(clusters)
+  }
   if(is.null(rownames(matrix)))rownames(matrix) <- 1:nrow(matrix)
+
+
+  for(l in names(tooltip)){
+    if(length(tooltip[[l]])!=nrow(matrix))tooltip[[l]] <- NULL
+  }
+
   if(!is.null(tooltip[['id']])){
     new_order <-
       sapply(rownames(matrix), function(x)
@@ -220,6 +241,7 @@ clustpro <- function(matrix,
   }else{tooltip[['id']] <- rownames(matrix)
   tooltip[['link']] <- NULL
   }
+
 
   # sapply(color_legend,length)
   color_matrix <-
@@ -250,9 +272,18 @@ clustpro <- function(matrix,
     cols = colnames(matrix),
     dim = dim(matrix)
   )
-
-
   payload[['clusters']] <- clusters
+  if(simplify_clustering){
+    payload[['detailed_matrix']] <- list(
+      data = as.matrix(detailed_matrix),
+      rows = rownames(detailed_matrix),
+      cols = colnames(detailed_matrix),
+      dim = dim(detailed_matrix)
+    )
+    payload[['detailed_clusters']] <- detailed_clusters
+  }
+
+
 
   if ((is.logical(rows) &&
        rows && class(row_dend_nw) == "character") || class(rows) == 'hclust') {
@@ -515,9 +546,9 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 #'
 get_best_k <-
   function(matrix,
-           min_k,
-           max_k,
-           method,
+           min_k = 2,
+           max_k = 10,
+           method = 'kmeans',
            cores = 1,
            seed = NULL) {
     if (nrow(matrix) < max_k) {
@@ -534,7 +565,7 @@ get_best_k <-
              doParallel::registerDoParallel(cl)
              findk <- findk_kmeans
              db_list <-
-               t(foreach::foreach(
+               t(foreach(
                  k = c(min_k:iterations),
                  .combine = "cbind",
                  .export = c('findk', 'matrix', 'seed')
@@ -558,7 +589,7 @@ get_best_k <-
            #  clusterExport(cl, c("matrix", "findk", "seed"))
           #   clusterEvalQ(cl, c(library('clusterSim'), library('Mfuzz'), library('e1071'), library('clustpro'), library('Biobase')))
 # library(foreach)
-              db_list <- t(foreach(
+              db_list <- as.data.frame(t(foreach(
                k = c(min_k:iterations),
                .combine = "cbind",
                .export = c("matrix", "findk", "seed","minimalSet", "fp"),
@@ -566,12 +597,20 @@ get_best_k <-
              ) %dopar% {
                findk(matrix = matrix, k = k, minimalSet = minimalSet, fp = fp,seed = seed)
              #  findk()
-             })
+             }))
+              colnames(db_list) <- c('k','score','withinerror')
               parallel::stopCluster(cl)
+
+              filtered_db_list <- db_list[complete.cases(db_list),]
+              best_k <- as.numeric(filtered_db_list[filtered_db_list$score == max(filtered_db_list$score, na.rm = TRUE),1])
+
+              print(db_list)
+              print(class(db_list))
              return(list(
                db_list = db_list,
                minimalSet = minimalSet,
-               fp = fp
+               fp = fp,
+               best_k <- best_k
              ))
              options(warn = oldw)
            })
@@ -586,6 +625,7 @@ get_best_k <-
 #' @param matrix numeric data.frame
 #' @param min_k,max_k,fixed_k number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.
 #' @param method character; one of the following cluster methods: kmeans, cmeans
+#' @param hclust_method character; one of the following cluster methods: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
 #' @param cores natural number, number of nodes/cores used for parallelisation
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
 #' @param export_graphics boolean; if TRUE grephics are exported
@@ -601,6 +641,7 @@ clustering <- function(matrix,
                        max_k = 100,
                        fixed_k = NULL,
                        method = "kmeans",
+                       hclust_method = "ward.D2",
                        cores = 2,
                        seed = NULL,
                        export_graphics = FALSE,
@@ -692,7 +733,7 @@ clustering <- function(matrix,
   if(nrow(cluster_centers)>1){
   d_rows <-
     dist(cluster_centers, method = "euclidean") # distance matrix
-  row_dend_hclust <- hclust(d_rows, method = "ward.D2")
+  row_dend_hclust <- hclust(d_rows, method = hclust_method)
   row_dend_nw <- ctc::hc2Newick(row_dend_hclust)
   row_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", row_dend_nw)
   row_dend <- as.dendrogram(row_dend_hclust)
@@ -701,7 +742,7 @@ clustering <- function(matrix,
   if(ncol(cluster_centers)>1){
   d_cols <-
     dist(t(cluster_centers), method = "euclidean") # distance matrix
-  col_dend_hclust <- hclust(d_cols, method = "ward.D2")
+  col_dend_hclust <- hclust(d_cols, method = hclust_method)
   col_dend_nw <- ctc::hc2Newick(col_dend_hclust)
   col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
   col_dend <- as.dendrogram(col_dend_hclust)
@@ -864,3 +905,15 @@ setHeatmapColors <-
     }
   }
 
+
+factorial <- function(n)
+{
+  if (n == 0)
+  {
+    return(1)
+  }
+  else
+  {
+    return(n * factorial(n - 1))
+  }
+}
