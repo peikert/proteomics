@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\inst\Runit$
+^\R\run_tests.R
 ^test$

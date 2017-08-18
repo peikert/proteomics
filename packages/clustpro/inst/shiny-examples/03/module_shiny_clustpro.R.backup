@@ -1,7 +1,8 @@
 clustProPanelUI <- function(id) {
   ns <- NS(id)
   tagList(
-    # div(style = 'overflow-y: scroll;overflow-x: hidden; height: 100vh, width: 100wh',
+    div(style = 'overflow-y: scroll;overflow-x: scroll;',
+        # div(style = 'overflow-y: scroll;overflow-x: hidden; height: 100vh, width: 100wh',
   column(4,
         br(),
 
@@ -74,7 +75,7 @@ clustProPanelUI <- function(id) {
           div(style = 'width: 70%; height:15vh; margin: 0 auto;',gradientPickerD3Output(ns('gradientPickerD3')))
   )
   )
-  # )
+  )
 }
 
 

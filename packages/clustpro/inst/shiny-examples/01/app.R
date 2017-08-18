@@ -1,74 +1,60 @@
-library('shiny')
-# library('shinyjs')
-library('clustpro')
-library('gradientPickerD3')
-source('module_shiny_clustpro.R')
-library("plotly")
-library('stringr')
-library("Mfuzz")
-#'shinyClustPro
-#'
-#' ToDo
-#'
-#' @param data ToDo
-#' @param data_columns ToDo
-#' @param info_columns ToDo
-#'
-#' @import shiny, shinyjs, clustpro, gradientPickerD3
-#' @import plotly
-#' @import string
-#' @export
-shinyClustPro = function(data=NULL,  data_columns=NULL, info_columns=NULL){
-  calls = match.call()
-  shinyApp(
-ui <- fluidPage(
-      # useShinyjs(),
-      #extendShinyjs(text = jsCode),
-        clustProPanelUI('clustProPanel')
+require(shiny)
+shinyApp(
+  ui = fluidPage(
+     div(style = 'width: 100% ; height:100vh',clustproOutput("cluster"))
   ),
-# Define server logic required to draw a histogram
-shinyServer(function(input, output) {
-head(data)
-out_clustProPanel <- callModule(clustProPanel,"clustProPanel",reactive(data), reactive(data_columns), reactive(info_columns))
-# out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
-})
-  )}
+  server = function(input, output, session) {
+    output$cluster <- renderClustpro({
+      df_mtcars <- datasets::mtcars
+      df_data <- as.data.frame(scale(df_mtcars))
+      colnames(df_mtcars) <- paste0('info_', colnames(df_mtcars))
+      data_columns <- colnames(df_data)
+      info_columns <- colnames(df_mtcars)
+      data <- cbind(df_data, df_mtcars)
 
+      # intervals <- c(-1.1,-0.5,0,0.5,1.1)
+      color_list <- c("blue", "lightblue", "white", "yellow", "red")
+      color_legend <-
+        setHeatmapColors(data = df_data,
+                         color_list = color_list,
+                         auto = TRUE)
+      color_legend$label_position <-
+        seq(ceiling(min(df_data)), floor(max(df_data)), by = 1)
 
+      info_list <- list()
+      info_list[['id']]  <- rownames(data)
+      info_list[['link']] <-
+        paste('https://www.google.de/search?q=/', rownames(data), sep = '')
+      info_list[['description']] <-
+        rep('no description', nrow(data))
 
-# df_mtcars <- datasets::mtcars
-# df_data <- as.data.frame(scale(df_mtcars))
-# colnames(df_mtcars) <- paste0('info_',colnames(df_mtcars))
-# data_columns <- colnames(df_data)
-# info_columns <- colnames(df_mtcars)
-# df_data <- cbind(df_data,df_mtcars)
-#
-# # shinyClustPro(df_data)
-# # shinyClustPro(df_data, data_columns = data_columns)
-# #shinyClustPro(df_data, info_columns = info_columns)
-# shinyClustPro(df_data, data_columns = data_columns, info_columns = info_columns)
-#shinyClustPro()
+      if (!is.null(info_columns)) {
+        temp_list <- lapply(info_columns, function(x) {
+          data[, x]
+        })
+        names(temp_list) <-
+          sapply(info_columns, function(x)
+            stringr:::str_match(x, 'info_(.*)')[2])
 
+        info_list <- c(info_list, temp_list)
+      }
 
-
-# head(proteomics_data)
-# class(proteomics_data)
-data("proteomics_data")
-df_proteomics <- proteomics_data
-data_columns <- c("TP_MT","MT_MB","MTP_MB")
-df_proteomics <- df_proteomics[complete.cases(df_proteomics[,data_columns]),]
-sds <-  apply(df_proteomics[,data_columns],1,sd,na.rm=TRUE)
-bp <- boxplot(sds)
-df_proteomics <- df_proteomics[sds>bp$stats[5],]
-info_columns <- c("uniProtID","geneNames","definition")
-rownames(df_proteomics) <- df_proteomics$uniProtID
-nrow(df_proteomics)
-#
-#
-# # shinyClustPro(df_data)
-# # shinyClustPro(df_data, data_columns = data_columns)
-# #shinyClustPro(df_data, info_columns = info_columns)
-shinyClustPro(df_proteomics, data_columns = data_columns, info_columns = info_columns)
-#shinyClustPro()
-
-
+      clustpro(
+        matrix = data[, data_columns,drop=FALSE],
+        method = "kmeans",
+        min_k = 2,
+        max_k = 30,
+        perform_clustering = TRUE,
+        rows = TRUE,
+        cols = TRUE,
+        tooltip = info_list,
+        save_widget = TRUE,
+        show_legend = FALSE,
+        color_legend = color_legend,
+        seed = 1234,
+        cores = 2,
+        useShiny = TRUE
+      )
+    })
+  }
+)

@@ -4,10 +4,11 @@
 \alias{clustpro}
 \title{Clustpro main function}
 \usage{
-clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10,
-  fixed_k = NULL, perform_clustering = TRUE, clusterVector = NULL,
-  rows = TRUE, cols = TRUE, tooltip = NULL, save_widget = TRUE,
-  show_legend = FALSE, color_legend = NULL, width = NULL, height = NULL,
+clustpro(matrix, method = "kmeans", hclust_method = "ward.D2", min_k = 2,
+  max_k = 10, fixed_k = NULL, perform_clustering = TRUE,
+  simplify_clustering = FALSE, clusterVector = NULL, rows = TRUE,
+  cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
+  color_legend = NULL, width = NULL, height = NULL,
   export_graphics = FALSE, export_dir = NULL, export_type = "svg",
   seed = NULL, cores = 2, useShiny = TRUE)
 }
@@ -16,9 +17,13 @@ clustpro(matrix, method = "kmeans", min_k = 2, max_k = 10,
 
 \item{method}{character; one of the following cluster methods: kmeans, cmeans}
 
+\item{hclust_method}{character; one of the following cluster methods: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)}
+
 \item{min_k, max_k, fixed_k}{number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.}
 
 \item{perform_clustering}{boolean; if true a clustering is performed}
+
+\item{simplify_clustering}{boolean; if true a each cluster is represended by its mean values over all within the cluster itself.}
 
 \item{clusterVector}{list or vector of natural number; for each row a cluster has to been given}
 

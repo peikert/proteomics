@@ -6,7 +6,7 @@ if(F){
   devtools::document()
   devtools::install()
   #devtools::reload()
-
+  # clustpro::mcp_reimann_et_al_2017
   # unload("D:/git/proteomics/packages/clustpro")
   #remove.packages('clustpro')
 }

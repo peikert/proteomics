@@ -5,8 +5,8 @@
 \title{Clustering}
 \usage{
 clustering(matrix, min_k = 2, max_k = 100, fixed_k = NULL,
-  method = "kmeans", cores = 2, seed = NULL, export_graphics = FALSE,
-  export_type = "svg")
+  method = "kmeans", hclust_method = "ward.D2", cores = 2, seed = NULL,
+  export_graphics = FALSE, export_type = "svg")
 }
 \arguments{
 \item{matrix}{numeric data.frame}
@@ -14,6 +14,8 @@ clustering(matrix, min_k = 2, max_k = 100, fixed_k = NULL,
 \item{min_k, max_k, fixed_k}{number of clusters, k; if fixed_k is a natural number > 0, k is set to fixed_k. Otherwise the a function is called to find the optimal k for this data in the range defined by the minimum and maximal k.}
 
 \item{method}{character; one of the following cluster methods: kmeans, cmeans}
+
+\item{hclust_method}{character; one of the following cluster methods: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)}
 
 \item{cores}{natural number, number of nodes/cores used for parallelisation}
 
