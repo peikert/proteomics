@@ -1,5 +1,5 @@
-/** Last Updated: 4th August
-    Version: 0.0.9
+/** Last Updated: 29th August
+    Version: 0.0.10
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -7,7 +7,7 @@ HTMLWidgets.widget({
 
     initialize: function (el, width, height) {
         console.log("-- Entered initialize() --");
-        document.getElementsByTagName("body")[0].style.overflow = "hidden";
+        document.getElementsByTagName("body")[0].style.overflow = "hidden"; // This line is the causing problems in the shiny app
         el.style.height = "100%";
         el.style.width = "100%";
         debugger;      
