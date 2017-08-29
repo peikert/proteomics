@@ -307,7 +307,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
             .clamp([true, true])
             .on('brush', function () {
                 var extent = brush.extent();
-                //extent[0][0] = Math.round(extent[0][0]);
+                //extent[0][0] = Math.round(extent[0][0]);   // Fix for issue # 6
                 //extent[0][1] = Math.round(extent[0][1]);
                 //extent[1][0] = Math.round(extent[1][0]);
                 //extent[1][1] = Math.round(extent[1][1]);
@@ -324,7 +324,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                 } else {
                     var tf = controller.transform();
                     var ex = brush.extent();
-                    ex[0][0] = Math.floor(ex[0][0]);
+                    ex[0][0] = Math.floor(ex[0][0]);    // Fix for issue # 6
                     ex[0][1] = Math.round(ex[0][1]);
                     ex[1][0] = Math.ceil(ex[1][0]);
                     ex[1][1] = Math.round(ex[1][1]);
