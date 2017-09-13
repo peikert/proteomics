@@ -1,5 +1,5 @@
-/** Last Updated: 29th August 
-    Version: 0.0.10
+/** Last Updated: 10th September 
+    Version: 0.0.11
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
@@ -1114,23 +1114,25 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
                 // Draw DENDOGRAM LABELS
                 try {
+                    debugger;
                     if (!rotated && d.correspondingString.length < 3) {
                         var text = dendrG.append("text");
                         var xPos = x(d.target.y);
                         var yPos = y(d.target.x);
+                        var fontsize = document.getElementById("rowDend").width.baseVal.value - xPos;
                         if (d.correspondingString.length == 1) {
                             text.attr("x", xPos + 2)
                                 .attr("y", yPos + 5)
                                 .text(d.correspondingString)
                                 .attr("fill", "#7B7B7B")
-                                .style("font-size", "14px");
+                                .style("font-size", fontsize + "px"); // Issue 30 - Done: Calculate font size Intellegently
                         }
-                        else { // IF string length is two, adjust the x-axis location accordingly
+                    else { // IF string length is two, adjust the x-axis location accordingly
                             text.attr("x", xPos - 1)
                                 .attr("y", yPos + 5)
                                 .text(d.correspondingString)
                                 .attr("fill", "#7B7B7B")
-                                .style("font-size", "13px");
+                                .style("font-size", fontsize - 2 + "px");  // Issue 30 - Done: Calculate font size Intellegently
                         }
                     }
                 }
