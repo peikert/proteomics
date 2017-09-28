@@ -1,5 +1,5 @@
 /** Last Updated: 28th September 
-    Version: 0.0.12
+    Version: 0.0.13
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
@@ -314,7 +314,6 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                 d3.select(this).call(brush.extent(extent));
             })
             .on('brushend', function () { // Select an area in the color map
-                debugger;
                 if (brush.empty()) {
                     controller.transform({
                         scale: [1, 1],
@@ -696,14 +695,14 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     // ------------ End of Helper functions ------------- //
 
     function string_parser(string_array, location_object_array, pointer, id, colDendogram,
-                           /*col dendogram arguments*/ columnNames, columnsDrawnSoFar, width, totalCharacterLength, depth, maxdepth) {
+                           /*col dendogram arguments*/ columnNames, columnsDrawnSoFar, width, height, totalCharacterLength, depth, maxdepth) {
         var table = [];
         var elements = [];
         var last2Elements = [];
         var correspondingString = !colDendogram ? "(" : "";
         while (pointer < string_array.length) {
             if (string_array[pointer] == "(") {
-                result = string_parser(string_array, location_object_array, pointer + 1, id, colDendogram, columnNames, columnsDrawnSoFar, width, totalCharacterLength, depth + 1, maxdepth);
+                result = string_parser(string_array, location_object_array, pointer + 1, id, colDendogram, columnNames, columnsDrawnSoFar, width,height, totalCharacterLength, depth + 1, maxdepth);
                 if (!colDendogram) {
                     sub_table = result[0];
                     pointer = result[1];
@@ -810,7 +809,10 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                     }
                     correspondingString = "(" + last2Elements[0].correspondingString + "," + last2Elements[1].correspondingString + ")";
                     var horizontal = sum / 2;
-                    var vertical = (elements.length - 1) * 5;    // Intellegently calculate this number
+                    debugger;
+                    var vertical1 = (elements.length - 1) * 5;    // Intellegently calculate this number
+                    // Intellegently calculate the the height of the column dendogram
+                    var vertical = height/2 - ((height/2) - ((height/2) * (elements.length * 10)/100)); // 10 percent of the total height/2  Fixes issue number 31
                     var location = { vertical: vertical, horizontal: horizontal };
                     //Finding the column range
                     var colRangeArray = [];
@@ -1098,7 +1100,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         // There is a problem in column dendogram generation because the colums sometimes have spaces and that is causig the error.
         // So we replace the space(which was the splitting cirteria before) with the pattern "+-*+-*" which makes it possible to have spaces
         // as in the column/row names. 
-        var table = string_parser(newickString.split("+-*+-*"), location_object_array, 0, 0, rotated, columnNames, [], width, totalCharacterLength, 0, maxdepth);
+        var table = string_parser(newickString.split("+-*+-*"), location_object_array, 0, 0, rotated, columnNames, [], width, height, totalCharacterLength, 0, maxdepth);
         console.log("                           Done !");
         console.log("                           Entering PreLineObjects()");
         console.log("                                   Getting information from the data structure and generating line objects");
@@ -1114,7 +1116,6 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
                 // Draw DENDOGRAM LABELS
                 try {
-                    debugger;
                     if (!rotated && d.correspondingString.length < 3) {
                         var text = dendrG.append("text");
                         var xPos = x(d.target.y);
