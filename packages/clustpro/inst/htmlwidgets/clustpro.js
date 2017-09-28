@@ -1,5 +1,5 @@
-/** Last Updated: 10th September
-    Version: 0.0.11
+/** Last Updated: 28th September
+    Version: 0.0.12
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -627,6 +627,8 @@ HTMLWidgets.widget({
     refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
         var clusterSwapArray_1 = x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow + 1);
         var clusterSwapArray_2 = x.clusters.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow + 1);
+        var rowLabelSwapArray_1 = x.matrix.rows.slice(d.rowRange.startRow, d.rowRange.endRow + 1);
+        var rowLabelSwapArray_2 = x.matrix.rows.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow + 1);
         var matrixDataArray_1 = x.matrix.data.slice(d.rowRange.startRow * x.matrix.cols.length, ((d.rowRange.endRow + 1) * x.matrix.cols.length));
         var matrixDataArray_2 = x.matrix.data.slice(d.siblingRowRange.startRow * x.matrix.cols.length, (d.siblingRowRange.endRow + 1) * x.matrix.cols.length);
         var matrixMergeArray_1 = x.matrix.merged.slice(d.rowRange.startRow * x.matrix.cols.length, ((d.rowRange.endRow + 1) * x.matrix.cols.length));
@@ -643,6 +645,10 @@ HTMLWidgets.widget({
             this.dataMatrixSwap(x, matrixDataArray_2, matrixDataArray_1, matrixMergeArray_2, matrixMergeArray_1, matrixDataCounter, matrixMergeCounter); // If the line clicked is the upper sibling.
         rowNewickSting = this.stringSwap(d, rowNewickSting); //refresh newick string.
         x.dendnw_row[0] = rowNewickSting;
+        // swap the row matrix
+        var ownRowCounter = ownClusterCounter;
+        x.matrix.rows = d.rowRange.startRow > d.siblingRowRange.startRow? this.rowLabelSwap(x,rowLabelSwapArray_1, rowLabelSwapArray_2, ownRowCounter) : 
+            this.rowLabelSwap(x,rowLabelSwapArray_2, rowLabelSwapArray_1,ownRowCounter); // Refresh row labels Issue 29 on github
         this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
 
@@ -763,6 +769,21 @@ HTMLWidgets.widget({
             ownClusterCounter++;
         }
         return x.clusters;
+    },
+
+    rowLabelSwap: function(x, array1, array2, ownClusterCounter){
+        // swaps row label data
+        // calculate how many rows has been effected.
+        // Will be made much efficent with the help of array splicing and array concatenation operations.
+        for(var i=0; i< array1.length; i++){
+            x.matrix.rows[ownClusterCounter] = array1[i];
+            ownClusterCounter++;
+        }
+        for(var i =0; i<array2.length; i++){
+            x.matrix.rows[ownClusterCounter] = array2[i];
+            ownClusterCounter++;
+        }
+        return x.matrix.rows;
     },
 
     hextorgb: function (hex) {
