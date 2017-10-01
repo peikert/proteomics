@@ -1,5 +1,5 @@
-/** Last Updated: 28th September
-    Version: 0.0.13
+/** Last Updated: 1st October
+    Version: 0.0.14
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -434,6 +434,30 @@ HTMLWidgets.widget({
             .on("mouseout", function (d, i) {
                     zoombox.style.cssText = normalCSSText;
             });
+        }
+
+        {   // Download matrix as csv 
+            var downloadCSV = document.createElement("div");
+            downloadCSV.setAttribute("id", "downloadCSV");
+            downloadCSV.setAttribute("title", "Download matrix csv");
+            downloadCSV.style.cssText = normalCSSText;
+            // Insert GIF
+            downloadCSV.innerHTML = saveasCSV();
+            //GIF Inserted
+            sideBar.appendChild(downloadCSV);
+
+            d3.select("#downloadCSV")
+                .on("click", function () {
+                    var json = JSON.stringify(x.matrix);
+                    debugger;
+            })
+                .on("mouseover", function (d, i) {
+                    downloadCSV.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    downloadCSV.style.cssText = normalCSSText;
+            });
+
         }
 
         //*****************************************************************************/
