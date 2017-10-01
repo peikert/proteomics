@@ -1,5 +1,5 @@
 /** Last Updated: 1st October 
-    Version: 0.0.14
+    Version: 0.0.15
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
