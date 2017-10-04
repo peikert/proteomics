@@ -85,7 +85,18 @@ color_legend <- heatmap_color
   library(foreach)
   }
 
-  get_best_k(matrix,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
+  test1 <- get_best_k(matrix,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
+
+  dm <- test1$cluster_distances
+  test2 <- get_best_k(matrix,min_k = 2,max_k = 20,method = 'cmeans', seed=1234)
+  test <- test$db_list
+  test <- as.data.frame(sapply(test,as.numeric))
+  class(test$k)
+  class(mtcars$mpg)
+  sapply(test,class)
+  db_list <- test$db_list
+  filtered_db_list <- db_list[complete.cases(db_list[,c('k','score','withinerror')]),]
+
   get_best_k(data,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
   get_best_k(matrix,min_k = 2,max_k = 20,method = 'cmeans', seed=1234, cores = 2)
 
@@ -97,7 +108,7 @@ color_legend <- heatmap_color
 dim(matrix)
 class(matrix)
 cr <- clustpro(matrix=matrix,
-                  method = "kmeans",
+                  method = "cmeans",
                   min_k = 2,
                   max_k = 30,
                   fixed_k = NULL,
@@ -116,7 +127,7 @@ cr <- clustpro(matrix=matrix,
                   export_graphics = FALSE,
                   seed=1,
                   cores = 2,
-                  useShiny = F
+                  useShiny = T
                   )
 
 

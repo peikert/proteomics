@@ -6,6 +6,7 @@ if(F){
   devtools::document()
   devtools::install()
   #devtools::reload()
+   runExample03()
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
 library("clustpro")

@@ -257,21 +257,21 @@ observeEvent(input$clustering_selectionToggle_c, {
   }
 })
 
-
+####
 observeEvent(input$clustering_aTOz_t, {
   updateCheckboxGroupInput(
-    session = session, inputId = "clustering_tooltips", choices = sort(c2p()), selected = input$clustering_columns
+    session = session, inputId = "clustering_tooltips", choices = sort(c2p()), selected = input$clustering_tooltips
   )
 })
 
 observeEvent(input$clustering_zTOa_t, {
   updateCheckboxGroupInput(
-    session = session, inputId = "clustering_tooltips", choices = rev(sort(c2p())), selected = input$clustering_columns
+    session = session, inputId = "clustering_tooltips", choices = rev(sort(c2p())), selected = input$clustering_tooltips
   )
 })
 
 observeEvent(input$clustering_selectionToggle_t, {
-  if (is.null(input$clustering_columns)) {
+  if (is.null(input$clustering_tooltips)) {
     updateCheckboxGroupInput(
       session = session, inputId = "clustering_tooltips", selected = c2p()
     )
@@ -300,12 +300,15 @@ best_k <- reactive({
                  method = input$clustering_method_selectInput,
                  seed = input$clustering_seed_numericInput
                  )
-      local_df <- as.data.frame(local_df$db_list)
-      colnames(local_df) <- c('k','score','withinerror')
-      filtered_local_df <- local_df[!is.na(local_df$score),]
-      k <- filtered_local_df$k[which(max(filtered_local_df$score)==filtered_local_df$score)]
+      db_list <- as.data.frame(local_df$db_list)
+      # colnames(db_list) <- c('k','score','withinerror')
+     # filtered_local_df <- local_df[!is.na(local_df$score),]
+     # k <- filtered_local_df$k[which(max(filtered_local_df$score)==filtered_local_df$score)]
+      k <- local_df$best_k
       updateNumericInput(session,'clustering_k_numericInput',value=k)
-      local_df
+      # print(k)
+      # print(db_list)
+      db_list
   })
 
 
@@ -340,8 +343,9 @@ clustPlot <- function(input, output, session, best_k, nik) {
     req(best_k())
 
     local_df <-  best_k()
-   # print(local_df)
+  print(class(local_df))
     if(is.null(best_k()))return(NULL)
+
     #   as.data.frame(best_k()$db_list)
     # print(local_df)
     # print(nik())
@@ -349,6 +353,8 @@ clustPlot <- function(input, output, session, best_k, nik) {
 
     filtered_local_df <- local_df[!is.na(local_df$score),]
     best <- which(max(filtered_local_df$score)==filtered_local_df$score)
+    print(class(filtered_local_df$score))
+    print(round(filtered_local_df$score,2))
  #   best <- which(max(local_df$score,na.rm=T)==local_df$score)
     col_vec[local_df$k==nik()] <- 'red'
 
@@ -478,7 +484,7 @@ clustProMain <- function(input, output, session, clust_parameters) {
     color_legend <- heatmap_color
     # print(color_legend)
     # print( head(data))
-    # print('D')
+    print(method)
              clustpro(matrix=data,
                       method =method,
                       min_k = 2,

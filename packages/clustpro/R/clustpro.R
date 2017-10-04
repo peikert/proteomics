@@ -482,7 +482,7 @@ findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
                          centrotypes = "centroids",
                          p = 2,
                          q = 2)
-    return(c(k, db_score$DB,rs$withinerror))
+    return(c(k, db_score$DB,rs$withinerror, list(db_score$d)))
   }, warning = function(w) {
     print(paste('findk_cmeans', w, sep = ': '))
     return(NA)
@@ -517,7 +517,7 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 
     # return(c(k, db_score$DB))
     # attr(cluster,"tot.withinss")
-    return(c(k, db_score$DB, cluster[["tot.withinss"]]))
+    return(c(k, db_score$DB, cluster[["tot.withinss"]], list(db_score$d)))
   }, warning = function(w) {
     print(paste('findk_kmeans', w, sep = ': '))
     return(NA)
@@ -571,7 +571,25 @@ get_best_k <-
                  .export = c('findk', 'matrix', 'seed')
                ) %do% findk(matrix, k, seed))
              parallel::stopCluster(cl)
-             return(list(db_list = db_list))
+             db_list <- as.data.frame(db_list)
+             colnames(db_list) <- c('k','score','withinerror','cluster_distances')
+             db_list[,c('k','score','withinerror')] <- sapply(db_list[,c('k','score','withinerror')],as.numeric)
+             print(head(db_list[,c(1:3)]))
+             print(sapply(db_list,class))
+
+             filtered_db_list <- as.data.frame(db_list[complete.cases(db_list[,c('k','score','withinerror')]),])
+             best_id <- which(filtered_db_list$score == max(filtered_db_list$score, na.rm = TRUE))
+             best_k <- as.numeric(filtered_db_list[best_id,'k'])
+             cluster_distances <- as.data.frame(filtered_db_list[best_id,'cluster_distances'])
+             colnames(cluster_distances) <- c(1:ncol(cluster_distances))
+             rownames(cluster_distances) <- c(1:ncol(cluster_distances))
+
+             db_list = as.data.frame(db_list[,c('k','score','withinerror')])
+             db_list <- as.data.frame(sapply(db_list,as.numeric))
+             return(list(db_list = db_list,
+                         best_k = best_k,
+                         cluster_distances = cluster_distances
+                         ))
 
            },
            cmeans = {
@@ -598,19 +616,32 @@ get_best_k <-
                findk(matrix = matrix, k = k, minimalSet = minimalSet, fp = fp,seed = seed)
              #  findk()
              }))
-              colnames(db_list) <- c('k','score','withinerror')
+            #  print(colnames(db_list))
               parallel::stopCluster(cl)
 
-              filtered_db_list <- db_list[complete.cases(db_list),]
-              best_k <- as.numeric(filtered_db_list[filtered_db_list$score == max(filtered_db_list$score, na.rm = TRUE),1])
+              db_list <- as.data.frame(db_list)
+              colnames(db_list) <- c('k','score','withinerror','cluster_distances')
+              db_list[,c('k','score','withinerror')] <- sapply(db_list[,c('k','score','withinerror')],as.numeric)
+              print(head(db_list[,c(1:3)]))
+              print(sapply(db_list,class))
 
-              print(db_list)
-              print(class(db_list))
+              filtered_db_list <- as.data.frame(db_list[complete.cases(db_list[,c('k','score','withinerror')]),])
+              best_id <- which(filtered_db_list$score == max(filtered_db_list$score, na.rm = TRUE))
+              best_k <- as.numeric(filtered_db_list[best_id,'k'])
+              cluster_distances <- as.data.frame(filtered_db_list[best_id,'cluster_distances'])
+              colnames(cluster_distances) <- c(1:ncol(cluster_distances))
+              rownames(cluster_distances) <- c(1:ncol(cluster_distances))
+              # print(db_list)
+              # print(class(db_list))
+
+              db_list = as.data.frame(db_list[,c('k','score','withinerror')])
+              db_list <- as.data.frame(sapply(db_list,as.numeric))
              return(list(
                db_list = db_list,
                minimalSet = minimalSet,
                fp = fp,
-               best_k <- best_k
+               best_k = best_k,
+               cluster_distances = cluster_distances
              ))
              options(warn = oldw)
            })
