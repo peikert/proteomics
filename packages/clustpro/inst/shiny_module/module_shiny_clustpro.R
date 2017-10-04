@@ -82,10 +82,10 @@ clustProPanelUI <- function(id) {
 clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, info_columns=NULL) {
   ns <- session$ns
 
-  observe({
-  print(data_columns())
-  print(info_columns())
-  })
+  # observe({
+  # print(data_columns())
+  # print(info_columns())
+  # })
     observe({
   if(is.null(ldf()) || is.null(ldf)){
     # print("in")
@@ -154,17 +154,19 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
       colors=colors,
       ticks= ticks
                     )
-    print(payload)
+    # print(payload)
     # payload <- list(colors=c("blue 0%","DeepSkyBlue 25%", "white 50%", "yellow 75%", "red 100%"))
     gradientPickerD3(payload, width = '50px')
   })
 
   heatmapColors <- reactive({
-    req(input$gradientPickerD3_selected)
+    req(input$gradientPickerD3_table)
     req(ldf())
     req(input$clustering_columns)
-    gcolors <- input$gradientPickerD3_selected
+
+    gcolors <- input$gradientPickerD3_table
     if(is.null(gcolors)) return(NULL)
+    #print(gcolors)
     df_gcolors <- as.data.frame(matrix(unlist(gcolors), ncol = 3, byrow = TRUE),stringsAsFactors = FALSE)
     colnames(df_gcolors) <- c('interval','color','ticks')
     # print(df_gcolors)
@@ -208,7 +210,7 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
  #    df_gcolors$interval_mod <- sapply(df_gcolors$interval,function(x){minv+diff_value*x/100})
  #    print(df_gcolors)
     # rgb(0,104,255)
-    print(df_gcolors$color)
+    # print(df_gcolors)
     setHeatmapColors(data=NULL,color_list=df_gcolors$color,intervals=df_gcolors$ticks)
   })
 
@@ -306,6 +308,7 @@ best_k <- reactive({
       local_df
   })
 
+
   clust_parameters = list(
     data = ldf,
     selected_cols =  reactive(input$clustering_columns),
@@ -337,7 +340,7 @@ clustPlot <- function(input, output, session, best_k, nik) {
     req(best_k())
 
     local_df <-  best_k()
-   print(local_df)
+   # print(local_df)
     if(is.null(best_k()))return(NULL)
     #   as.data.frame(best_k()$db_list)
     # print(local_df)
@@ -364,7 +367,7 @@ clustPlot <- function(input, output, session, best_k, nik) {
  #      layout(showlegend = FALSE)
 
 
-    plot_ly(local_df,
+   p <- plot_ly(local_df,
             x = ~k,
             y = ~score,
             type = 'scatter',
@@ -373,7 +376,8 @@ clustPlot <- function(input, output, session, best_k, nik) {
             hoverinfo = 'text',
             text = ~paste(
                           'k: ', k,
-                          '<br>db-index: ', round(score,2))
+                          '<br>db-index: ', round(score,2)
+                          )
             ) %>%
             # ggplotly(tooltip = c('k','score')) %>%
             add_markers(color = col_vec) %>%
@@ -393,8 +397,8 @@ clustPlot <- function(input, output, session, best_k, nik) {
                       arrowsize = .5,
                       ax = 20,
                       ay = -40)
-
-
+   p$elementId <- NULL
+   p
     })
 
   # output$event <- renderPrint({
@@ -436,10 +440,11 @@ clustProMain <- function(input, output, session, clust_parameters) {
   req(clust_parameters$fixed_k())
   req(clust_parameters$data())
   req(clust_parameters$selected_cols())
-  req(clust_parameters$heatmap_colors())
   req(clust_parameters$seed())
+  req(clust_parameters$heatmap_colors())
 
   if(length(clust_parameters$selected_cols())<1)return(NULL)
+  # print('C')
     data  <-  clust_parameters$data()[,clust_parameters$selected_cols(),drop=FALSE]
     ccases <- complete.cases(data)
     if(nrow(data)>sum(ccases)){showNotification(paste0((nrow(data)-sum(ccases))," rows containing missing values were removed"))}
@@ -471,7 +476,9 @@ clustProMain <- function(input, output, session, clust_parameters) {
     }
       # print(info_list)
     color_legend <- heatmap_color
-    print(color_legend)
+    # print(color_legend)
+    # print( head(data))
+    # print('D')
              clustpro(matrix=data,
                       method =method,
                       min_k = 2,

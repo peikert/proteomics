@@ -884,7 +884,9 @@ setHeatmapColors <-
       d_max <- round(max(data, na.rm = TRUE), 8) + 0.00000001
       steps <- (d_max - d_min) / 299
       heatmap_color <- list(ticks = seq(d_min, d_max, steps),
-                            colors = grDevices::colorRampPalette(color_list)(n = 299))
+                            colors = grDevices::colorRampPalette(color_list)(n = 299),
+                            label_position = c(round(d_min,2),round(d_max,2))
+                                                )
     } else{
       if (!is.null(data) &&  (min(intervals) > min(data, na.rm = TRUE) |
           max(data, na.rm = TRUE) > max(intervals))) {
@@ -900,7 +902,10 @@ setHeatmapColors <-
       }
       intervals[1] <- intervals[1]-0.00000001
       intervals[length(intervals)] <- intervals[length(intervals)] +0.00000001
-      return(color_spectrum(intervals, color_list))
+
+      heatmap_color <- color_spectrum(intervals, color_list)
+      heatmap_color$label_position <- c(round(min(intervals),2),round(max(intervals),2))
+      return(heatmap_color)
 
     }
   }
