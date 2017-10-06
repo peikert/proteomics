@@ -1,5 +1,5 @@
-/** Last Updated: 1st October 
-    Version: 0.0.15
+/** Last Updated: 6th October 
+    Version: 0.0.16
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
@@ -469,6 +469,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
     function axisLabels(svg, data, rotated, width, height, padding) {
         console.log("           --Entered axisLabel() --");
+        debugger;
         svg = svg.append('g');
         // The data variable is either cluster info, or a flat list of names.
         // If the former, transform it to simply a list of names.
@@ -499,20 +500,38 @@ function clustpro(selector, data, options, location_object_array, cluster_change
             .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
             .call(axis);
 
-        var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8))) + "px";
-        //axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
+        // Maximum data length
+        var maxLength = 0;
+        for (i in data) { data[i].length > maxLength ? maxLength = data[i].length : maxLength = maxLength }
+
+        // Fix for issue 36
+        var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] ||
+                                maxLength >= 40 ? maxLength >= 50 ? maxLength >= 60 ? maxLength >= 70 ? "8" : 
+                                                "10" : 
+                                                    "12" :
+                                                         "14" :
+                                                             Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8)));
+
+        //var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8))) + "px";
+        axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
 
 
         // Calculated on the basis of text length
         axisNodes.selectAll("text").style("fill", "#6F6F6F");
+
+
+
         // First find the maximum length,
         // If the maximum length is greater then 25, then rotate.
-        var maxLength = 0;
-        for (i in data) { data[i].length > maxLength ? maxLength = data[i].length : maxLength = maxLength }
-        axisNodes.selectAll("text").
-            attr("transform", rotated ?
-                maxLength > 25 ? "rotate(45), translate(70,0)" : "rotate(0)"
-                : "rotate(0)");
+        //var maxLength = 0;
+        //for (i in data) { data[i].length > maxLength ? maxLength = data[i].length : maxLength = maxLength }
+        //axisNodes.selectAll("text").
+        //    attr("transform", rotated ?
+        //        maxLength > 25 ? "rotate(45), translate(70,0)" : "rotate(0)"
+        //        : "rotate(0)");
+
+
+
         var mouseTargets = svg.append("g")
             .selectAll("g").data(leaves);
         mouseTargets
@@ -809,10 +828,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                     }
                     correspondingString = "(" + last2Elements[0].correspondingString + "," + last2Elements[1].correspondingString + ")";
                     var horizontal = sum / 2;
-                    debugger;
-                    var vertical1 = (elements.length - 1) * 5;    // Intellegently calculate this number
-                    // Intellegently calculate the the height of the column dendogram
-                    var vertical = height/2 - ((height/2) - ((height/2) * (elements.length * 10)/100)); // 10 percent of the total height/2  Fixes issue number 31
+                    var vertical = 30 - ((30 / maxdepth) * depth) + 3; // Fix for problem 31
                     var location = { vertical: vertical, horizontal: horizontal };
                     //Finding the column range
                     var colRangeArray = [];
