@@ -9,7 +9,13 @@
 data(cellr_morgenstern_et_al_2017)
 }
 \description{
-Summary of proteome-wide absolute quantification of proteins under fermentable and non-fermentable growth conditions based on the 'Proteomic Ruler' approach.
+Project description: Mitochondria perform central functions in cellular bioenergetics, metabolism and signaling and their malfunction has been linked to numerous diseases.
+The available studies cover only part of the mitochondrial proteome and a separation of core mitochondrial proteins from associated fractions has not been achieved.
+We developed an integrative, quantitative MS-based experimental approach to define the high confidence proteome of yeast mitochondria and to identify new mitochondrial proteins.
+The analysis includes protein abundance under fermentable and non-fermentable growth, submitochondrial localization, single-protein analysis and subcellular classification of mitochondria-associated fractions.
+We identified novel mitochondrial interactors of respiratory chain supercomplexes, ATP synthase, AAA proteases, the mitochondrial contact site and cristae organizing system (MICOS) and coenzyme Q biosynthesis cluster as well as new mitochondrial proteins with dual cellular localization.
+The integrative proteome provides a high confidence source for the characterization of physiological and pathophysiological functions of mitochondria and their integration into the cellular environment.
+Data: This data are a summary of proteome-wide absolute quantification of proteins under fermentable and non-fermentable growth conditions based on the 'Proteomic Ruler' approach.
 Raw MS data and complete MaxQuant results files are available via ProteomeXchange with identifier PXD006146.
 The variables are as follows:
 }
