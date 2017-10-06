@@ -50,11 +50,12 @@ color_legend <- heatmap_color
 
 
 
-  matrix=data #[,1,drop=FALSE]
-  method = "cmeans"
+  matrix=data[,1,drop=FALSE]
+  method = "kmeans"
   min_k = 2
   max_k = 30
   fixed_k = NULL
+  simplify_clustering = FALSE
   perform_clustering = TRUE
   clusterVector = NULL
   rows = TRUE
@@ -88,14 +89,6 @@ color_legend <- heatmap_color
   test1 <- get_best_k(matrix,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
 
   dm <- test1$cluster_distances
-  test2 <- get_best_k(matrix,min_k = 2,max_k = 20,method = 'cmeans', seed=1234)
-  test <- test$db_list
-  test <- as.data.frame(sapply(test,as.numeric))
-  class(test$k)
-  class(mtcars$mpg)
-  sapply(test,class)
-  db_list <- test$db_list
-  filtered_db_list <- db_list[complete.cases(db_list[,c('k','score','withinerror')]),]
 
   get_best_k(data,min_k = 2,max_k = 20,method = 'kmeans', seed=1234)
   get_best_k(matrix,min_k = 2,max_k = 20,method = 'cmeans', seed=1234, cores = 2)

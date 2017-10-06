@@ -102,9 +102,9 @@ clustpro <- function(matrix,
   if(!class(matrix) %in% c('data.frame'))stop('matrix is no data.frame')
   if(!all(complete.cases(matrix)))stop('matrix is contains missing values')
   if(class(method) != 'character' | !method %in% c("kmeans","cmeans"))stop('method must be a string. options:"kmeans","cmeans"')
-  if(!is.numeric(min_k))stop('min_k must be numeric')
-  if(!is.numeric(min_k))stop('max_k must be numeric')
-  if(!is.numeric(min_k))stop('fixed_k must be numeric')
+  if(!is.numeric(min_k) && min_k>1)stop('min_k must be numeric and greater 1')
+  if(!is.numeric(max_k) && max_k>min_k)stop('max_k must be numeric and greater min_k')
+  if(!is.null(fixed_k) && (!is.numeric(fixed_k) && (is.numeric(fixed_k) && fixed_k<2)))stop('fixed_k must be numeric and greater 1 or NULL')
   if(!is.logical(perform_clustering))
   if(!is.null(clusterVector) || (!class(clusterVector) %in% c("list","vector")) && length(clusterVector) != nrow(matrix)) stop('"clusterVector" must be NULL or of type "list/vector" with a length equal to the rows of the matrix')
   if(!is.logical(rows) & class(rows)!="hclust") stop('"rows" must be logical or of class hclust')
@@ -222,6 +222,7 @@ clustpro <- function(matrix,
     matrix <- cluster_centers
     detailed_clusters <- clusters
     clusters <- unique(clusters)
+    tooltip[['number of proteins']] <- as.vector(table(detailed_clusters)[clusters])
   }
   if(is.null(rownames(matrix)))rownames(matrix) <- 1:nrow(matrix)
 

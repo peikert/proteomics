@@ -9,8 +9,10 @@
 data(mcp_reimann_et_al_2017)
 }
 \description{
-A dataset containing ......
-The variables are as follows:
+Project description: The Z-disc is a protein-rich structure critically important for myofibril development and integrity.
+In order to monitor the quantiative changes in C2C12 myoblast during myogenesis, a quantitative dimethyl-labelling approach was performed with d0 myoblasts, d5 myotubes and electrical puls stimulated d5 myotubes.
+Data: Excerpts from the MaxQuant output files "proteinGroups.txt" (spreadsheet proteins); details for protein/protein group identification are given.
+Identifications referring to reverse hits and potential contaminants have been removed.
 }
 \details{
 \itemize{

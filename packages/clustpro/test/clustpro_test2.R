@@ -6,7 +6,10 @@ if(F){
   devtools::document()
   devtools::install()
   #devtools::reload()
-   runExample03()
+  # runExample01()
+  # runExample02()
+  # runExample03()
+  # runExample04()
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
 library("clustpro")
@@ -46,15 +49,23 @@ info_list[['link']] <- paste('http://www.uniprot.org/uniprot/',sapply(rownames(m
 info_list[['description']] <- msdata$definition
 info_list[['test']] <- rep('non',nrow(msdata))
 
-color_legend <- heatmap_color
 # matrix <- msdata[,c(3:6)]
+class(msdata[,c(3:6)])
+clustpro(matrix=cars)
+
+
+
+
+
+
 cr <- clustpro(matrix=msdata[,c(3:6)],
                   method = "kmeans",
                   min_k = 2,
-                  max_k = 100,
-                  fixed_k = -1,
+                  max_k = 5,
+                  fixed_k = NULL,
                   perform_clustering = TRUE,
-                  cluster_ids = NULL,
+                simplify_clustering = F,
+                  clusterVector = NULL,
                   rows = TRUE,
                   cols = TRUE,
                   tooltip = info_list,
@@ -62,9 +73,9 @@ cr <- clustpro(matrix=msdata[,c(3:6)],
                   color_legend = heatmap_color,
                   width = NULL,
                   height = NULL,
-                  export_dir = NA,
+                  export_dir = NULL,
                   export_type = 'svg',
-                  seed=1
+                  seed=3
                   )
 
 
