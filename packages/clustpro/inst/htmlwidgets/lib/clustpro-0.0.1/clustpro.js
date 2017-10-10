@@ -1,5 +1,5 @@
-/** Last Updated: 6th October 
-    Version: 0.0.16
+/** Last Updated: 9th October 
+    Version: 0.0.17
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
@@ -968,7 +968,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                 d3.select(this)
                     .style("cursor", "pointer")
                     .style("stroke", "blue")
-                    .attr("stroke-width", "2.5");
+                    .attr("stroke-width", "4");
                 // Turn all the children Blue.
                 var sibling_children_array = [];
                 for (var j = 0; j < table.length; j++) {   // FOR ALL THR LINES
@@ -979,7 +979,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                         // Color all the children elements of d.
                         d3.select(DendogramLines[0][j])
                             .style("stroke", "blue")
-                            .attr("stroke-width", "2.5");
+                            .attr("stroke-width", "4");
                     }
                     // Color all the lines which contain a child contained in d.
                     for (var k in links1[j].correspondingChildrenArray) {

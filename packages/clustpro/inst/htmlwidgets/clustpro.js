@@ -1,5 +1,5 @@
-/** Last Updated: 6th October
-    Version: 0.0.16
+/** Last Updated: 9th October
+    Version: 0.0.17
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -169,11 +169,16 @@ HTMLWidgets.widget({
             var sideBarWidth = sideBar.offsetWidth; // int 
             var normalGIFHeight = sideBarWidth + (sideBarWidth * 0.5);
             var normalGIFWidth = sideBarWidth * 0.90; // 90 % of the width.
+            var smallGIFHeight = normalGIFHeight / 1.6;  // A bit smaller then the normal gifs, because it is a sub element
+            var smallGIFWidth = normalGIFWidth / 1.6; // same logic as above.
             var normalgifHeightcssText = normalGIFHeight.toString()+"px"; // Normal height of the GIF.
             var normalgifWidthcssText = normalGIFWidth.toString()+"px"; // Normal width of the GIF.
+            var smallergifHeightcssText = smallGIFHeight.toString()+"px";
+            var smallergifWedthcssText = smallGIFWidth.toString()+"px";
             var zoomedInGidWidthCssText = sideBarWidth.toString()+"px"; // Hovered width of the GIF.
-            var normalCSSText = "height:"+normalgifHeightcssText+"; width:"+normalgifWidthcssText;
+            var normalCSSText = "height:"+normalgifHeightcssText+"; width:"+normalgifWidthcssText +"; margin-right: auto; margin-left: auto;";
             var hoverCSSText = "height:"+normalgifHeightcssText+"; width:"+zoomedInGidWidthCssText+";  cursor : pointer";
+            var smallCSSText = "height:"+smallergifHeightcssText+"; width:"+smallergifWedthcssText;
         }
         
 
@@ -451,19 +456,80 @@ HTMLWidgets.widget({
             });
         }
 
-        {   // Download matrix as csv 
+        {   // Download data matrix 
+            var downloadData = document.createElement("div");
+            downloadData.setAttribute("id", "downloadData");
+            downloadData.setAttribute("title", "Download data matrix");
+            downloadData.style.cssText = normalCSSText;
+            // Insert GIF
+            downloadData.innerHTML = saveasCSV();
+            //GIF Inserted
+            sideBar.appendChild(downloadData);
+            var fadeinflag = false;
+            d3.select("#downloadData")
+                .on("click", function () {
+                    var json = JSON.stringify(x.matrix);
+                    debugger;
+                    if(fadeinflag) {
+                        $("#downloadSVG").fadeOut();
+                        $("#downloadCSV").fadeOut();
+                        fadeinflag = false;
+                    } else {
+                        $("#downloadSVG").fadeIn();
+                        $("#downloadCSV").fadeIn();
+                        fadeinflag = true;
+                    }
+            })
+                .on("mouseover", function (d, i) {
+                    downloadData.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    downloadData.style.cssText = normalCSSText;
+            });
+
+        }
+
+        {   // Download matrix as SVG
+            var downloadSVG = document.createElement("div");
+            downloadSVG.setAttribute("id", "downloadSVG");
+            downloadSVG.setAttribute("title", "Download matrix as Json");
+            downloadSVG.style.cssText = normalCSSText;
+            // Insert GIF
+            downloadSVG.innerHTML = saveSVG();
+            //GIF Inserted
+            sideBar.appendChild(downloadSVG);
+
+            d3.select("#downloadSVG")
+                .on("click", function () {
+                    var json = JSON.stringify(x.matrix);
+                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.json"); // Is the type correct ?
+                    debugger;
+            })
+                .on("mouseover", function (d, i) {
+                    downloadSVG.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    downloadSVG.style.cssText = normalCSSText;
+            });
+            $("#downloadSVG").hide()
+
+        }
+
+
+        {
             var downloadCSV = document.createElement("div");
             downloadCSV.setAttribute("id", "downloadCSV");
             downloadCSV.setAttribute("title", "Download matrix csv");
             downloadCSV.style.cssText = normalCSSText;
             // Insert GIF
-            downloadCSV.innerHTML = saveasCSV();
+            downloadCSV.innerHTML = saveCSV();
             //GIF Inserted
             sideBar.appendChild(downloadCSV);
 
             d3.select("#downloadCSV")
                 .on("click", function () {
                     var json = JSON.stringify(x.matrix);
+                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.json"); // Is the type correct ?
                     debugger;
             })
                 .on("mouseover", function (d, i) {
@@ -472,7 +538,9 @@ HTMLWidgets.widget({
             .on("mouseout", function (d, i) {
                     downloadCSV.style.cssText = normalCSSText;
             });
-
+            $("#downloadCSV").hide()
+            
+            
         }
 
         //*****************************************************************************/
