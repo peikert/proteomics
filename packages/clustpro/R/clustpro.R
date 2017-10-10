@@ -220,11 +220,12 @@ clustpro <- function(matrix,
   if(simplify_clustering){
     detailed_matrix <- matrix
     matrix <- cluster_centers
+    rownames(matrix) <- paste0('C',sprintf("%02d",1:nrow(matrix)))
     detailed_clusters <- clusters
     clusters <- unique(clusters)
-    tooltip[['number of proteins']] <- as.vector(table(detailed_clusters)[clusters])
+    tooltip[['cluster size']] <- as.vector(table(detailed_clusters)[clusters])
   }
-  if(is.null(rownames(matrix)))rownames(matrix) <- 1:nrow(matrix)
+  # if(is.null(rownames(matrix)))rownames(matrix) <- 1:nrow(matrix)
 
 
   for(l in names(tooltip)){
@@ -239,8 +240,10 @@ clustpro <- function(matrix,
       x[new_order])
     reordered_tooltip[['id']] <- NULL
     tooltip <- reordered_tooltip
-  }else{tooltip[['id']] <- rownames(matrix)
-  tooltip[['link']] <- NULL
+  }else{
+  #tooltip[['id']] <- rownames(matrix)
+    tooltip <- c(list(id=rownames(matrix)),tooltip)
+    tooltip[['link']] <- NULL
   }
 
 

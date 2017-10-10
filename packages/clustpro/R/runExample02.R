@@ -50,6 +50,7 @@ runExample02 <- function() {
   parameter_list$min_k = 2
   parameter_list$max_k = 30
   parameter_list$perform_clustering = TRUE
+  parameter_list$simplify_clustering = TRUE
   parameter_list$rows = TRUE
   parameter_list$cols = TRUE
   parameter_list$tooltip = info_list
