@@ -2,7 +2,9 @@
 % Please edit documentation in R/clustpro.R
 \name{order_dataframe_by_list}
 \alias{order_dataframe_by_list}
-\title{order_dataframe_by_list}
+\title{order_dataframe_by_list
+order a data.frame by the order of a list
+.................}
 \usage{
 order_dataframe_by_list(x, list, col, reverse = FALSE)
 }
@@ -16,5 +18,7 @@ order_dataframe_by_list(x, list, col, reverse = FALSE)
 \item{reverse}{boolean, if TRUE reverse order of list}
 }
 \description{
+order_dataframe_by_list
+order a data.frame by the order of a list
 .................
 }

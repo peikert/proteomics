@@ -189,7 +189,9 @@ clustpro <- function(matrix,
       col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
       col_dend <- as.dendrogram(cols)
     }
+    matrix$clusters <- clusters
     cluster_centers = aggregate(matrix, list(clusters), mean)
+    matrix$clusters <- NULL
     cluster_centers <- cluster_centers[unique(clusters),]
     rownames(cluster_centers) <- cluster_centers[,1]
     cluster_centers[,1] <- NULL
@@ -248,6 +250,11 @@ clustpro <- function(matrix,
 
 
   # sapply(color_legend,length)
+
+  if(is.null(color_legend)){
+    color_legend <- setHeatmapColors(data=matrix,,auto=TRUE)
+  }
+
   color_matrix <-
     as.data.frame(
       apply(
@@ -437,13 +444,13 @@ distributions_histograms <- function(matrix, export_type) {
 }
 
 #' order_dataframe_by_list
-#'
+#' order a data.frame by the order of a list
 #' .................
 #' @param x numeric data.frame
 #' @param list list, unique list of numbers or character in whished order
 #' @param col character or numerical, col with should be ordered in accordance to list
 #' @param reverse boolean, if TRUE reverse order of list
-
+#' @export
 order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
   if (reverse) {
     list <- rev(list)
@@ -463,17 +470,15 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
 #' @param minimalSet object of the class minimalSet
 #' @param fp fuzzification parameter
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
-#' @import Mfuzz
 #' @import e1071
 #' @importFrom clusterSim index.DB
 #'
 
-findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
+findk_cmeans <- function(matrix, k, seed = NULL) {
   tryCatch({
     if (!is.null(seed))
       set.seed(seed)
-
-    rs <- mfuzz(minimalSet, c = k, m = fp)
+    rs <- e1071::cmeans(x = matrix, centers = k, iter.max = 1000)
     cluster <- as.vector(rs$cluster)
     # print(cluster)
     # table(cluster)
@@ -486,7 +491,7 @@ findk_cmeans <- function(matrix, k, minimalSet, fp, seed = NULL) {
                          centrotypes = "centroids",
                          p = 2,
                          q = 2)
-    return(c(k, db_score$DB,rs$withinerror, list(db_score$d)))
+    return(c(k, db_score$DB, rs$withinerror, list(db_score$d)))
   }, warning = function(w) {
     print(paste('findk_cmeans', w, sep = ': '))
     return(NA)
@@ -541,8 +546,6 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 #' @param cores natural number, number of nodes/cores used for parallelisation
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
 #' @import foreach
-#' @importFrom Biobase ExpressionSet
-#' @import Mfuzz
 #' @import e1071
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster
@@ -578,8 +581,7 @@ get_best_k <-
              db_list <- as.data.frame(db_list)
              colnames(db_list) <- c('k','score','withinerror','cluster_distances')
              db_list[,c('k','score','withinerror')] <- sapply(db_list[,c('k','score','withinerror')],as.numeric)
-             print(head(db_list[,c(1:3)]))
-             print(sapply(db_list,class))
+
 
              filtered_db_list <- as.data.frame(db_list[complete.cases(db_list[,c('k','score','withinerror')]),])
              best_id <- which(filtered_db_list$score == max(filtered_db_list$score, na.rm = TRUE))
@@ -594,30 +596,20 @@ get_best_k <-
                          best_k = best_k,
                          cluster_distances = cluster_distances
                          ))
-
            },
            cmeans = {
              oldw <- getOption("warn")
              options(warn = -1)
              cl <- parallel::makeCluster(cores, type = "SOCK")
              doParallel::registerDoParallel(cl)
-             minimalSet <- Biobase::ExpressionSet(assayData = as.matrix(matrix))
-             fp <- mestimate(minimalSet)
              findk <- findk_cmeans
-             #clusterExport(cl, c("findk", "seed"))
-           #   findk_cmeans(matrix, 19, minimalSet, fp,seed)
-             # findk_kmeans(matrix, 3)
-             # clusterExport(cl, c("minimalSet", "fp","matrix", "findk", "seed"))
-           #  clusterExport(cl, c("matrix", "findk", "seed"))
-          #   clusterEvalQ(cl, c(library('clusterSim'), library('Mfuzz'), library('e1071'), library('clustpro'), library('Biobase')))
-# library(foreach)
               db_list <- as.data.frame(t(foreach(
                k = c(min_k:iterations),
                .combine = "cbind",
-               .export = c("matrix", "findk", "seed","minimalSet", "fp"),
-               .packages = c("clusterSim","Mfuzz")
+               .export = c("matrix", "findk", "seed"),
+               .packages = c("clusterSim","e1071")
              ) %dopar% {
-               findk(matrix = matrix, k = k, minimalSet = minimalSet, fp = fp,seed = seed)
+               findk(matrix = matrix, k = k, seed = seed)
              #  findk()
              }))
             #  print(colnames(db_list))
@@ -626,8 +618,6 @@ get_best_k <-
               db_list <- as.data.frame(db_list)
               colnames(db_list) <- c('k','score','withinerror','cluster_distances')
               db_list[,c('k','score','withinerror')] <- sapply(db_list[,c('k','score','withinerror')],as.numeric)
-              print(head(db_list[,c(1:3)]))
-              print(sapply(db_list,class))
 
               filtered_db_list <- as.data.frame(db_list[complete.cases(db_list[,c('k','score','withinerror')]),])
               best_id <- which(filtered_db_list$score == max(filtered_db_list$score, na.rm = TRUE))
@@ -642,8 +632,6 @@ get_best_k <-
               db_list <- as.data.frame(sapply(db_list,as.numeric))
              return(list(
                db_list = db_list,
-               minimalSet = minimalSet,
-               fp = fp,
                best_k = best_k,
                cluster_distances = cluster_distances
              ))
@@ -666,10 +654,8 @@ get_best_k <-
 #' @param export_graphics boolean; if TRUE grephics are exported
 #' @param export_type character; type of exported graphics, tested for tif and svg
 #' @import stats
-#' @import Mfuzz
 #' @import e1071
 #' @importFrom ggplot2 ggplot geom_line geom_point geom_text ylab xlab theme ggtitle ggsave aes_string element_text element_blank element_line
-#' @importFrom Biobase ExpressionSet
 #' @importFrom ctc hc2Newick
 clustering <- function(matrix,
                        min_k = 2,
@@ -686,10 +672,6 @@ clustering <- function(matrix,
 
   if (!is.null(fixed_k)) {
     k <- fixed_k
-    if (method == 'cmeans') {
-      minimalSet <- Biobase::ExpressionSet(assayData = as.matrix(matrix))
-      fp <- mestimate(minimalSet)
-    }
   } else {
     rv <-
       get_best_k(matrix, min_k, max_k, method, cores = cores, seed)
@@ -741,7 +723,7 @@ clustering <- function(matrix,
   switch(method, kmeans = {
     clustering_result <- kmeans(matrix, k, iter.max = 1000)
   }, cmeans = {
-    clustering_result <- mfuzz(minimalSet, c = k, m = fp)
+    clustering_result <- e1071::cmeans(x = matrix, centers = k, iter.max = 1000)
   })
   cluster <- clustering_result$cluster
   df <- cbind(matrix, cluster)

@@ -4,18 +4,18 @@
 \alias{findk_cmeans}
 \title{findk_cmeans}
 \usage{
-findk_cmeans(matrix, k, minimalSet, fp, seed = NULL)
+findk_cmeans(matrix, k, seed = NULL)
 }
 \arguments{
 \item{matrix}{numeric data.frame}
 
 \item{k}{number of clusters, k}
 
+\item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
+
 \item{minimalSet}{object of the class minimalSet}
 
 \item{fp}{fuzzification parameter}
-
-\item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
 }
 \description{
 .................
