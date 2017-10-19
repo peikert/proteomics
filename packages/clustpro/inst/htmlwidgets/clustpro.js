@@ -7,9 +7,9 @@ HTMLWidgets.widget({
 
     initialize: function (el, width, height) {
         console.log("-- Entered initialize() --");
-        document.getElementsByTagName("body")[0].style.overflow = "hidden"; // This line is the causing problems in the shiny app
-        el.style.height = "100%";
-        el.style.width = "100%";
+        //document.getElementsByTagName("body")[0].style.overflow = "hidden"; // This line is the causing problems in the shiny app
+        // el.style.height = "100%";   temporary removal becaus of issue 40
+        // el.style.width = "100%";    temporary removal becaus of issue 40
         debugger;      
         return {
             lastTheme: null,
@@ -114,8 +114,8 @@ HTMLWidgets.widget({
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
                                 newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
         console.log("-- Entered doRenderValue() --");
-        el.style.height = "100%";
-        el.style.width = "100%";
+        // el.style.height = "100%";  temporary removal because of issue 40
+        // el.style.width = "100%";   temporary removal because of issue 40
         self = this;
         instance.lastValue = x;
         el.innerHTML = "";
