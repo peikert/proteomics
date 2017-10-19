@@ -7,6 +7,7 @@ clustProPanelUI <- function(id) {
         br(),
 
         uiOutput(ns('datafile')),
+        uiOutput(ns('choice')),
          fluidRow(
            column(6,
                   fluidRow(
@@ -79,28 +80,109 @@ clustProPanelUI <- function(id) {
 }
 
 
-clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, info_columns=NULL) {
+clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, info_columns=NULL, file_browser=FALSE) {
   ns <- session$ns
+  # showReactLog(time = TRUE)
 
-  # observe({
+  if(file_browser){
+    output$datafile <-  renderUI(fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')))
+    output$choice <-  renderUI(actionButton(ns("choice"), "incorporate external information"))
+  }
+
+
+
+  # c2p <- reactive(list())
+  #  observe({
+  # print(head(ldf()))
   # print(data_columns())
   # print(info_columns())
   # })
-    observe({
-  if(is.null(ldf()) || is.null(ldf)){
-    # print("in")
-  output$datafile <-  renderUI(fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')))
-  }
-  })
-    observe({
-      req(input$datafile)
-      datapath <- input$datafile$datapath
-      if (is.null(datapath) | !file.exists(datapath)) {return(NULL)}else{
-       ldf <-reactive(read.csv(datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE))
-      }
-    })
 
+
+
+  #  observe({print(input$datafile)})
+
+
+    # ldf <- eventReactive(input$choice,{
+    #   print('choice')
+    #   datapath <- input$datafile$datapath
+    #   temp_ldf <- isolate(read.csv(datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE))
+    #   print(sapply(temp_ldf,class))
+    #   temp_ldf
+    # })
+    #
+    # data_columns <- eventReactive(input$choice,{
+    #   req(ldf)
+    #   colnames(ldf())
+    # })
+    #
+    # observe({print(data_columns())})
+
+
+    if(file_browser){
+    ldf_group <- eventReactive(input$choice,{
+        datapath <- input$datafile$datapath
+        ldf <- reactive(isolate(read.csv(datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)))
+        data_columns <- reactive(colnames(ldf()))
+        list(ldf=ldf,data_columns=data_columns)
+      })
+
+    ldf <- eventReactive(ldf_group(),{
+      ldf_group()$ldf()
+    })
+    data_columns <- eventReactive(ldf_group(),{
+      ldf_group()$data_columns()
+    })
+    }
+    # observe({print(head(ldf()))})
+    # observe({print(data_columns())})
+
+    # ldf <- eventReactive(input$datafile,{
+    # #  req(input$datafile)
+    #   datapath <- input$datafile$datapath
+    #   if (is.null(datapath) | !file.exists(datapath)) {
+    #     return(NULL)
+    #     }else{
+    #    ldf <-reactive(read.csv(datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE))
+    #     return(ldf)
+    #    # c2p <- reactive(
+    #    #   as.vector(colnames(ldf()[,data_columns()])[unlist(lapply(ldf()[,data_columns()],class))=='numeric'])
+    #    # )
+    #
+    #   }
+    # })
+
+    # ldf <- eventReactive(input$datafile,{
+    # #  req(input$datafile)
+    #   datapath <- input$datafile$datapath
+    #   if (is.null(datapath) | !file.exists(datapath)) {
+    #     return(NULL)
+    #     }else{
+    #    temp_ldf <- read.csv(datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE)
+    #     return(temp_ldf)
+    #    # c2p <- reactive(
+    #    #   as.vector(colnames(ldf()[,data_columns()])[unlist(lapply(ldf()[,data_columns()],class))=='numeric'])
+    #    # )
+    #
+    #   }
+    # })
+
+
+
+    # observe({
+    #   req(input$datafile)
+    #   datapath <- input$datafile$datapath
+    #   if (is.null(datapath) | !file.exists(datapath)) {
+    #     return(NULL)
+    #   }else{
+    #     ldf <-reactive(read.csv(datapath,sep='\t',header=TRUE,check.names=FALSE, stringsAsFactors = FALSE))
+    #     return(ldf)
+    #   }
+    # })
+    #
+    #
     # observe({print(ldf())})
+
   # ldf <- reactive({
   #   req(input$datafile)
   #   print(output$datafile)
@@ -113,18 +195,30 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
 
 
 
-  if(is.null(data_columns)){
-    data_columns <- reactive(colnames(ldf()))
-  }
+  # if(is.null(data_columns)){
+  #   data_columns <- reactive(colnames(ldf()))
+  #   print(data_columns)
+  # }
 
   #ldf <- reactive(iris)
   # c2p <-  reactive(as.vector(colnames(ldf())[unlist(lapply(ldf(),class))=='numeric']))
-  c2p <-  eventReactive(ldf,{
+  # c2p <-  eventReactive(ldf,{
+  #   print('in')
+  #   as.vector(colnames(ldf()[,data_columns()])[unlist(lapply(ldf()[,data_columns()],class))=='numeric'])
+  #   })
+
+    c2p <-  eventReactive(ldf(),{
+    if(is.null(data_columns)){
+      data_columns <- reactive(colnames(ldf()))
+      # print(data_columns())
+    }
     as.vector(colnames(ldf()[,data_columns()])[unlist(lapply(ldf()[,data_columns()],class))=='numeric'])
     })
 
+
 #  local_df <- ldf()
   observe({
+    # print(c2p())
     updateCheckboxGroupInput(
       session = session, inputId = "clustering_columns", choices = c2p(), selected = c2p()[1:2]
     )
@@ -343,7 +437,7 @@ clustPlot <- function(input, output, session, best_k, nik) {
     req(best_k())
 
     local_df <-  best_k()
-  print(class(local_df))
+  # print(class(local_df))
     if(is.null(best_k()))return(NULL)
 
     #   as.data.frame(best_k()$db_list)
@@ -353,8 +447,8 @@ clustPlot <- function(input, output, session, best_k, nik) {
 
     filtered_local_df <- local_df[!is.na(local_df$score),]
     best <- which(max(filtered_local_df$score)==filtered_local_df$score)
-    print(class(filtered_local_df$score))
-    print(round(filtered_local_df$score,2))
+    # print(class(filtered_local_df$score))
+    # print(round(filtered_local_df$score,2))
  #   best <- which(max(local_df$score,na.rm=T)==local_df$score)
     col_vec[local_df$k==nik()] <- 'red'
 
@@ -481,10 +575,12 @@ clustProMain <- function(input, output, session, clust_parameters) {
 
     }
       # print(info_list)
-    color_legend <- heatmap_color
     # print(color_legend)
     # print( head(data))
-    print(method)
+    # print(min(heatmap_color$ticks))
+    # print(max(heatmap_color$ticks))
+    if(min(data)<min(heatmap_color$ticks) | max(data)>max(heatmap_color$ticks)) return(NULL)
+    tryCatch({
              clustpro(matrix=data,
                       method =method,
                       min_k = 2,
@@ -506,7 +602,13 @@ clustProMain <- function(input, output, session, clust_parameters) {
                       cores = 2,
                       useShiny = TRUE
              )
-
+  }, warning = function(w) {
+    print(w)
+    return(NULL)
+  }, error = function(e) {
+    print(e)
+    return(NULL)
+  })
 
 
 

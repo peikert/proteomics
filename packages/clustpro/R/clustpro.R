@@ -115,8 +115,18 @@ clustpro <- function(matrix,
   if(!is.null(color_legend) && class(color_legend)!='list') stop('"color_legend" must be NULL or of type "list"')
   if(class(color_legend)=='list') {
     if(!all(c('ticks','colors') %in% names(color_legend)))stop('"color_legend" did not contain correct lists')
-    if(min(matrix)<min(color_legend$ticks))stop('"color_legend" min ticks out of range')
-    if(max(matrix)>max(color_legend$ticks))stop('"color_legend" max ticks out of range')
+    if(min(matrix)<min(color_legend$ticks))stop(paste0('"color_legend" min ticks out of range! ',min(matrix),'<',min(color_legend$ticks)))
+    if(max(matrix)>max(color_legend$ticks))stop(paste0('"color_legend" max ticks out of range! ',max(matrix),'>',max(color_legend$ticks)))
+    #
+
+    # if(min(matrix)<min(color_legend$ticks)){
+    #   warning(paste0('"color_legend" min ticks out of range. ',min(matrix),'<',min(color_legend$ticks),'. Range will be extended!'))
+    #   color_legend$ticks[1] <- min(matrix)-0.01
+    #   }
+    # if(max(matrix)>max(color_legend$ticks)){
+    #   warning(paste0('"color_legend" max ticks out of range. ',max(matrix),'>',max(color_legend$ticks),'. Range will be extended!'))
+    #   color_legend$ticks[length(color_legend$ticks)] <- max(matrix)+0.01
+    # }
     }
   if(!is.null(width) && !is.numeric(width)) stop('"width" must be numeric')
   if(!is.null(width) && !is.numeric(height)) stop('"height" must be numeric')

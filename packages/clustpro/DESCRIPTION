@@ -35,4 +35,5 @@ Collate:
     'runExample02.R'
     'runExample03.R'
 	'runExample04.R'
+	'runExample05.R'
 RoxygenNote: 6.0.1

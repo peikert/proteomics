@@ -8,8 +8,9 @@ if(F){
   #devtools::reload()
   # runExample01()
   # runExample02()
-  # runExample03()
+    runExample03()
   # runExample04()
+  # runExample05()
 }
 setwd("D:/git/proteomics/packages/clustpro/output")
 library("clustpro")
