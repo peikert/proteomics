@@ -187,14 +187,14 @@ HTMLWidgets.widget({
         }
         
 
-        { // 1) SAVE 
+        { // 1) SAVE
             var save = document.createElement("div");
-            save.setAttribute("id", "save");
+            save.setAttribute("id", "save"+randomIdString);
             save.setAttribute("title", "Save");
             save.style.cssText = normalCSSText;
             save.innerHTML = saveIcon();
             sideBar.appendChild(save);
-            d3.select("#save")
+            d3.select("#save"+randomIdString)
                 .on("click", function () {
                 debugger;
                 self.saveSvg(x.export_type[0]);
