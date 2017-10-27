@@ -75,15 +75,16 @@ HTMLWidgets.widget({
         // this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
 
-    drawColorLegend : function(el,x){
+    drawColorLegend : function(el,x, randomIdString){
         debugger;
         var self = this;
-        xaxis = d3.select("#xaxis");
-        col = d3.select("#coldDend");
+        xaxis = d3.select("#xaxis"+randomIdString); // Issue 40. Give it the random string.
+        col = d3.select("#coldDend"); // Issue 40. Give it the random string.
+        colormap = d3.select("#colormap");
         var UniqueColors = [];
         for (i in x.color_legend.gradient) { UniqueColors[i] = x.color_legend.gradient[i].color }
         var numberOfUniqueColors = UniqueColors.length;
-        var widthOfSVG = colormap.width.baseVal.value; // a big number idicating the length of the svg
+        var widthOfSVG = colormap[0][0].width.baseVal.value; // a big number idicating the length of the svg
         var startingPoint = widthOfSVG / 2;  //The point where the color legend should begin
         var widthOfOneBox = (widthOfSVG - startingPoint) / numberOfUniqueColors;
         for (i in UniqueColors) {
@@ -164,7 +165,7 @@ HTMLWidgets.widget({
         // Check from the options object if colorLegend is "true". If yes, then draw color legend.
         if(sidebar_options.colorLegend){
             debugger;
-            self.drawColorLegend(el,x);
+            self.drawColorLegend(el,x, randomIdString);
         }
         // *********************************************************************
         //********************* HTML SIDE BAR **********************************  
@@ -211,7 +212,7 @@ HTMLWidgets.widget({
          
         { // 2) Show Color Legend
             var colorLegend = document.createElement("div");
-            colorLegend.setAttribute("id", "colorLegend");
+            colorLegend.setAttribute("id", "colorLegend"+randomIdString);
             colorLegend.setAttribute("title", "Show Color Legend");
             colorLegend.style.cssText = normalCSSText;
             // Insert GIF
@@ -219,16 +220,16 @@ HTMLWidgets.widget({
             //GIF Inserted
             sideBar.appendChild(colorLegend);
 
-            d3.select("#colorLegend")
+            d3.select("#colorLegend"+randomIdString)
                 .on("click", function () {
                     debugger;
                     if(sidebar_options.colorLegend) // If the color legend is already being displayed.
                     { // Hide it.
                         xaxis.selectAll("rect").remove();
-                        xaxis.selectAll("#colorlegends").remove();
+                        xaxis.selectAll("#colorlegends"+randomIdString).remove();
                         sidebar_options.colorLegend = false;
                     }else{ // If not then display it. 
-                        self.drawColorLegend(el,x);
+                        self.drawColorLegend(el,x, randomIdString);
                         sidebar_options.colorLegend = true;
                     }
             })
@@ -616,7 +617,7 @@ HTMLWidgets.widget({
         // Create Color Legend here.
         self = this;
         // EXPERIMENTAL CODE  *** CONTROL PANEL *****
-        xaxis = d3.select("#xaxis");
+        xaxis = d3.select("#xaxis"+randomIdString);
         rectangle = xaxis.append("g");
         var colorlegendtext2 = xaxis.append("text");
         d3.select("#showcolorlegend").remove();

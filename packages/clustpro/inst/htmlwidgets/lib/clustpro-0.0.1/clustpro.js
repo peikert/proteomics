@@ -207,7 +207,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         rowDendBounds.left = sideBarDimensions.width * 0.7;
         var rowDend = workspaceInner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
         var colmap = workspaceInner.append("svg").attr("id", "colormap").classed("colormap", true).style(cssify(colormapBounds));
-        var xaxis = workspaceInner.append("svg").attr("id", "xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
+        var xaxis = workspaceInner.append("svg").attr("id", "xaxis"+randomIdString).classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = workspaceInner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
