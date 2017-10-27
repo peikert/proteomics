@@ -1,8 +1,9 @@
-/** Last Updated: 9th October 
-    Version: 0.0.17
+/** Last Updated: 27th October 
+    Version: 0.0.18
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
-    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
+    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, 
+        workSpaceDimensions, innerworkSpaceDimensions, randomIdString) {
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================
@@ -197,7 +198,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     (function () {
         debugger;
         var inner = el.append("div").attr("id", "inner").classed("inner", true);
-        var sidebar = inner.append("div").attr({ "id": "myTopnav" }).classed("topnav", true).style(cssify(sideBarDimensions));
+        var sidebar = inner.append("div").attr({ "id": "myTopnav"+randomIdString}).classed("topnav"+randomIdString, true).style(cssify(sideBarDimensions));
         var workspace = inner.append("div").attr({"id":"workspace"}).classed("workspace", true).style(cssify(workSpaceDimensions));
         var workspaceInner = workspace.append("div").attr("id", "workspaceinner").classed("workspaceinner", true).style(cssify(innerworkSpaceDimensions));
         var colDend = workspaceInner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));

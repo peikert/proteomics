@@ -1,5 +1,5 @@
-/** Last Updated: 9th October
-    Version: 0.0.17
+/** Last Updated: 27th October
+    Version: 0.0.18
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -8,8 +8,8 @@ HTMLWidgets.widget({
     initialize: function (el, width, height) {
         console.log("-- Entered initialize() --");
         //document.getElementsByTagName("body")[0].style.overflow = "hidden"; // This line is the causing problems in the shiny app
-        // el.style.height = "100%";   temporary removal becaus of issue 40
-        // el.style.width = "100%";    temporary removal becaus of issue 40
+        // el.style.height = "100%";   temporary removal because of issue 40
+        // el.style.width = "100%";    temporary removal because of issue 40
         debugger;      
         return {
             lastTheme: null,
@@ -53,6 +53,7 @@ HTMLWidgets.widget({
     renderValue: function (el, x, instance) {
         console.log("-- Entered renderValue() --");
         debugger;
+        var randomIdString = Math.floor(Math.random() * 1000000).toString(); // Issue 40
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
         var sidebar_options = {"colorLegend":false, "rowLabels":true, "zoom_enabled":false, "overflow":"hidden", "overflowY": "hidden"};
@@ -61,7 +62,9 @@ HTMLWidgets.widget({
         var innerworkSpaceDimensions = this.heightToRowsChecker(this.workspaceDimensionsInitialize(el,x), x);
         innerworkSpaceDimensions.left = 0;
         x.matrix.data = [].concat.apply([], x.matrix.data);
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, sidebar_options, 
+                sideBarDimensions, workSpaceDimensions, 
+                innerworkSpaceDimensions, randomIdString);
     },
     resize: function (el, width, height, instance) {
         debugger;
@@ -112,7 +115,8 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
-                                newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
+                                newMerged, sidebar_options, sideBarDimensions, 
+                                workSpaceDimensions, innerworkSpaceDimensions, randomIdString) {
         console.log("-- Entered doRenderValue() --");
         // el.style.height = "100%";  temporary removal because of issue 40
         // el.style.width = "100%";   temporary removal because of issue 40
@@ -147,7 +151,8 @@ HTMLWidgets.widget({
         console.log("Initializing ClustPro()");
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, 
                                         cluster, rowDendLinesListner, colDendLinesListner, 
-                                            sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                                            sidebar_options, sideBarDimensions, workSpaceDimensions,
+                                             innerworkSpaceDimensions, randomIdString);
         console.log("Exited ClustPro()");
         document.getElementById("workspace").style.overflow = sidebar_options.overflow;
         if(innerworkSpaceDimensions.ratioCorrected) // SEE ISSUE # 26
@@ -164,7 +169,7 @@ HTMLWidgets.widget({
         // *********************************************************************
         //********************* HTML SIDE BAR **********************************  
         debugger;
-        var sideBar = document.getElementById("myTopnav");
+        var sideBar = document.getElementById("myTopnav"+randomIdString); // Issue 40
         { // Side bar Gif Dimensions
             var sideBarWidth = sideBar.offsetWidth; // int 
             var normalGIFHeight = sideBarWidth + (sideBarWidth * 0.5);
