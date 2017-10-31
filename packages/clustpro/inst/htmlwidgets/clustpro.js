@@ -1,5 +1,5 @@
-/** Last Updated: 27th October
-    Version: 0.0.18
+/** Last Updated: 31st October
+    Version: 0.0.19
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -155,10 +155,10 @@ HTMLWidgets.widget({
                                             sidebar_options, sideBarDimensions, workSpaceDimensions,
                                              innerworkSpaceDimensions, randomIdString);
         console.log("Exited ClustPro()");
-        document.getElementById("workspace").style.overflow = sidebar_options.overflow;
+        document.getElementById("workspace"+randomIdString).style.overflow = sidebar_options.overflow;
         if(innerworkSpaceDimensions.ratioCorrected) // SEE ISSUE # 26
             {
-                document.getElementById("workspace").style.overflowY = "scroll";
+                document.getElementById("workspace"+randomIdString).style.overflowY = "scroll";
                 innerworkSpaceDimensions.ratioCorrected = false;
             }
         // ******************* Color Legend ************************************
@@ -243,7 +243,7 @@ HTMLWidgets.widget({
 
         // 3) Unscroll all 
         var unscroll = document.createElement("div");
-        unscroll.setAttribute("id", "unscroll");
+        unscroll.setAttribute("id", "unscroll"+randomIdString);
         unscroll.setAttribute("title", "UnScroll");
         unscroll.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
@@ -251,14 +251,16 @@ HTMLWidgets.widget({
         // GIF INSERTED....
         sideBar.appendChild(unscroll);
 
-        d3.select("#unscroll") // On click for VzoomIn
+        d3.select("#unscroll"+randomIdString) // On click for VzoomIn
             .on("click", function () {
                 debugger;
                 // Make the inner workspace height equal to the normal workspace height.
                 innerworkSpaceDimensions.width = workSpaceDimensions.width;
                 innerworkSpaceDimensions.height = workSpaceDimensions.height;
                 sidebar_options.overflow = "hidden";
-                self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, 
+                        newMerged, sidebar_options, sideBarDimensions, 
+                            workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
          })
         .on("mouseover", function (d, i) {
                 unscroll.style.cssText = hoverCSSText;
@@ -272,27 +274,31 @@ HTMLWidgets.widget({
         // 4) Enable Row Label
         {
             var enablerowlabel = document.createElement("div");
-            enablerowlabel.setAttribute("id", "enablerowlabel");
+            enablerowlabel.setAttribute("id", "enablerowlabel"+randomIdString);
             enablerowlabel.setAttribute("title", "Enable Row Legend");
             enablerowlabel.style.cssText = normalCSSText;
             // Try to insert a GIF in here....
             enablerowlabel.innerHTML = showRowLabel();
             // GIF INSERTED....
             sideBar.appendChild(enablerowlabel);
-            d3.select("#enablerowlabel")
+            d3.select("#enablerowlabel"+randomIdString)
                 .on("click", function () {
                     // SCROLL TO EXTREME RIGHT
                     debugger;
                     if(sidebar_options.rowLabels){
                         sidebar_options.rowLabels = false;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, 
+                                newMerged, sidebar_options, sideBarDimensions, 
+                                    workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
                         // scroll to ex. right
-                        document.getElementById("workspace").scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
+                        document.getElementById("workspace"+randomIdString).scrollLeft = d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value;
                     }else{
                         sidebar_options.rowLabels = true;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, 
+                            sidebar_options, sideBarDimensions, 
+                                            workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
                         // scroll to ex. right
-                        document.getElementById("workspace").scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
+                        document.getElementById("workspace"+randomIdString).scrollLeft = d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value;
                     }
                 
             })
@@ -320,8 +326,8 @@ HTMLWidgets.widget({
                 .on("click", function () {
                     // scroll to the draggable box
                     debugger;
-                    document.getElementById("workspace").scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
-                    document.getElementById("workspace").scrollTop = d3.select("#colormap")[0][0].height.baseVal.value;
+                    document.getElementById("workspace"+randomIdString).scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
+                    document.getElementById("workspace"+randomIdString).scrollTop = d3.select("#colormap")[0][0].height.baseVal.value;
                     if(sidebar_options.zoom_enabled)
                     {
                         debugger;
@@ -344,18 +350,18 @@ HTMLWidgets.widget({
                         var old_el_style_height = dimensions[1];
                         el.style.width = heatMapObject[3].width; // Increase the over all scrollable area 
                         el.style.height = heatMapObject[3].height; // Increase the over all scrollable area
-                        document.getElementById("workspace").style.overflow="scroll";
+                        document.getElementById("workspace"+randomIdString).style.overflow="scroll";
                         sidebar_options.overflow = "scroll";
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
                                     // somehow initially remember the starting scroll values.
                                     // document.getElementById("workspace").scrollLeft = d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value + initialScrollValues.scrollLeft + 30;
-                                    console.log("scroll left ", document.getElementById("workspace").scrollLeft);
+                                    console.log("scroll left ", document.getElementById("workspace"+randomIdString).scrollLeft);
                                     console.log("inital scroll left ", initialScrollValues.scrollLeft);
                                     console.log("x value ", d3.event.x);
                                     var actualScrollX = (d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value + 30);
                                     actualScrollX = actualScrollX * 0.9;
-                                    document.getElementById("workspace").scrollLeft = actualScrollX + initialScrollValues.scrollLeft;
+                                    document.getElementById("workspace"+randomIdString).scrollLeft = actualScrollX + initialScrollValues.scrollLeft;
                                     // dont do this after every iteration
                                     // initialScrollValues.scrollLeft = actualScrollX;
 
@@ -363,7 +369,7 @@ HTMLWidgets.widget({
 
                                     var actualScrollY = (d3.event.y- d3.select("#colormap")[0][0].height.baseVal.value + 30);
                                     actualScrollY = actualScrollY * 0.9;
-                                    document.getElementById("workspace").scrollTop = actualScrollY + initialScrollValues.scrollTop;
+                                    document.getElementById("workspace"+randomIdString).scrollTop = actualScrollY + initialScrollValues.scrollTop;
                                     
                                     // do not do this after every iteration
                                     //initialScrollValues.scrollTop = actualScrollY;
@@ -394,8 +400,8 @@ HTMLWidgets.widget({
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
                                                                 // Fix for Issue 20. Last comments for reference.
-                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
-                                                                 initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
+                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
+                                                                 initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
                                                                  // Fix for Issue 20. Last comments for reference.
                                                                  self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
@@ -415,8 +421,8 @@ HTMLWidgets.widget({
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
                                                                 // Fix for Issue 20. Last comments for reference.
-                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
-                                                                 initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
+                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
+                                                                 initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
                                                                  // Fix for Issue 20. Last comments for reference.
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
@@ -431,8 +437,8 @@ HTMLWidgets.widget({
                                             .call(drag)
                                             .on("mousedown", function(){
                                                 // Get the initial location of the box.
-                                                initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
-                                                initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
+                                                initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
+                                                initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
                                                 var e = d3.event.target;
                                                 initialBoxLocation.x = e.x.baseVal.value;
                                                 initialBoxLocation.y = e.y.baseVal.value;
@@ -446,8 +452,8 @@ HTMLWidgets.widget({
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
                                                                 // Fix for Issue 20. Last comments for reference.
-                                                                initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
-                                                                initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
+                                                                initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
+                                                                initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
                                                                 // Fix for Issue 20. Last comments for reference.
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);

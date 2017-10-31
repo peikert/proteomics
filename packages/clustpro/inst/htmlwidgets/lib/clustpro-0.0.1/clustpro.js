@@ -1,5 +1,5 @@
-/** Last Updated: 27th October 
-    Version: 0.0.18
+/** Last Updated: 31st October
+    Version: 0.0.19
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, 
@@ -199,14 +199,14 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         debugger;
         var inner = el.append("div").attr("id", "inner").classed("inner", true);
         var sidebar = inner.append("div").attr({ "id": "myTopnav"+randomIdString}).classed("topnav"+randomIdString, true).style(cssify(sideBarDimensions));
-        var workspace = inner.append("div").attr({"id":"workspace"}).classed("workspace", true).style(cssify(workSpaceDimensions));
+        var workspace = inner.append("div").attr({"id":"workspace"+randomIdString}).classed("workspace"+randomIdString, true).style(cssify(workSpaceDimensions));
         var workspaceInner = workspace.append("div").attr("id", "workspaceinner").classed("workspaceinner", true).style(cssify(innerworkSpaceDimensions));
         var colDend = workspaceInner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
         // update the dimensions of row dendogram to compensate for the side bar.   GITHUB ISSUE # 13
         rowDendBounds.width = rowDendBounds.width - (sideBarDimensions.width * 0.7); 
         rowDendBounds.left = sideBarDimensions.width * 0.7;
         var rowDend = workspaceInner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
-        var colmap = workspaceInner.append("svg").attr("id", "colormap").classed("colormap", true).style(cssify(colormapBounds));
+        var colmap = workspaceInner.append("svg").attr("id", "colormap"+randomIdString).classed("colormap"+randomIdString, true).style(cssify(colormapBounds));
         var xaxis = workspaceInner.append("svg").attr("id", "xaxis"+randomIdString).classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = workspaceInner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         
@@ -235,7 +235,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     })();
     data.matrix.tooltip = data.tooltip; // Temporary solution
     console.log("       [Generating Color Map]");
-    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, data.tooltip);
+    var colormap = colormap(el.select('svg.colormap'+randomIdString), data.matrix, colormapBounds.width, colormapBounds.height, data.tooltip);
     console.log("       [ColorMap generated]");
     columnNames = data.matrix.cols;
     console.log("       [Generating Xaxis]");
