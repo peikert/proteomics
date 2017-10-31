@@ -198,11 +198,10 @@ HTMLWidgets.widget({
             d3.select("#save"+randomIdString)
                 .on("click", function () {
                 debugger;
-                self.saveSvg(x.export_type[0]);
+                self.saveSvg(x.export_type[0], randomIdString);
             })
                 .on("mouseover", function (d, i) {
                     save.style.cssText = hoverCSSText;
-                    debugger;
             })
             .on("mouseout", function (d, i) {
                     save.style.cssText = normalCSSText;
@@ -697,7 +696,7 @@ HTMLWidgets.widget({
     },
 
 
-    combineSVG: function () {
+    combineSVG: function (randomIdString) {
         debugger;
         var rowDend = document.getElementsByClassName("rowDend")[0];
         var rowDendSvgString = "";
@@ -717,7 +716,7 @@ HTMLWidgets.widget({
             colDend = "";
         }
 
-        var colormap = document.getElementsByClassName("colormap")[0];
+        var colormap = document.getElementsByClassName("colormap"+randomIdString)[0];
         var normalized_colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
         // Do extensicve string manipulations here.
         var combinedSVG = rowDendSvgString + colDendSvgString + normalized_colormap;
@@ -730,10 +729,10 @@ HTMLWidgets.widget({
     },
 
 
-    saveSvg: function (export_type) {
+    saveSvg: function (export_type,randomIdString) {
         debugger;
         console.log("       --Entered SaveSVG()");
-        var source = this.combineSVG();
+        var source = this.combineSVG(randomIdString);
         if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
             source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
         }
