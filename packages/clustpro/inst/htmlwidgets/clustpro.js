@@ -58,7 +58,7 @@ HTMLWidgets.widget({
         var randomIdString = Math.floor(Math.random() * 1000000).toString(); // Issue 40
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
-        var sidebar_options = {"colorLegend":false, "rowLabels":true, "zoom_enabled":false, "overflow":"hidden", "overflowY": "hidden"};
+        var sidebar_options = {"colorLegend":x.show_legend[0], "rowLabels":true, "zoom_enabled":false, "overflow":"hidden", "overflowY": "hidden"};
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
         var innerworkSpaceDimensions = this.heightToRowsChecker(this.workspaceDimensionsInitialize(el,x), x);
