@@ -1,5 +1,5 @@
-/** Last Updated: 31st October
-    Version: 0.0.19
+/** Last Updated: 5th November
+    Version: 0.0.20
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -8,8 +8,10 @@ HTMLWidgets.widget({
     initialize: function (el, width, height) {
         console.log("-- Entered initialize() --");
         //document.getElementsByTagName("body")[0].style.overflow = "hidden"; // This line is the causing problems in the shiny app
-        // el.style.height = "100%";   temporary removal because of issue 40
-        // el.style.width = "100%";    temporary removal because of issue 40
+        // el.style.height = "100%";   // temporary removal because of issue 40
+        // el.style.width = "100%";    // temporary removal because of issue 40
+        el.style.width = el.style[el.style[0]];
+        el.style.height = el.style[el.style[1]];
         debugger;      
         return {
             lastTheme: null,
@@ -347,8 +349,6 @@ HTMLWidgets.widget({
 
                         var old_el_style_width = dimensions[0];
                         var old_el_style_height = dimensions[1];
-                        el.style.width = heatMapObject[3].width; // Increase the over all scrollable area 
-                        el.style.height = heatMapObject[3].height; // Increase the over all scrollable area
                         document.getElementById("workspace"+randomIdString).style.overflow="scroll";
                         sidebar_options.overflow = "scroll";
                         var drag = d3.behavior.drag()

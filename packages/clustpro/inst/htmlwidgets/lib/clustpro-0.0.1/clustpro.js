@@ -1,5 +1,5 @@
-/** Last Updated: 31st October
-    Version: 0.0.19
+/** Last Updated: 5th November
+    Version: 0.0.20
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, 
