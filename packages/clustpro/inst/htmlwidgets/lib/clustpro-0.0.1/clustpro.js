@@ -506,13 +506,18 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         var maxLength = 0;
         for (i in data) { data[i].length > maxLength ? maxLength = data[i].length : maxLength = maxLength }
 
-        // Fix for issue 36
+        // Discarded - Fix for issue 36
         var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] ||
                                 maxLength >= 40 ? maxLength >= 50 ? maxLength >= 60 ? maxLength >= 70 ? "8" : 
                                                 "10" : 
                                                     "12" :
                                                          "14" :
                                                              Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8)));
+
+        // We discard the above fix for fontsize for a better and more robust calculation below:
+        // The formula only works for x_axis labels
+        fontSize =  opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || rotated ? ((scale.rangeBand()/1.7) / maxLength) * 1.577909 : 
+                                                                                    Math.min(18, Math.max(9, scale.rangeBand() - 8));
 
         //var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8))) + "px";
         axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
