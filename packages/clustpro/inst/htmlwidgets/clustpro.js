@@ -151,6 +151,7 @@ HTMLWidgets.widget({
         cluster_change_rows = this.clusterChangeInformation(cluster, cluster_change_rows);
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
+        d3.selectAll("#clustpro-tip").remove() // Issue - 41
         console.log("Initializing ClustPro()");
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, 
                                         cluster, rowDendLinesListner, colDendLinesListner, 

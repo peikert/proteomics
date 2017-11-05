@@ -279,6 +279,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         var y = d3.scale.linear().domain([0, rows]).range([0, height]);
         var tip = d3.tip() //HTML of the tip
             .attr('class', 'clustpro-tip')
+            .attr('id', 'clustpro-tip')
             .html(function (d, i) {
                 var html_string = "<table>" +
                     // The constant 3 lines that will always be in the tooltip.
