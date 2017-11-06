@@ -135,7 +135,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     options = options || {};
     opts.width = innerworkSpaceDimensions.width;
     opts.height = innerworkSpaceDimensions.height;
-    opts.xclust_height = options.xclust_height || opts.height * 0.12;
+    opts.xclust_height = options.xclust_height || workSpaceDimensions.height * 0.12; // Issue - 31
     opts.yclust_width = options.yclust_width || opts.width * 0.12;
     opts.link_color = opts.link_color || "#AAA";
 
@@ -174,6 +174,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
     var colormapBounds = gridSizer.getCellBounds(1, 1);
     var colDendBounds = gridSizer.getCellBounds(1, 0);
+    // coldDendBounds should be 10 % of the outer workspace area or something ?
     var rowDendBounds = gridSizer.getCellBounds(0, 1);
     var yaxisBounds = gridSizer.getCellBounds(2, 1);
     var xaxisBounds = gridSizer.getCellBounds(1, 2);
