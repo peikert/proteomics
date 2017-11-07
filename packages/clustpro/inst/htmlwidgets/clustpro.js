@@ -1,5 +1,5 @@
-/** Last Updated: 9th October
-    Version: 0.0.17
+/** Last Updated: 5th November
+    Version: 0.0.20
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -8,8 +8,10 @@ HTMLWidgets.widget({
     initialize: function (el, width, height) {
         console.log("-- Entered initialize() --");
         //document.getElementsByTagName("body")[0].style.overflow = "hidden"; // This line is the causing problems in the shiny app
-        // el.style.height = "100%";   temporary removal becaus of issue 40
-        // el.style.width = "100%";    temporary removal becaus of issue 40
+        // el.style.height = "100%";   // temporary removal because of issue 40
+        // el.style.width = "100%";    // temporary removal because of issue 40
+        el.style.width = el.style[el.style[0]];
+        el.style.height = el.style[el.style[1]];
         debugger;      
         return {
             lastTheme: null,
@@ -53,15 +55,18 @@ HTMLWidgets.widget({
     renderValue: function (el, x, instance) {
         console.log("-- Entered renderValue() --");
         debugger;
+        var randomIdString = Math.floor(Math.random() * 1000000).toString(); // Issue 40
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
-        var sidebar_options = {"colorLegend":false, "rowLabels":true, "zoom_enabled":false, "overflow":"hidden", "overflowY": "hidden"};
+        var sidebar_options = {"colorLegend":x.show_legend[0], "rowLabels":true, "zoom_enabled":false, "overflow":"hidden", "overflowY": "hidden"};
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
         var innerworkSpaceDimensions = this.heightToRowsChecker(this.workspaceDimensionsInitialize(el,x), x);
         innerworkSpaceDimensions.left = 0;
         x.matrix.data = [].concat.apply([], x.matrix.data);
-        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+        this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, sidebar_options, 
+                sideBarDimensions, workSpaceDimensions, 
+                innerworkSpaceDimensions, randomIdString);
     },
     resize: function (el, width, height, instance) {
         debugger;
@@ -72,15 +77,16 @@ HTMLWidgets.widget({
         // this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
     },
 
-    drawColorLegend : function(el,x){
+    drawColorLegend : function(el,x, randomIdString){
         debugger;
         var self = this;
-        xaxis = d3.select("#xaxis");
-        col = d3.select("#coldDend");
+        xaxis = d3.select("#xaxis"+randomIdString); // Issue 40. Give it the random string.
+        col = d3.select("#coldDend"); // Issue 40. Give it the random string.
+        colormap = d3.select("#colormap"+randomIdString);
         var UniqueColors = [];
         for (i in x.color_legend.gradient) { UniqueColors[i] = x.color_legend.gradient[i].color }
         var numberOfUniqueColors = UniqueColors.length;
-        var widthOfSVG = colormap.width.baseVal.value; // a big number idicating the length of the svg
+        var widthOfSVG = colormap[0][0].width.baseVal.value; // a big number idicating the length of the svg
         var startingPoint = widthOfSVG / 2;  //The point where the color legend should begin
         var widthOfOneBox = (widthOfSVG - startingPoint) / numberOfUniqueColors;
         for (i in UniqueColors) {
@@ -112,7 +118,8 @@ HTMLWidgets.widget({
 
 
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
-                                newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
+                                newMerged, sidebar_options, sideBarDimensions, 
+                                workSpaceDimensions, innerworkSpaceDimensions, randomIdString) {
         console.log("-- Entered doRenderValue() --");
         // el.style.height = "100%";  temporary removal because of issue 40
         // el.style.width = "100%";   temporary removal because of issue 40
@@ -144,27 +151,29 @@ HTMLWidgets.widget({
         cluster_change_rows = this.clusterChangeInformation(cluster, cluster_change_rows);
         var rowDendLinesListner = null;
         var colDendLinesListner = null;
+        d3.selectAll("#clustpro-tip").remove() // Issue - 41
         console.log("Initializing ClustPro()");
         var heatMapObject = clustpro(el, x, x.options, location_object_array, cluster_change_rows, 
                                         cluster, rowDendLinesListner, colDendLinesListner, 
-                                            sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                                            sidebar_options, sideBarDimensions, workSpaceDimensions,
+                                             innerworkSpaceDimensions, randomIdString);
         console.log("Exited ClustPro()");
-        document.getElementById("workspace").style.overflow = sidebar_options.overflow;
+        document.getElementById("workspace"+randomIdString).style.overflow = sidebar_options.overflow;
         if(innerworkSpaceDimensions.ratioCorrected) // SEE ISSUE # 26
             {
-                document.getElementById("workspace").style.overflowY = "scroll";
+                document.getElementById("workspace"+randomIdString).style.overflowY = "scroll";
                 innerworkSpaceDimensions.ratioCorrected = false;
             }
         // ******************* Color Legend ************************************
         // Check from the options object if colorLegend is "true". If yes, then draw color legend.
         if(sidebar_options.colorLegend){
             debugger;
-            self.drawColorLegend(el,x);
+            self.drawColorLegend(el,x, randomIdString);
         }
         // *********************************************************************
         //********************* HTML SIDE BAR **********************************  
         debugger;
-        var sideBar = document.getElementById("myTopnav");
+        var sideBar = document.getElementById("myTopnav"+randomIdString); // Issue 40
         { // Side bar Gif Dimensions
             var sideBarWidth = sideBar.offsetWidth; // int 
             var normalGIFHeight = sideBarWidth + (sideBarWidth * 0.5);
@@ -182,21 +191,20 @@ HTMLWidgets.widget({
         }
         
 
-        { // 1) SAVE 
+        { // 1) SAVE
             var save = document.createElement("div");
-            save.setAttribute("id", "save");
+            save.setAttribute("id", "save"+randomIdString);
             save.setAttribute("title", "Save");
             save.style.cssText = normalCSSText;
             save.innerHTML = saveIcon();
             sideBar.appendChild(save);
-            d3.select("#save")
+            d3.select("#save"+randomIdString)
                 .on("click", function () {
                 debugger;
-                self.saveSvg(x.export_type[0]);
+                self.saveSvg(x.export_type[0], randomIdString);
             })
                 .on("mouseover", function (d, i) {
                     save.style.cssText = hoverCSSText;
-                    debugger;
             })
             .on("mouseout", function (d, i) {
                     save.style.cssText = normalCSSText;
@@ -206,7 +214,7 @@ HTMLWidgets.widget({
          
         { // 2) Show Color Legend
             var colorLegend = document.createElement("div");
-            colorLegend.setAttribute("id", "colorLegend");
+            colorLegend.setAttribute("id", "colorLegend"+randomIdString);
             colorLegend.setAttribute("title", "Show Color Legend");
             colorLegend.style.cssText = normalCSSText;
             // Insert GIF
@@ -214,16 +222,16 @@ HTMLWidgets.widget({
             //GIF Inserted
             sideBar.appendChild(colorLegend);
 
-            d3.select("#colorLegend")
+            d3.select("#colorLegend"+randomIdString)
                 .on("click", function () {
                     debugger;
                     if(sidebar_options.colorLegend) // If the color legend is already being displayed.
                     { // Hide it.
                         xaxis.selectAll("rect").remove();
-                        xaxis.selectAll("#colorlegends").remove();
+                        xaxis.selectAll("#colorlegends"+randomIdString).remove();
                         sidebar_options.colorLegend = false;
                     }else{ // If not then display it. 
-                        self.drawColorLegend(el,x);
+                        self.drawColorLegend(el,x, randomIdString);
                         sidebar_options.colorLegend = true;
                     }
             })
@@ -237,7 +245,7 @@ HTMLWidgets.widget({
 
         // 3) Unscroll all 
         var unscroll = document.createElement("div");
-        unscroll.setAttribute("id", "unscroll");
+        unscroll.setAttribute("id", "unscroll"+randomIdString);
         unscroll.setAttribute("title", "UnScroll");
         unscroll.style.cssText = normalCSSText;
         // Try to insert a GIF in here....
@@ -245,14 +253,16 @@ HTMLWidgets.widget({
         // GIF INSERTED....
         sideBar.appendChild(unscroll);
 
-        d3.select("#unscroll") // On click for VzoomIn
+        d3.select("#unscroll"+randomIdString) // On click for VzoomIn
             .on("click", function () {
                 debugger;
                 // Make the inner workspace height equal to the normal workspace height.
                 innerworkSpaceDimensions.width = workSpaceDimensions.width;
                 innerworkSpaceDimensions.height = workSpaceDimensions.height;
                 sidebar_options.overflow = "hidden";
-                self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, 
+                        newMerged, sidebar_options, sideBarDimensions, 
+                            workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
          })
         .on("mouseover", function (d, i) {
                 unscroll.style.cssText = hoverCSSText;
@@ -266,27 +276,31 @@ HTMLWidgets.widget({
         // 4) Enable Row Label
         {
             var enablerowlabel = document.createElement("div");
-            enablerowlabel.setAttribute("id", "enablerowlabel");
+            enablerowlabel.setAttribute("id", "enablerowlabel"+randomIdString);
             enablerowlabel.setAttribute("title", "Enable Row Legend");
             enablerowlabel.style.cssText = normalCSSText;
             // Try to insert a GIF in here....
             enablerowlabel.innerHTML = showRowLabel();
             // GIF INSERTED....
             sideBar.appendChild(enablerowlabel);
-            d3.select("#enablerowlabel")
+            d3.select("#enablerowlabel"+randomIdString)
                 .on("click", function () {
                     // SCROLL TO EXTREME RIGHT
                     debugger;
                     if(sidebar_options.rowLabels){
                         sidebar_options.rowLabels = false;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, 
+                                newMerged, sidebar_options, sideBarDimensions, 
+                                    workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
                         // scroll to ex. right
-                        document.getElementById("workspace").scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
+                        document.getElementById("workspace"+randomIdString).scrollLeft = d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value;
                     }else{
                         sidebar_options.rowLabels = true;
-                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                        self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, newMerged, 
+                            sidebar_options, sideBarDimensions, 
+                                            workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
                         // scroll to ex. right
-                        document.getElementById("workspace").scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
+                        document.getElementById("workspace"+randomIdString).scrollLeft = d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value;
                     }
                 
             })
@@ -301,7 +315,7 @@ HTMLWidgets.widget({
         // 5) Zoom Box (EXPERIMENTAL) [ UNDERDEVELOPMENT ]
         {
             var zoombox = document.createElement("div");
-            zoombox.setAttribute("id", "zoombox");
+            zoombox.setAttribute("id", "zoombox"+randomIdString);
             zoombox.setAttribute("title", "Zoom Box");
             zoombox.style.cssText = normalCSSText;
             // Try to insert a GIF in here....
@@ -310,12 +324,12 @@ HTMLWidgets.widget({
             sideBar.appendChild(zoombox);
             var old_html_widget = el.style.width;
             var old_html_height = el.style.height;
-            d3.select("#zoombox")
+            d3.select("#zoombox"+randomIdString)
                 .on("click", function () {
                     // scroll to the draggable box
                     debugger;
-                    document.getElementById("workspace").scrollLeft = d3.select("#colormap")[0][0].width.baseVal.value;
-                    document.getElementById("workspace").scrollTop = d3.select("#colormap")[0][0].height.baseVal.value;
+                    document.getElementById("workspace"+randomIdString).scrollLeft = d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value;
+                    document.getElementById("workspace"+randomIdString).scrollTop = d3.select("#colormap"+randomIdString)[0][0].height.baseVal.value;
                     if(sidebar_options.zoom_enabled)
                     {
                         debugger;
@@ -329,35 +343,33 @@ HTMLWidgets.widget({
                         el.style.height = old_html_height;
                     } else {
                         sidebar_options.zoom_enabled = true;
-                        dimensions = self.calculateDimensions();
+                        dimensions = self.calculateDimensions(randomIdString);
 
                         initialBoxLocation = {x:null, y:null};
                         initialScrollValues = {scrollTop: null, scrollLeft:null};
 
                         var old_el_style_width = dimensions[0];
                         var old_el_style_height = dimensions[1];
-                        el.style.width = heatMapObject[3].width; // Increase the over all scrollable area 
-                        el.style.height = heatMapObject[3].height; // Increase the over all scrollable area
-                        document.getElementById("workspace").style.overflow="scroll";
+                        document.getElementById("workspace"+randomIdString).style.overflow="scroll";
                         sidebar_options.overflow = "scroll";
                         var drag = d3.behavior.drag()
                                 .on('drag', function() {
                                     // somehow initially remember the starting scroll values.
                                     // document.getElementById("workspace").scrollLeft = d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value + initialScrollValues.scrollLeft + 30;
-                                    console.log("scroll left ", document.getElementById("workspace").scrollLeft);
+                                    console.log("scroll left ", document.getElementById("workspace"+randomIdString).scrollLeft);
                                     console.log("inital scroll left ", initialScrollValues.scrollLeft);
                                     console.log("x value ", d3.event.x);
-                                    var actualScrollX = (d3.event.x - d3.select("#colormap")[0][0].width.baseVal.value + 30);
+                                    var actualScrollX = (d3.event.x - d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value + 30);
                                     actualScrollX = actualScrollX * 0.9;
-                                    document.getElementById("workspace").scrollLeft = actualScrollX + initialScrollValues.scrollLeft;
+                                    document.getElementById("workspace"+randomIdString).scrollLeft = actualScrollX + initialScrollValues.scrollLeft;
                                     // dont do this after every iteration
                                     // initialScrollValues.scrollLeft = actualScrollX;
 
                                     // document.getElementById("workspace").scrollTop =  d3.event.y- d3.select("#colormap")[0][0].height.baseVal.value + initialScrollValues.scrollTop + 30;
 
-                                    var actualScrollY = (d3.event.y- d3.select("#colormap")[0][0].height.baseVal.value + 30);
+                                    var actualScrollY = (d3.event.y- d3.select("#colormap"+randomIdString)[0][0].height.baseVal.value + 30);
                                     actualScrollY = actualScrollY * 0.9;
-                                    document.getElementById("workspace").scrollTop = actualScrollY + initialScrollValues.scrollTop;
+                                    document.getElementById("workspace"+randomIdString).scrollTop = actualScrollY + initialScrollValues.scrollTop;
                                     
                                     // do not do this after every iteration
                                     //initialScrollValues.scrollTop = actualScrollY;
@@ -372,7 +384,7 @@ HTMLWidgets.widget({
                         // The start location of zoomArea should be the start location of the colormap. // Very important. Not compromisable. 
                         
                         var zoomAreaCss = heatMapObject[3]; // Zoom Area dimensions returned by clustpro.                    
-                        var zoomAreaSvgContainer = d3.select("#workspaceinner").append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
+                        var zoomAreaSvgContainer = d3.select("#workspaceinner"+randomIdString).append("svg").attr({"id":"zoomarea"}).classed("zoomarea", true).style(zoomAreaCss);
                         var zoomAreaRectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                             .attr("x",0)
                                             .attr("y",0)
@@ -388,18 +400,19 @@ HTMLWidgets.widget({
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
                                                                 // Fix for Issue 20. Last comments for reference.
-                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
-                                                                 initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
+                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
+                                                                 initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
                                                                  // Fix for Issue 20. Last comments for reference.
                                                                  self.doRenderValue(el, x, rowNewickSting, colNewickString, 
-                                                                                            instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                                                                                            instance, newMerged, sidebar_options, sideBarDimensions, 
+                                                                                                workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
                                                             });
                         var rectangle = d3.select("#zoomarea").append("rect") // Equal to the size of the color map.
                                             .attr("x",0)
                                             .attr("y",0)
                                             .attr("id", "resizerectangle")
-                                            .attr("width",d3.select("#colormap")[0][0].width.baseVal.value) // Should be the width of the color map
-                                            .attr("height", d3.select("#colormap")[0][0].height.baseVal.value) // Should be the height of the color map
+                                            .attr("width",d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value) // Should be the width of the color map
+                                            .attr("height", d3.select("#colormap"+randomIdString)[0][0].height.baseVal.value) // Should be the height of the color map
                                             .style("opacity", 0.5)
                                             .on("mouseup", function(){ // temporary solution
                                                                 console.log("Calculate where you unclicked the box and redraw the whole html with that dimensions");
@@ -409,15 +422,16 @@ HTMLWidgets.widget({
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
                                                                 // Fix for Issue 20. Last comments for reference.
-                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
-                                                                 initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
+                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
+                                                                 initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
                                                                  // Fix for Issue 20. Last comments for reference.
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
-                                                                                            instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                                                                                            instance, newMerged, sidebar_options, sideBarDimensions, 
+                                                                                            workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
                                                             });
                         var box = d3.select("#zoomarea").append("rect") // The draggable box 
-                                            .attr("x", d3.select("#colormap")[0][0].width.baseVal.value - 30)
-                                            .attr("y", d3.select("#colormap")[0][0].height.baseVal.value - 30)
+                                            .attr("x", d3.select("#colormap"+randomIdString)[0][0].width.baseVal.value - 30)
+                                            .attr("y", d3.select("#colormap"+randomIdString)[0][0].height.baseVal.value - 30)
                                             .attr("id","draggablebox")
                                             .attr("width", 30)
                                             .attr("height", 30)
@@ -425,8 +439,8 @@ HTMLWidgets.widget({
                                             .call(drag)
                                             .on("mousedown", function(){
                                                 // Get the initial location of the box.
-                                                initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
-                                                initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
+                                                initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
+                                                initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
                                                 var e = d3.event.target;
                                                 initialBoxLocation.x = e.x.baseVal.value;
                                                 initialBoxLocation.y = e.y.baseVal.value;
@@ -440,11 +454,13 @@ HTMLWidgets.widget({
                                                                 innerworkSpaceDimensions.height = innerworkSpaceDimensions.height + changeInY;
                                                                 sidebar_options.zoom_enabled = false;
                                                                 // Fix for Issue 20. Last comments for reference.
-                                                                initialScrollValues.scrollLeft = document.getElementById("workspace").scrollLeft;
-                                                                initialScrollValues.scrollTop = document.getElementById("workspace").scrollTop;
+                                                                initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
+                                                                initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
                                                                 // Fix for Issue 20. Last comments for reference.
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
-                                                                                            instance, newMerged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
+                                                                                            instance, newMerged, sidebar_options, 
+                                                                                            sideBarDimensions, workSpaceDimensions, 
+                                                                                            innerworkSpaceDimensions, randomIdString);
                                                             });
                     }
             })
@@ -458,7 +474,7 @@ HTMLWidgets.widget({
 
         {   // Download data matrix 
             var downloadData = document.createElement("div");
-            downloadData.setAttribute("id", "downloadData");
+            downloadData.setAttribute("id", "downloadData"+randomIdString);
             downloadData.setAttribute("title", "Download data matrix");
             downloadData.style.cssText = normalCSSText;
             // Insert GIF
@@ -466,17 +482,17 @@ HTMLWidgets.widget({
             //GIF Inserted
             sideBar.appendChild(downloadData);
             var fadeinflag = false;
-            d3.select("#downloadData")
+            d3.select("#downloadData"+ randomIdString)
                 .on("click", function () {
                     var json = JSON.stringify(x.matrix);
                     debugger;
                     if(fadeinflag) {
-                        $("#downloadSVG").fadeOut();
-                        $("#downloadCSV").fadeOut();
+                        $("#downloadSVG"+ randomIdString).fadeOut();
+                        $("#downloadCSV"+ randomIdString).fadeOut();
                         fadeinflag = false;
                     } else {
-                        $("#downloadSVG").fadeIn();
-                        $("#downloadCSV").fadeIn();
+                        $("#downloadSVG"+ randomIdString).fadeIn();
+                        $("#downloadCSV"+ randomIdString).fadeIn();
                         fadeinflag = true;
                     }
             })
@@ -491,7 +507,7 @@ HTMLWidgets.widget({
 
         {   // Download matrix as SVG
             var downloadSVG = document.createElement("div");
-            downloadSVG.setAttribute("id", "downloadSVG");
+            downloadSVG.setAttribute("id", "downloadSVG"+ randomIdString);
             downloadSVG.setAttribute("title", "Download matrix as Json");
             downloadSVG.style.cssText = normalCSSText;
             // Insert GIF
@@ -499,7 +515,7 @@ HTMLWidgets.widget({
             //GIF Inserted
             sideBar.appendChild(downloadSVG);
 
-            d3.select("#downloadSVG")
+            d3.select("#downloadSVG"+ randomIdString)
                 .on("click", function () {
                     var json = JSON.stringify(x.matrix);
                     saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.json"); // Is the type correct ?
@@ -511,14 +527,14 @@ HTMLWidgets.widget({
             .on("mouseout", function (d, i) {
                     downloadSVG.style.cssText = normalCSSText;
             });
-            $("#downloadSVG").hide()
+            $("#downloadSVG"+ randomIdString).hide()
 
         }
 
 
         {
             var downloadCSV = document.createElement("div");
-            downloadCSV.setAttribute("id", "downloadCSV");
+            downloadCSV.setAttribute("id", "downloadCSV"+randomIdString);
             downloadCSV.setAttribute("title", "Download matrix csv");
             downloadCSV.style.cssText = normalCSSText;
             // Insert GIF
@@ -526,7 +542,7 @@ HTMLWidgets.widget({
             //GIF Inserted
             sideBar.appendChild(downloadCSV);
 
-            d3.select("#downloadCSV")
+            d3.select("#downloadCSV"+randomIdString)
                 .on("click", function () {
                     var json = JSON.stringify(x.matrix);
                     saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.json"); // Is the type correct ?
@@ -538,7 +554,7 @@ HTMLWidgets.widget({
             .on("mouseout", function (d, i) {
                     downloadCSV.style.cssText = normalCSSText;
             });
-            $("#downloadCSV").hide()
+            $("#downloadCSV"+randomIdString).hide()
             
             
         }
@@ -569,13 +585,13 @@ HTMLWidgets.widget({
 
     },
 
-    calculateDimensions: function(){ // Returns the combined widths and heights of all the elements in the html container.
+    calculateDimensions: function(randomIdString){ // Returns the combined widths and heights of all the elements in the html container.
         debugger;
         var width = document.getElementById("rowDend").getBoundingClientRect().width + 
-                        document.getElementById("colormap").getBoundingClientRect().width + 
+                        document.getElementById("colormap"+randomIdString).getBoundingClientRect().width + 
                             document.getElementById("yaxis").getBoundingClientRect().width;
         var height = document.getElementById("coldDend").getBoundingClientRect().height +
-                        document.getElementById("colormap").getBoundingClientRect().height +
+                        document.getElementById("colormap"+randomIdString).getBoundingClientRect().height +
                             document.getElementById("coldDend").getBoundingClientRect().height; // whats wrong with this ?
         return [width, height];
     },
@@ -611,7 +627,7 @@ HTMLWidgets.widget({
         // Create Color Legend here.
         self = this;
         // EXPERIMENTAL CODE  *** CONTROL PANEL *****
-        xaxis = d3.select("#xaxis");
+        xaxis = d3.select("#xaxis"+randomIdString);
         rectangle = xaxis.append("g");
         var colorlegendtext2 = xaxis.append("text");
         d3.select("#showcolorlegend").remove();
@@ -638,7 +654,7 @@ HTMLWidgets.widget({
 
         debugger;
         col = d3.select("#coldDend");
-        colormap = d3.select("#colormap");
+        colormap = d3.select("#colormap"+randomIdString);
         var UniqueColors = [];
         for (i in x.color_legend.gradient) { UniqueColors[i] = x.color_legend.gradient[i].color }
 
@@ -681,7 +697,7 @@ HTMLWidgets.widget({
     },
 
 
-    combineSVG: function () {
+    combineSVG: function (randomIdString) {
         debugger;
         var rowDend = document.getElementsByClassName("rowDend")[0];
         var rowDendSvgString = "";
@@ -701,7 +717,7 @@ HTMLWidgets.widget({
             colDend = "";
         }
 
-        var colormap = document.getElementsByClassName("colormap")[0];
+        var colormap = document.getElementsByClassName("colormap"+randomIdString)[0];
         var normalized_colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
         // Do extensicve string manipulations here.
         var combinedSVG = rowDendSvgString + colDendSvgString + normalized_colormap;
@@ -714,10 +730,10 @@ HTMLWidgets.widget({
     },
 
 
-    saveSvg: function (export_type) {
+    saveSvg: function (export_type,randomIdString) {
         debugger;
         console.log("       --Entered SaveSVG()");
-        var source = this.combineSVG();
+        var source = this.combineSVG(randomIdString);
         if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
             source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
         }

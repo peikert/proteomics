@@ -1,8 +1,9 @@
-/** Last Updated: 9th October 
-    Version: 0.0.17
+/** Last Updated: 5th November
+    Version: 0.0.20
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
-    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
+    rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, 
+        workSpaceDimensions, innerworkSpaceDimensions, randomIdString) {
     console.log("-- Entered CLUSTPRO() --");
     debugger;
     // ==== BEGIN HELPERS =================================
@@ -134,7 +135,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     options = options || {};
     opts.width = innerworkSpaceDimensions.width;
     opts.height = innerworkSpaceDimensions.height;
-    opts.xclust_height = options.xclust_height || opts.height * 0.12;
+    opts.xclust_height = options.xclust_height || workSpaceDimensions.height * 0.12; // Issue - 31
     opts.yclust_width = options.yclust_width || opts.width * 0.12;
     opts.link_color = opts.link_color || "#AAA";
 
@@ -173,6 +174,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
     var colormapBounds = gridSizer.getCellBounds(1, 1);
     var colDendBounds = gridSizer.getCellBounds(1, 0);
+    // coldDendBounds should be 10 % of the outer workspace area or something ?
     var rowDendBounds = gridSizer.getCellBounds(0, 1);
     var yaxisBounds = gridSizer.getCellBounds(2, 1);
     var xaxisBounds = gridSizer.getCellBounds(1, 2);
@@ -197,16 +199,16 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     (function () {
         debugger;
         var inner = el.append("div").attr("id", "inner").classed("inner", true);
-        var sidebar = inner.append("div").attr({ "id": "myTopnav" }).classed("topnav", true).style(cssify(sideBarDimensions));
-        var workspace = inner.append("div").attr({"id":"workspace"}).classed("workspace", true).style(cssify(workSpaceDimensions));
-        var workspaceInner = workspace.append("div").attr("id", "workspaceinner").classed("workspaceinner", true).style(cssify(innerworkSpaceDimensions));
+        var sidebar = inner.append("div").attr({ "id": "myTopnav"+randomIdString}).classed("topnav"+randomIdString, true).style(cssify(sideBarDimensions));
+        var workspace = inner.append("div").attr({"id":"workspace"+randomIdString}).classed("workspace"+randomIdString, true).style(cssify(workSpaceDimensions));
+        var workspaceInner = workspace.append("div").attr("id", "workspaceinner"+randomIdString).classed("workspaceinner"+randomIdString, true).style(cssify(innerworkSpaceDimensions));
         var colDend = workspaceInner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
         // update the dimensions of row dendogram to compensate for the side bar.   GITHUB ISSUE # 13
         rowDendBounds.width = rowDendBounds.width - (sideBarDimensions.width * 0.7); 
         rowDendBounds.left = sideBarDimensions.width * 0.7;
         var rowDend = workspaceInner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
-        var colmap = workspaceInner.append("svg").attr("id", "colormap").classed("colormap", true).style(cssify(colormapBounds));
-        var xaxis = workspaceInner.append("svg").attr("id", "xaxis").classed("axis xaxis", true).style(cssify(xaxisBounds));
+        var colmap = workspaceInner.append("svg").attr("id", "colormap"+randomIdString).classed("colormap"+randomIdString, true).style(cssify(colormapBounds));
+        var xaxis = workspaceInner.append("svg").attr("id", "xaxis"+randomIdString).classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = workspaceInner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         
         // Hack the width of the x-axis to allow x-overflow of rotated labels; the
@@ -234,7 +236,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     })();
     data.matrix.tooltip = data.tooltip; // Temporary solution
     console.log("       [Generating Color Map]");
-    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, data.tooltip);
+    var colormap = colormap(el.select('svg.colormap'+randomIdString), data.matrix, colormapBounds.width, colormapBounds.height, data.tooltip);
     console.log("       [ColorMap generated]");
     columnNames = data.matrix.cols;
     console.log("       [Generating Xaxis]");
@@ -278,6 +280,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         var y = d3.scale.linear().domain([0, rows]).range([0, height]);
         var tip = d3.tip() //HTML of the tip
             .attr('class', 'clustpro-tip')
+            .attr('id', 'clustpro-tip')
             .html(function (d, i) {
                 var html_string = "<table>" +
                     // The constant 3 lines that will always be in the tooltip.
@@ -504,13 +507,18 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         var maxLength = 0;
         for (i in data) { data[i].length > maxLength ? maxLength = data[i].length : maxLength = maxLength }
 
-        // Fix for issue 36
+        // Discarded - Fix for issue 36
         var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] ||
                                 maxLength >= 40 ? maxLength >= 50 ? maxLength >= 60 ? maxLength >= 70 ? "8" : 
                                                 "10" : 
                                                     "12" :
                                                          "14" :
                                                              Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8)));
+
+        // We discard the above fix for fontsize for a better and more robust calculation below:
+        // The formula only works for x_axis labels
+        fontSize =  opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || rotated ? ((scale.rangeBand()/1.7) / maxLength) * 1.577909 : 
+                                                                                    Math.min(18, Math.max(9, scale.rangeBand() - 8));
 
         //var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8))) + "px";
         axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
