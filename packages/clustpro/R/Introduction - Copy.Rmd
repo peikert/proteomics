@@ -47,7 +47,7 @@ cr
 # setting of individual colors
   color_list <- c("blue", "lightblue", "white", "yellow", "red")
   color_legend01 <-
-    setHeatmapColors(data = df_data,
+    clustpro::setHeatmapColors(data = df_data,
                      color_list = color_list,
                      auto = TRUE)
   
@@ -56,7 +56,7 @@ cr <- clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TR
 # setting of individual intervals
 intervals <- c(-1.9,-0.5,0,0.5,3.3)
   color_legend02 <-
-    setHeatmapColors(data = df_data,
+    clustpro::setHeatmapColors(data = df_data,
                      color_list = color_list,
                      intervals = intervals,
                      auto = FALSE)
@@ -108,7 +108,7 @@ cr <- clustpro(matrix = df_data,seed = 1234, tooltip = info_list02)
 #### Clustering
 ```{r clustering}
 # determine the best number of clusters using the DB-index. Minimal and maximal cluster size defining the rank of options.
-db_object <- get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'kmeans', seed = seed, cores = 4)
+db_object <- clustpro::get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'kmeans', seed = seed, cores = 4)
 
 db_object$db_list
 best_k <- db_object$best_k
@@ -145,7 +145,7 @@ cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALS
 #### Using pre clustered Data
 ```{r using pre clustered data}
 
-cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
+# cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
 
 #randomly group matrix in 3 clusters
 set.seed(seed)
@@ -171,7 +171,7 @@ col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
 col_dend <- as.dendrogram(col_dend_hclust)
 
 #order matrix in accordance with dendrograms
-df_data_extended <- order_dataframe_by_list(df_data_extended,order.dendrogram(row_dend),'clusterVector')
+df_data_extended <- clustpro::order_dataframe_by_list(df_data_extended,order.dendrogram(row_dend),'clusterVector')
 clusterVector <- df_data_extended$clusterVector
 df_data_extended$clusterVector <- NULL
 df_data_extended <- df_data_extended[,order.dendrogram(col_dend)]
@@ -184,6 +184,11 @@ clustpro(matrix = df_data_extended
          ,cols = col_dend_hclust)
 
 ```
+
+```{r}
+runExample03()
+```
+
 
 ```{r bug}
 

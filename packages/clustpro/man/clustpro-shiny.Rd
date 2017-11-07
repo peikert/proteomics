@@ -6,7 +6,7 @@
 \alias{renderClustpro}
 \title{Shiny bindings for clustpro}
 \usage{
-clustproOutput(outputId, width = "100\%", height = "400px")
+clustproOutput(outputId, width = "100\%", height = "100\%")
 
 renderClustpro(expr, env = parent.frame(), quoted = FALSE)
 }

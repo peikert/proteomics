@@ -405,7 +405,7 @@ clustpro <- function(matrix,
 clustproOutput <-
   function(outputId,
            width = '100%',
-           height = '400px') {
+           height = '100%') {
     htmlwidgets::shinyWidgetOutput(outputId, 'clustpro', width, height, package = 'clustpro')
   }
 

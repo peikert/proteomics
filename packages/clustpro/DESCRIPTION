@@ -25,7 +25,8 @@ Imports:
 	e1071
 Suggests:
     shiny,
-    knitr
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 LazyData: true
 Collate:
