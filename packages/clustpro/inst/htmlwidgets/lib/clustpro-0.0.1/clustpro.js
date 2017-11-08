@@ -199,8 +199,8 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     (function () {
         debugger;
         var inner = el.append("div").attr("id", "inner").classed("inner", true);
-        var sidebar = inner.append("div").attr({ "id": "myTopnav"+randomIdString}).classed("topnav"+randomIdString, true).style(cssify(sideBarDimensions));
-        var workspace = inner.append("div").attr({"id":"workspace"+randomIdString}).classed("workspace"+randomIdString, true).style(cssify(workSpaceDimensions));
+        var sidebar = inner.append("div").attr( "id", "myTopnav"+randomIdString).classed("topnav"+randomIdString, true).style(cssify(sideBarDimensions));
+        var workspace = inner.append("div").attr("id","workspace"+randomIdString).classed("workspace"+randomIdString, true).style(cssify(workSpaceDimensions));
         var workspaceInner = workspace.append("div").attr("id", "workspaceinner"+randomIdString).classed("workspaceinner"+randomIdString, true).style(cssify(innerworkSpaceDimensions));
         var colDend = workspaceInner.append("svg").classed("dendrogram colDend", true).style(cssify(colDendBounds));
         // update the dimensions of row dendogram to compensate for the side bar.   GITHUB ISSUE # 13
