@@ -1,6 +1,7 @@
-
+install.packages('htmlwidgets')
 if(F){
   library(devtools)
+  # library(knitr)
   setwd("D:/git/proteomics/packages/clustpro")
 # devtools::check()
   devtools::document()
@@ -8,7 +9,7 @@ if(F){
   devtools::install()
   # help(package = "clustpro", help_type = "html")
   # browseVignettes(package = "clustpro")
-  vignette("Introduction","clustpro")
+  # vignette("Introduction","clustpro")
   #devtools::reload()
   # runExample01()
   # runExample02()
@@ -16,6 +17,8 @@ if(F){
   # runExample04()
   # runExample05()
 }
+
+
 setwd("D:/git/proteomics/packages/clustpro/output")
 library("clustpro")
 help(package = clustpro)
@@ -57,7 +60,7 @@ info_list[['test']] <- rep('non',nrow(msdata))
 # matrix <- msdata[,c(3:6)]
 class(msdata[,c(3:6)])
 clustpro(matrix=cars)
-
+matrix <- msdata[,c(3:6)]
 
 
 

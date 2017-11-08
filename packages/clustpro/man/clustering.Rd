@@ -6,7 +6,7 @@
 \usage{
 clustering(matrix, min_k = 2, max_k = 100, fixed_k = NULL,
   method = "kmeans", hclust_method = "ward.D2", cores = 2, seed = NULL,
-  export_graphics = FALSE, export_type = "svg")
+  random_seeds = NULL, export_graphics = FALSE, export_type = "svg")
 }
 \arguments{
 \item{matrix}{numeric data.frame}
@@ -20,6 +20,8 @@ clustering(matrix, min_k = 2, max_k = 100, fixed_k = NULL,
 \item{cores}{natural number, number of nodes/cores used for parallelisation}
 
 \item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
+
+\item{random_seeds}{null or natural number, if null seed is used for computation, otherwise the number of random_seeds seeds will be consider}
 
 \item{export_graphics}{boolean; if TRUE grephics are exported}
 

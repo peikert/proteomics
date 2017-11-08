@@ -66,6 +66,7 @@ clustpro_example <- function(){
 #' @param export_dir character; storage directory
 #' @param export_type character; type of exported graphics, tested for tif and svg
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
+#' @param random_seeds null or natural number, if null seed is used for the determination of the best k, otherwise the number of random_seeds seeds will be consider
 #' @param cores natural number, number of nodes/cores used for parallelisation
 #' @param show_legend boolean; if TRUE color legend is shown
 #' @param useShiny if TRUE html widget is usable for shiny apps, otherwise clustering is returned to R
@@ -95,6 +96,7 @@ clustpro <- function(matrix,
                      export_dir = NULL,
                      export_type = 'svg',
                      seed = NULL,
+                     random_seeds = NULL,
                      cores = 2,
                      useShiny = TRUE) {
 
@@ -119,6 +121,10 @@ clustpro <- function(matrix,
     if(max(matrix)>max(color_legend$ticks))stop(paste0('"color_legend" max ticks out of range! ',max(matrix),'>',max(color_legend$ticks)))
     #
 
+  print(seed)
+  print(class(seed))
+  if(!is.null(seed) && !class(seed)%in%c('numeric','integer')) stop('"seed" must be NULL or of type "numeric"')
+  if(!is.null(random_seeds) && !class(random_seeds)%in%c('numeric','integer')) stop('"random_seeds" must be NULL or of type "numeric"')
     # if(min(matrix)<min(color_legend$ticks)){
     #   warning(paste0('"color_legend" min ticks out of range. ',min(matrix),'<',min(color_legend$ticks),'. Range will be extended!'))
     #   color_legend$ticks[1] <- min(matrix)-0.01
@@ -567,12 +573,17 @@ get_best_k <-
            max_k = 10,
            method = 'kmeans',
            cores = 1,
-           seed = NULL) {
+           seed = NULL
+           ) {
     if (nrow(matrix) < max_k) {
       max_k <- nrow(matrix)
       print("max_k larger the rows in matrix.")
       print(paste("max_k was set to ", max_k, sep = ""))
     }
+    if (!is.null(seed) || !is.integer(seed)) {
+      print(paste0("'seed' must be NULL or of type 'numeric'. Seed was set to NULL."))
+    }
+
     iterations <- max_k
     matrix <- matrix
     k <- NULL
@@ -661,6 +672,7 @@ get_best_k <-
 #' @param hclust_method character; one of the following cluster methods: "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
 #' @param cores natural number, number of nodes/cores used for parallelisation
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
+#' @param random_seeds null or natural number, if null seed is used for computation, otherwise the number of random_seeds seeds will be consider
 #' @param export_graphics boolean; if TRUE grephics are exported
 #' @param export_type character; type of exported graphics, tested for tif and svg
 #' @import stats
@@ -675,6 +687,7 @@ clustering <- function(matrix,
                        hclust_method = "ward.D2",
                        cores = 2,
                        seed = NULL,
+                       random_seeds = NULL,
                        export_graphics = FALSE,
                        export_type = 'svg') {
 
@@ -683,8 +696,25 @@ clustering <- function(matrix,
   if (!is.null(fixed_k)) {
     k <- fixed_k
   } else {
+
+    if(is.null(seed))seed <- .Random.seed[1]
+    seeds <- list(seed)
+    if(is.numeric(random_seeds)){
+      seeds <- sample(1:5000, random_seeds, replace=T)
+    }
+    best_ks <- list()
+    for(seed_i in seeds){
     rv <-
-      get_best_k(matrix, min_k, max_k, method, cores = cores, seed)
+      get_best_k(matrix, min_k, max_k, method, cores = cores, seed=seed_i)
+    best_ks <- c(best_ks, placeholder = rv$best_k)
+    names(best_ks)[which(names(best_ks)=="placeholder")] <- as.character(sprintf("%04d", seed_i))
+    }
+    k_freq <-sort(table(unlist(best_ks)),decreasing = T)
+    best_k <- as.numeric(names(k_freq[which.max(k_freq)]))
+    seed_belong_to_k <- sapply(names(best_ks[best_ks==best_k]),as.numeric)
+
+    rv <- get_best_k(matrix, min_k, max_k, method, cores = cores, seed=seed_belong_to_k[1])
+
     db_list <- as.data.frame(rv$db_list)
     if (method == 'cmeans') {
       minimalSet <- rv$minimalSet

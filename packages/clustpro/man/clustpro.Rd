@@ -10,7 +10,7 @@ clustpro(matrix, method = "kmeans", hclust_method = "ward.D2", min_k = 2,
   cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
   color_legend = NULL, width = NULL, height = NULL,
   export_graphics = FALSE, export_dir = NULL, export_type = "svg",
-  seed = NULL, cores = 2, useShiny = TRUE)
+  seed = NULL, random_seeds = NULL, cores = 2, useShiny = TRUE)
 }
 \arguments{
 \item{matrix}{numeric data.frame}
@@ -48,6 +48,8 @@ string and have \code{'px'} appended.}
 \item{export_type}{character; type of exported graphics, tested for tif and svg}
 
 \item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
+
+\item{random_seeds}{null or natural number, if null seed is used for the determination of the best k, otherwise the number of random_seeds seeds will be consider}
 
 \item{cores}{natural number, number of nodes/cores used for parallelisation}
 

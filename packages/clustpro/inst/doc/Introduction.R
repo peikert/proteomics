@@ -1,5 +1,5 @@
 ## ----eval = FALSE--------------------------------------------------------
-#  devtools::install_github("cpeikert/clustpro")
+#  #devtools::install_github("cpeikert/clustpro")
 
 ## ----initialization------------------------------------------------------
 # suppressMessages is used to turn of loading package messages
@@ -21,7 +21,7 @@ cr
     clustpro::setHeatmapColors(data = df_data,
                      color_list = color_list,
                      auto = TRUE)
-  
+
 cr <- clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TRUE ,seed = 1234)  
   
 # setting of individual intervals

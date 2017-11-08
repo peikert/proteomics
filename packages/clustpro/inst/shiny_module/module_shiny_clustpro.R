@@ -83,7 +83,9 @@ clustProPanelUI <- function(id) {
 clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, info_columns=NULL, file_browser=FALSE) {
   ns <- session$ns
   # showReactLog(time = TRUE)
-
+  observe({
+    print(info_columns())
+  })
   if(file_browser){
     output$datafile <-  renderUI(fileInput(ns('datafile'), 'Choose CSV file', accept=c('text/tsv', 'text/tab-separated-values')))
     output$choice <-  renderUI(actionButton(ns("choice"), "incorporate external information"))
@@ -226,7 +228,7 @@ clustProPanel <- function(input, output, session, ldf=NULL, data_columns=NULL, i
 
   observe({
     updateCheckboxGroupInput(
-      session = session, inputId = "clustering_tooltips", choices = c2p(), selected = NULL
+      session = session, inputId = "clustering_tooltips", choices = info_columns(), selected = NULL
     )
   })
 
@@ -395,6 +397,7 @@ best_k <- reactive({
                  seed = input$clustering_seed_numericInput
                  )
       db_list <- as.data.frame(local_df$db_list)
+      print(db_list)
       # colnames(db_list) <- c('k','score','withinerror')
      # filtered_local_df <- local_df[!is.na(local_df$score),]
      # k <- filtered_local_df$k[which(max(filtered_local_df$score)==filtered_local_df$score)]
