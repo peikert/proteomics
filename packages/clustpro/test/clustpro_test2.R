@@ -1,4 +1,4 @@
-install.packages('htmlwidgets')
+
 if(F){
   library(devtools)
   # library(knitr)

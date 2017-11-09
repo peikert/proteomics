@@ -1,47 +1,19 @@
----
-title: "Introduction to clustPro"
-date: "`r Sys.Date()`"
-author: "Christian D. Peikert"
-output:
-  html_document:
-    self_contained: yes
-    toc: true    
----
-<!--
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Introduction to clustPro}
--->
+## ----eval = FALSE--------------------------------------------------------
+#  #devtools::install_github("cpeikert/clustpro")
 
-clustPro
-=========
-
-### Install
-
-`clustpro` is not on CRAN, so we'll use `devtools::install_github` to install.
-
-```{r eval = FALSE}
-#devtools::install_github("cpeikert/clustpro")
-```
-
-
-### Examples
-```{r initialization}
+## ----initialization------------------------------------------------------
 # suppressMessages is used to turn of loading package messages
 suppressMessages(library('clustpro'))
-```
 
-#### Basic Usage
-```{r basic usage}
+## ----basic usage---------------------------------------------------------
 seed <- 1234
 df_mtcars <- datasets::mtcars
 df_data <- as.data.frame(scale(df_mtcars))
 
 cr <- clustpro(matrix = df_data)
 cr
-```
 
-#### Color setup
-```{r color setup}
+## ----color setup---------------------------------------------------------
 
 # setting of individual colors
   color_list <- c("blue", "lightblue", "white", "yellow", "red")
@@ -51,7 +23,7 @@ cr
                      auto = TRUE)
 
 cr <- clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TRUE ,seed = 1234)  
-cr 
+  
 # setting of individual intervals
 intervals <- c(-1.9,-0.5,0,0.5,3.3)
   color_legend02 <-
@@ -61,18 +33,16 @@ intervals <- c(-1.9,-0.5,0,0.5,3.3)
                      auto = FALSE)
 
   cr <- clustpro(matrix = df_data, color_legend = color_legend02, show_legend = TRUE ,seed = 1234)  
-cr
+
 # setting of individual shown ticks in the legend
   
 color_legend03 <- color_legend02
 color_legend03$label_position <- c(-1.9,-0.5,0,0.5,3.3)
 
   cr <- clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,seed = 1234)  
-cr
-```
 
-#### Adding Tooltips
-```{r tooltips}
+
+## ----tooltips------------------------------------------------------------
 # adding row id to the tooltips as well as a web link 
   info_list <- list()
   info_list[['id']]  <- rownames(df_data)
@@ -81,7 +51,7 @@ cr
 
 
     cr <- clustpro(matrix = df_data,seed = 1234, tooltip = info_list)  
- cr 
+  
 # adding all matrix values as strings to the tooltip list     
   df_mtcars02 <- df_mtcars
   colnames(df_mtcars02) <- paste0('info_', colnames(df_mtcars02))
@@ -101,11 +71,9 @@ cr
   }
 
 cr <- clustpro(matrix = df_data,seed = 1234, tooltip = info_list02)  
-cr
-```
 
-#### Clustering
-```{r clustering}
+
+## ----clustering----------------------------------------------------------
 # determine the best number of clusters using the DB-index. Minimal and maximal cluster size defining the rank of options.
 db_object <- clustpro::get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'kmeans', seed = seed, cores = 4)
 
@@ -114,7 +82,7 @@ best_k <- db_object$best_k
 
 # the best k is used to run the clustpro function with fixed k
 cr <- clustpro(matrix = df_data, method = 'kmeans', fixed_k = best_k, seed = seed)
-cr
+
 
 
 # it is also possible to use the fussy cmeans algorithm
@@ -125,24 +93,20 @@ best_k <- db_object$best_k
 
 
 cr <- clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, seed = seed)
-cr
+
 
 # large dataset can be simplified for visualisation. This means that own the mean value of a cluster is show in a single row. The tooltip included the number of grouped proteins. In the json file all protein of a group a stored.
 cr <- clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_clustering = TRUE, seed = seed)
-cr
-```
 
-#### Using clustPro without Visualization
-```{r using clustPro without visualization}
+
+## ----using clustPro without visualization--------------------------------
 
 cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
-cr
 
 
-```
 
-#### Using pre clustered Data
-```{r using pre clustered data}
+
+## ----using pre clustered data--------------------------------------------
 
 # cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
 
@@ -182,9 +146,8 @@ clustpro(matrix = df_data_extended
          ,rows = row_dend_hclust
          ,cols = col_dend_hclust)
 
-```
 
-```{r bug}
+## ----bug-----------------------------------------------------------------
 
 # library(d3heatmap)
 # test2 <- d3heatmap(mtcars, scale="column", colors="Blues")
@@ -195,12 +158,7 @@ clustpro(matrix = df_data_extended
 #         ticks = c(-5, stats::runif(1, -4, -1), 0, stats::runif(1, 1, 4), 5)
 #       )
 # gradientPickerD3::gradientPickerD3(payload)
-```
 
-Session info
-=============
-
-```{r session info, cache=FALSE}
+## ----session info, cache=FALSE-------------------------------------------
 sessionInfo()
-```
 
