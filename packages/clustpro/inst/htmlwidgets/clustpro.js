@@ -1,5 +1,5 @@
-/** Last Updated: 5th November
-    Version: 0.0.20
+/** Last Updated: 14th November
+    Version: 0.0.21
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -228,7 +228,7 @@ HTMLWidgets.widget({
                     if(sidebar_options.colorLegend) // If the color legend is already being displayed.
                     { // Hide it.
                         xaxis.selectAll("rect").remove();
-                        xaxis.selectAll("#colorlegends"+randomIdString).remove();
+                        xaxis.selectAll("#colorlegends").remove();   
                         sidebar_options.colorLegend = false;
                     }else{ // If not then display it. 
                         self.drawColorLegend(el,x, randomIdString);
