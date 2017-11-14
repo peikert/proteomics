@@ -529,8 +529,9 @@ HTMLWidgets.widget({
 
             d3.select("#downloadCSV"+randomIdString)
                 .on("click", function () {
+                    var csv = self.jsonToCSV(x);
                     var json = JSON.stringify(x.matrix);
-                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.txt"); // Is the type correct ?
+                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.txt");
                     debugger;
             })
                 .on("mouseover", function (d, i) {
@@ -707,6 +708,20 @@ HTMLWidgets.widget({
         }
     },
 
+    jsonToCSV: function(jsonObject){
+        debugger;
+        // For now, only combine data, rows and columns
+        var k = 0;
+        var j = 0;
+        for(var i =0; i < jsonObject.matrix.data.length ;i++){
+            if(k >= jsonObject.matrix.cols.length){
+                k=0;
+                j++;
+            }
+            // Consturct arrays here.
+             k++;
+        }
+    },
 
     combineSVG: function (randomIdString) {
         debugger;
