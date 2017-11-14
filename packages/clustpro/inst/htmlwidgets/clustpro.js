@@ -191,25 +191,7 @@ HTMLWidgets.widget({
         }
         
 
-        { // 1) SAVE
-            var save = document.createElement("div");
-            save.setAttribute("id", "save"+randomIdString);
-            save.setAttribute("title", "Save");
-            save.style.cssText = normalCSSText;
-            save.innerHTML = saveIcon();
-            sideBar.appendChild(save);
-            d3.select("#save"+randomIdString)
-                .on("click", function () {
-                debugger;
-                self.saveSvg(x.export_type[0], randomIdString);
-            })
-                .on("mouseover", function (d, i) {
-                    save.style.cssText = hoverCSSText;
-            })
-            .on("mouseout", function (d, i) {
-                    save.style.cssText = normalCSSText;
-            });
-        }
+
 
          
         { // 2) Show Color Legend
@@ -576,9 +558,6 @@ HTMLWidgets.widget({
             d3.select("#downloadSVG"+randomIdString)
                 .on("click", function () {
                     self.saveSvg(x.export_type[0], randomIdString);
-                    //var json = JSON.stringify(x.matrix);
-                    //saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.txt"); // Is the type correct ?
-                    //debugger;
             })
                 .on("mouseover", function (d, i) {
                     downloadSVG.style.cssText = hoverCSSText;
