@@ -19,6 +19,11 @@ HTMLWidgets.widget({
         };
     },
 
+    change: function(){
+        debugger;
+        Shiny.onInputChange(el.id + "_json", json_object);
+    },
+
     htmlSideBarInitialize : function (el,x){
         var el = d3.select(el);
         var bbox = el.node().getBoundingClientRect();
