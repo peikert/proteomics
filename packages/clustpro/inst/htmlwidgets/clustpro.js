@@ -477,11 +477,13 @@ HTMLWidgets.widget({
                         $("#downloadJSON"+ randomIdString).fadeOut();
                         $("#downloadCSV"+ randomIdString).fadeOut();
                         $("#downloadSVG"+ randomIdString).fadeOut();
+                        $("#downloadTSV"+ randomIdString).fadeOut();
                         fadeinflag = false;
                     } else {
                         $("#downloadJSON"+ randomIdString).fadeIn();
                         $("#downloadCSV"+ randomIdString).fadeIn();
                         $("#downloadSVG"+ randomIdString).fadeIn();
+                        $("#downloadTSV"+ randomIdString).fadeIn();
                         fadeinflag = true;
                     }
             })
@@ -550,6 +552,33 @@ HTMLWidgets.widget({
         }
 
         {
+            // Download data matrix as TSV
+            var downloadTSV = document.createElement("div");
+            downloadTSV.setAttribute("id", "downloadTSV"+randomIdString);
+            downloadTSV.setAttribute("title", "Download colormap as TSV");
+            downloadTSV.style.cssText = normalCSSText;
+            // Insert GIF
+            downloadTSV.innerHTML = saveTSV();
+            //GIF Inserted
+            sideBar.appendChild(downloadTSV);
+
+            d3.select("#downloadTSV"+randomIdString)
+                .on("click", function () {
+                    var tsv = self.jsonToTSV(x);
+                    saveAs(new Blob([tsv], { type: "application/svg+xml" }), "clustpro_heatmap.tsv");
+            })
+                .on("mouseover", function (d, i) {
+                    downloadTSV.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    downloadTSV.style.cssText = normalCSSText;
+            });
+            $("#downloadTSV"+randomIdString).hide();
+            
+            
+        }
+
+        {
             // Download data matrix as SVG
             var downloadSVG = document.createElement("div");
             downloadSVG.setAttribute("id", "downloadSVG"+randomIdString);
@@ -570,7 +599,7 @@ HTMLWidgets.widget({
             .on("mouseout", function (d, i) {
                     downloadSVG.style.cssText = normalCSSText;
             });
-            $("#downloadSVG"+randomIdString).hide()
+            $("#downloadSVG"+randomIdString).hide();
             
             
         }
@@ -727,6 +756,21 @@ HTMLWidgets.widget({
             k++;
         }
         return csvContent;
+    },
+
+    jsonToTSV: function(jsonObject){
+        var tsvContent = "data\trows\tcols\r\n";
+        var k = 0;
+        var j = 0;
+        for(var i =0; i < jsonObject.matrix.data.length ;i++){
+            if(k >= jsonObject.matrix.cols.length){
+                k=0;
+                j++;
+            }
+            tsvContent += [jsonObject.matrix.data[i],jsonObject.matrix.rows[j] ,jsonObject.matrix.cols[k]].join("\t") + "\r\n" ; 
+            k++;
+        }
+        return tsvContent;
     },
 
     combineSVG: function (randomIdString) {
