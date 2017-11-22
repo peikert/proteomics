@@ -1,5 +1,5 @@
-/** Last Updated: 14th November
-    Version: 0.0.21
+/** Last Updated: 21th November
+    Version: 0.0.22
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -530,8 +530,7 @@ HTMLWidgets.widget({
             d3.select("#downloadCSV"+randomIdString)
                 .on("click", function () {
                     var csv = self.jsonToCSV(x);
-                    var json = JSON.stringify(x.matrix);
-                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.txt");
+                    saveAs(new Blob([csv], { type: "application/svg+xml" }), "clustpro_heatmap.csv");
                     debugger;
             })
                 .on("mouseover", function (d, i) {
@@ -710,7 +709,8 @@ HTMLWidgets.widget({
 
     jsonToCSV: function(jsonObject){
         debugger;
-        // For now, only combine data, rows and columns
+        // Combine data, rows and column
+        var csvContent = "data,rows,cols\r\n";
         var k = 0;
         var j = 0;
         for(var i =0; i < jsonObject.matrix.data.length ;i++){
@@ -718,9 +718,10 @@ HTMLWidgets.widget({
                 k=0;
                 j++;
             }
-            // Consturct arrays here.
-             k++;
+            csvContent += [jsonObject.matrix.data[i],jsonObject.matrix.rows[j] ,jsonObject.matrix.cols[k]].join(",") + "\r\n" ; 
+            k++;
         }
+        return csvContent;
     },
 
     combineSVG: function (randomIdString) {
