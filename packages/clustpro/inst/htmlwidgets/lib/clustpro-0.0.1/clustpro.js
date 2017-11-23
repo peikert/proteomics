@@ -1,5 +1,5 @@
-/** Last Updated: 5th November
-    Version: 0.0.20
+/** Last Updated: 14th November
+    Version: 0.0.21
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, 
@@ -372,7 +372,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
         function draw(selection) {
             location_object_array = [];
-            d3.selectAll("line").remove();
+            d3.selectAll("#line"+randomIdString).remove();
 
             selection
                 .attr("x", function (d, i) {
@@ -387,6 +387,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                                 cluster: cluster_change_rows[j].cluster, rowInformation: cluster_change_rows[j].rowInformation
                             });
                             svg.append("line")
+                                .attr("id", "line"+randomIdString)
                                 .attr("x1", 0)
                                 .attr("y1", y(Math.floor(i / cols)))
                                 .attr("x2", selection[0][i].width.animVal.value * (cols))

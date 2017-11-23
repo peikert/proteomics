@@ -1,5 +1,5 @@
-/** Last Updated: 5th November
-    Version: 0.0.20
+/** Last Updated: 14th November
+    Version: 0.0.21
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -191,25 +191,7 @@ HTMLWidgets.widget({
         }
         
 
-        { // 1) SAVE
-            var save = document.createElement("div");
-            save.setAttribute("id", "save"+randomIdString);
-            save.setAttribute("title", "Save");
-            save.style.cssText = normalCSSText;
-            save.innerHTML = saveIcon();
-            sideBar.appendChild(save);
-            d3.select("#save"+randomIdString)
-                .on("click", function () {
-                debugger;
-                self.saveSvg(x.export_type[0], randomIdString);
-            })
-                .on("mouseover", function (d, i) {
-                    save.style.cssText = hoverCSSText;
-            })
-            .on("mouseout", function (d, i) {
-                    save.style.cssText = normalCSSText;
-            });
-        }
+
 
          
         { // 2) Show Color Legend
@@ -228,7 +210,7 @@ HTMLWidgets.widget({
                     if(sidebar_options.colorLegend) // If the color legend is already being displayed.
                     { // Hide it.
                         xaxis.selectAll("rect").remove();
-                        xaxis.selectAll("#colorlegends"+randomIdString).remove();
+                        xaxis.selectAll("#colorlegends").remove();   
                         sidebar_options.colorLegend = false;
                     }else{ // If not then display it. 
                         self.drawColorLegend(el,x, randomIdString);
@@ -478,7 +460,7 @@ HTMLWidgets.widget({
             downloadData.setAttribute("title", "Download data matrix");
             downloadData.style.cssText = normalCSSText;
             // Insert GIF
-            downloadData.innerHTML = saveasCSV();
+            downloadData.innerHTML = saveAS();
             //GIF Inserted
             sideBar.appendChild(downloadData);
             var fadeinflag = false;
@@ -487,12 +469,14 @@ HTMLWidgets.widget({
                     var json = JSON.stringify(x.matrix);
                     debugger;
                     if(fadeinflag) {
-                        $("#downloadSVG"+ randomIdString).fadeOut();
+                        $("#downloadJSON"+ randomIdString).fadeOut();
                         $("#downloadCSV"+ randomIdString).fadeOut();
+                        $("#downloadSVG"+ randomIdString).fadeOut();
                         fadeinflag = false;
                     } else {
-                        $("#downloadSVG"+ randomIdString).fadeIn();
+                        $("#downloadJSON"+ randomIdString).fadeIn();
                         $("#downloadCSV"+ randomIdString).fadeIn();
+                        $("#downloadSVG"+ randomIdString).fadeIn();
                         fadeinflag = true;
                     }
             })
@@ -505,34 +489,35 @@ HTMLWidgets.widget({
 
         }
 
-        {   // Download matrix as SVG
-            var downloadSVG = document.createElement("div");
-            downloadSVG.setAttribute("id", "downloadSVG"+ randomIdString);
-            downloadSVG.setAttribute("title", "Download matrix as Json");
-            downloadSVG.style.cssText = normalCSSText;
+        {   // Download matrix as Json
+            var downloadJSON = document.createElement("div");
+            downloadJSON.setAttribute("id", "downloadJSON"+ randomIdString);
+            downloadJSON.setAttribute("title", "Download matrix as Json");
+            downloadJSON.style.cssText = normalCSSText;
             // Insert GIF
-            downloadSVG.innerHTML = saveSVG();
+            downloadJSON.innerHTML = saveJSON();
             //GIF Inserted
-            sideBar.appendChild(downloadSVG);
+            sideBar.appendChild(downloadJSON);
 
-            d3.select("#downloadSVG"+ randomIdString)
+            d3.select("#downloadJSON"+ randomIdString)
                 .on("click", function () {
-                    var json = JSON.stringify(x.matrix);
+                    var json = JSON.stringify(x.matrix, null, 2);
                     saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.json"); // Is the type correct ?
                     debugger;
             })
                 .on("mouseover", function (d, i) {
-                    downloadSVG.style.cssText = hoverCSSText;
+                    downloadJSON.style.cssText = hoverCSSText;
             })
             .on("mouseout", function (d, i) {
-                    downloadSVG.style.cssText = normalCSSText;
+                    downloadJSON.style.cssText = normalCSSText;
             });
-            $("#downloadSVG"+ randomIdString).hide()
+            $("#downloadJSON"+ randomIdString).hide()
 
         }
 
 
         {
+            // Download data matrix as CSV
             var downloadCSV = document.createElement("div");
             downloadCSV.setAttribute("id", "downloadCSV"+randomIdString);
             downloadCSV.setAttribute("title", "Download matrix csv");
@@ -544,8 +529,9 @@ HTMLWidgets.widget({
 
             d3.select("#downloadCSV"+randomIdString)
                 .on("click", function () {
+                    var csv = self.jsonToCSV(x);
                     var json = JSON.stringify(x.matrix);
-                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.json"); // Is the type correct ?
+                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.txt");
                     debugger;
             })
                 .on("mouseover", function (d, i) {
@@ -555,6 +541,32 @@ HTMLWidgets.widget({
                     downloadCSV.style.cssText = normalCSSText;
             });
             $("#downloadCSV"+randomIdString).hide()
+            
+            
+        }
+
+        {
+            // Download data matrix as SVG
+            var downloadSVG = document.createElement("div");
+            downloadSVG.setAttribute("id", "downloadSVG"+randomIdString);
+            downloadSVG.setAttribute("title", "Download colormap as SVG");
+            downloadSVG.style.cssText = normalCSSText;
+            // Insert GIF
+            downloadSVG.innerHTML = saveSVG();
+            //GIF Inserted
+            sideBar.appendChild(downloadSVG);
+
+            d3.select("#downloadSVG"+randomIdString)
+                .on("click", function () {
+                    self.saveSvg(x.export_type[0], randomIdString);
+            })
+                .on("mouseover", function (d, i) {
+                    downloadSVG.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    downloadSVG.style.cssText = normalCSSText;
+            });
+            $("#downloadSVG"+randomIdString).hide()
             
             
         }
@@ -696,6 +708,20 @@ HTMLWidgets.widget({
         }
     },
 
+    jsonToCSV: function(jsonObject){
+        debugger;
+        // For now, only combine data, rows and columns
+        var k = 0;
+        var j = 0;
+        for(var i =0; i < jsonObject.matrix.data.length ;i++){
+            if(k >= jsonObject.matrix.cols.length){
+                k=0;
+                j++;
+            }
+            // Consturct arrays here.
+             k++;
+        }
+    },
 
     combineSVG: function (randomIdString) {
         debugger;
