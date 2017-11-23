@@ -10,7 +10,6 @@ runExample05 <- function() {
   }
   source(file.path(appDir,"app.R"))
   source(file.path(moduleDir,"module_shiny_clustpro.R"))
-
   shinyClustPro()
 
 }

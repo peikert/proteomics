@@ -119,10 +119,6 @@ clustpro <- function(matrix,
     if(!all(c('ticks','colors') %in% names(color_legend)))stop('"color_legend" did not contain correct lists')
     if(min(matrix)<min(color_legend$ticks))stop(paste0('"color_legend" min ticks out of range! ',min(matrix),'<',min(color_legend$ticks)))
     if(max(matrix)>max(color_legend$ticks))stop(paste0('"color_legend" max ticks out of range! ',max(matrix),'>',max(color_legend$ticks)))
-    #
-
-  print(seed)
-  print(class(seed))
   if(!is.null(seed) && !class(seed)%in%c('numeric','integer')) stop('"seed" must be NULL or of type "numeric"')
   if(!is.null(random_seeds) && !class(random_seeds)%in%c('numeric','integer')) stop('"random_seeds" must be NULL or of type "numeric"')
     # if(min(matrix)<min(color_legend$ticks)){
@@ -243,8 +239,6 @@ clustpro <- function(matrix,
     clusters <- unique(clusters)
     tooltip[['cluster size']] <- as.vector(table(detailed_clusters)[clusters])
   }
-  # if(is.null(rownames(matrix)))rownames(matrix) <- 1:nrow(matrix)
-
 
   for(l in names(tooltip)){
     if(length(tooltip[[l]])!=nrow(matrix))tooltip[[l]] <- NULL
@@ -496,12 +490,6 @@ findk_cmeans <- function(matrix, k, seed = NULL) {
       set.seed(seed)
     rs <- e1071::cmeans(x = matrix, centers = k, iter.max = 1000)
     cluster <- as.vector(rs$cluster)
-    # print(cluster)
-    # table(cluster)
-    # length(cluster)
-    # cluster)
-    # class(cluster)
-  #  print(paste0("k: ",rs$withinerror))
     db_score <- clusterSim::index.DB(matrix,
                          cluster,
                          centrotypes = "centroids",
@@ -538,7 +526,6 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
         p = 2,
         q = 2
       )
-
 
     # return(c(k, db_score$DB))
     # attr(cluster,"tot.withinss")
@@ -580,7 +567,7 @@ get_best_k <-
       print("max_k larger the rows in matrix.")
       print(paste("max_k was set to ", max_k, sep = ""))
     }
-    if (!is.null(seed) || !is.integer(seed)) {
+    if (!is.null(seed) && !is.integer(seed) && !is.numeric(seed)) {
       print(paste0("'seed' must be NULL or of type 'numeric'. Seed was set to NULL."))
     }
 
@@ -631,9 +618,7 @@ get_best_k <-
                .packages = c("clusterSim","e1071")
              ) %dopar% {
                findk(matrix = matrix, k = k, seed = seed)
-             #  findk()
              }))
-            #  print(colnames(db_list))
               parallel::stopCluster(cl)
 
               db_list <- as.data.frame(db_list)
@@ -646,8 +631,6 @@ get_best_k <-
               cluster_distances <- as.data.frame(filtered_db_list[best_id,'cluster_distances'])
               colnames(cluster_distances) <- c(1:ncol(cluster_distances))
               rownames(cluster_distances) <- c(1:ncol(cluster_distances))
-              # print(db_list)
-              # print(class(db_list))
 
               db_list = as.data.frame(db_list[,c('k','score','withinerror')])
               db_list <- as.data.frame(sapply(db_list,as.numeric))
@@ -776,9 +759,6 @@ clustering <- function(matrix,
   rownames(cluster_centers) <-
     sapply(cluster_centers$cluster, as.character)
   cluster_centers$cluster <- NULL
-
-  # print(cluster_centers)
-  # set.seed(1234)
 
   row_dend_nw = NULL
   col_dend_nw = NULL
@@ -979,3 +959,24 @@ factorial <- function(n)
     return(n * factorial(n - 1))
   }
 }
+
+
+
+#' Function to create the tooltip list from a data.frame
+#'
+#' This function allows you convert selected columns of a data.frame into a list
+#' @param data numeric data.frame
+#' @param selected_columns null or list of selected columns of data
+#' @keywords tooltip
+#' @export
+createTooltipList <- function(data,selected_columns=NULL){
+    if(is.null(selected_columns)){return(sapply(data,function(x)return(list(x))))}
+
+    filter_columns <- selected_columns[selected_columns %in% colnames(data)]
+
+    if(length(filter_columns)>0) filtered_data <- data[,filter_columns]
+    return(sapply(filtered_data,function(x)return(list(x))))
+  }
+
+
+

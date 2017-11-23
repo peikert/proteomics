@@ -39,6 +39,6 @@ Identifications referring to reverse hits and potential contaminants have been r
 }
 }
 \references{
-Warscheid Lab, Freiburg University
+Reimann, L., et al. Myofibrillar Z-discs Are a Protein Phosphorylation Hot Spot with Protein Kinase C (PKCα) Modulating Protein Dynamics. Molecular & Cellular Proteomics 2017;16(3):346-367.
 }
 \keyword{datasets}
