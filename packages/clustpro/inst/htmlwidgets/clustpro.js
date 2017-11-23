@@ -1,5 +1,5 @@
-/** Last Updated: 14th November
-    Version: 0.0.21
+/** Last Updated: 21th November
+    Version: 0.0.22
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -17,6 +17,11 @@ HTMLWidgets.widget({
             lastTheme: null,
             lastValue: null
         };
+    },
+
+    change: function(){
+        debugger;
+        Shiny.onInputChange(el.id + "_json", json_object);
     },
 
     htmlSideBarInitialize : function (el,x){
@@ -472,11 +477,13 @@ HTMLWidgets.widget({
                         $("#downloadJSON"+ randomIdString).fadeOut();
                         $("#downloadCSV"+ randomIdString).fadeOut();
                         $("#downloadSVG"+ randomIdString).fadeOut();
+                        $("#downloadTSV"+ randomIdString).fadeOut();
                         fadeinflag = false;
                     } else {
                         $("#downloadJSON"+ randomIdString).fadeIn();
                         $("#downloadCSV"+ randomIdString).fadeIn();
                         $("#downloadSVG"+ randomIdString).fadeIn();
+                        $("#downloadTSV"+ randomIdString).fadeIn();
                         fadeinflag = true;
                     }
             })
@@ -530,8 +537,7 @@ HTMLWidgets.widget({
             d3.select("#downloadCSV"+randomIdString)
                 .on("click", function () {
                     var csv = self.jsonToCSV(x);
-                    var json = JSON.stringify(x.matrix);
-                    saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.txt");
+                    saveAs(new Blob([csv], { type: "application/svg+xml" }), "clustpro_heatmap.csv");
                     debugger;
             })
                 .on("mouseover", function (d, i) {
@@ -541,6 +547,33 @@ HTMLWidgets.widget({
                     downloadCSV.style.cssText = normalCSSText;
             });
             $("#downloadCSV"+randomIdString).hide()
+            
+            
+        }
+
+        {
+            // Download data matrix as TSV
+            var downloadTSV = document.createElement("div");
+            downloadTSV.setAttribute("id", "downloadTSV"+randomIdString);
+            downloadTSV.setAttribute("title", "Download colormap as TSV");
+            downloadTSV.style.cssText = normalCSSText;
+            // Insert GIF
+            downloadTSV.innerHTML = saveTSV();
+            //GIF Inserted
+            sideBar.appendChild(downloadTSV);
+
+            d3.select("#downloadTSV"+randomIdString)
+                .on("click", function () {
+                    var tsv = self.jsonToTSV(x);
+                    saveAs(new Blob([tsv], { type: "application/svg+xml" }), "clustpro_heatmap.tsv");
+            })
+                .on("mouseover", function (d, i) {
+                    downloadTSV.style.cssText = hoverCSSText;
+            })
+            .on("mouseout", function (d, i) {
+                    downloadTSV.style.cssText = normalCSSText;
+            });
+            $("#downloadTSV"+randomIdString).hide();
             
             
         }
@@ -566,7 +599,7 @@ HTMLWidgets.widget({
             .on("mouseout", function (d, i) {
                     downloadSVG.style.cssText = normalCSSText;
             });
-            $("#downloadSVG"+randomIdString).hide()
+            $("#downloadSVG"+randomIdString).hide();
             
             
         }
@@ -710,7 +743,8 @@ HTMLWidgets.widget({
 
     jsonToCSV: function(jsonObject){
         debugger;
-        // For now, only combine data, rows and columns
+        // Combine data, rows and column
+        var csvContent = "data,rows,cols\r\n";
         var k = 0;
         var j = 0;
         for(var i =0; i < jsonObject.matrix.data.length ;i++){
@@ -718,9 +752,25 @@ HTMLWidgets.widget({
                 k=0;
                 j++;
             }
-            // Consturct arrays here.
-             k++;
+            csvContent += [jsonObject.matrix.data[i],jsonObject.matrix.rows[j] ,jsonObject.matrix.cols[k]].join(",") + "\r\n" ; 
+            k++;
         }
+        return csvContent;
+    },
+
+    jsonToTSV: function(jsonObject){
+        var tsvContent = "data\trows\tcols\r\n";
+        var k = 0;
+        var j = 0;
+        for(var i =0; i < jsonObject.matrix.data.length ;i++){
+            if(k >= jsonObject.matrix.cols.length){
+                k=0;
+                j++;
+            }
+            tsvContent += [jsonObject.matrix.data[i],jsonObject.matrix.rows[j] ,jsonObject.matrix.cols[k]].join("\t") + "\r\n" ; 
+            k++;
+        }
+        return tsvContent;
     },
 
     combineSVG: function (randomIdString) {

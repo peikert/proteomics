@@ -1,5 +1,5 @@
-/** Last Updated: 14th November
-    Version: 0.0.21
+/** Last Updated: 21th November
+    Version: 0.0.22
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, 
@@ -540,13 +540,13 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         //        : "rotate(0)");
 
 
-
+        var halfColumnWidth = (width/data.length)/2;
         var mouseTargets = svg.append("g")
             .selectAll("g").data(leaves);
         mouseTargets
             .enter()
             .append("g").append("rect")
-            .attr("transform", rotated ? "rotate(45),translate(0,0)" : "")
+            .attr("transform", rotated ? "translate(-"+halfColumnWidth.toString()+",0)" : "")
             .attr("fill", "transparent")
             .on("click", function (d, i) {
                 var dim = rotated ? 'x' : 'y';
