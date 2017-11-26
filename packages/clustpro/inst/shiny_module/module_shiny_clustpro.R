@@ -12,7 +12,7 @@ clustProPanelUI <- function(id) {
            column(6,
                   fluidRow(
                   column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("current k", style=""))),
-                  column(5,align="right",div(style = "height:40px;", numericInput(ns("clustering_k_numericInput"), "", value =2, min = 5, max =100)))
+                  column(5,align="right",div(style = "height:40px;", numericInput(ns("clustering_k_numericInput"), "", value =2, min = 2, max =100)))
                   ),
                   fluidRow(
                     column(5,align="left",offset=2,div(style = "height:40px; padding-top: 16px;", h4("minimal k", style=""))),
@@ -416,6 +416,8 @@ best_k <- reactive({
     method = reactive(input$clustering_method_selectInput),
     seed = reactive(input$clustering_seed_numericInput),
     # data_columns = data_columns,
+
+    # info_columns()
     info_columns = reactive(input$clustering_tooltips),
     heatmap_colors = heatmapColors
   )
@@ -564,11 +566,24 @@ clustProMain <- function(input, output, session, clust_parameters) {
     heatmap_color <-  clust_parameters$heatmap_colors()
     info_list <- list()
     info_list[['id']]  <- rownames(data)
-
-    info_list[['link']] <- paste0('https://www.google.de/search?q=',rownames(data))
+    # print('>>>>')
+    # print(clust_parameters$info_columns())
+    # print('link' %in% clust_parameters$info_columns())
+    # print('<<<<')
+    # if('link' %in% clust_parameters$info_columns()){
+    #   print('in')
+    #   info_list[['link']] <- clust_parameters$data()[,'link']
+    #   clust_parameters$info_columns['link'] <- NULL
+    # }else{
+    #   info_list[['link']] <- paste0('https://www.google.de/search?q=',rownames(data))
+    #
+    #
+    #   }
+    #### TODO!!!! ####
+    info_list[['link']] <- paste0('http://www.uniprot.org/uniprot/',rownames(data))
    # info_list[['link']] <- paste('http://tritrypdb.org/tritrypdb/app/record/gene/',sapply(rownames(matrix),get_first_split_element,';'),sep='')
  #   print(nrow(data))
-    info_list[['description']] <- rep('no description', nrow(data))
+    # info_list[['description']] <- rep('no description', nrow(data))
       # print(info_list)
     if(!is.null(clust_parameters$info_columns)){
       temp_list <- lapply(clust_parameters$info_columns(),function(x){clust_parameters$data()[,x]})

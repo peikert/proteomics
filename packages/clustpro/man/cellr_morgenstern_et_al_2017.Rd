@@ -78,6 +78,6 @@ The variables are as follows:
 }
 }
 \references{
-Warscheid Lab, Freiburg University
+Morgenstern, M., et al. Definition of a High-Confidence Mitochondrial Proteome at Quantitative Scale. Cell reports 2017;19(13):2836-2852.
 }
 \keyword{datasets}

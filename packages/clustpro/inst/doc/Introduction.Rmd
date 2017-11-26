@@ -51,7 +51,7 @@ cr
                      auto = TRUE)
 
 cr <- clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TRUE ,seed = 1234)  
-  
+cr 
 # setting of individual intervals
 intervals <- c(-1.9,-0.5,0,0.5,3.3)
   color_legend02 <-
@@ -61,14 +61,14 @@ intervals <- c(-1.9,-0.5,0,0.5,3.3)
                      auto = FALSE)
 
   cr <- clustpro(matrix = df_data, color_legend = color_legend02, show_legend = TRUE ,seed = 1234)  
-
+cr
 # setting of individual shown ticks in the legend
   
 color_legend03 <- color_legend02
 color_legend03$label_position <- c(-1.9,-0.5,0,0.5,3.3)
 
   cr <- clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,seed = 1234)  
-
+cr
 ```
 
 #### Adding Tooltips
@@ -81,7 +81,7 @@ color_legend03$label_position <- c(-1.9,-0.5,0,0.5,3.3)
 
 
     cr <- clustpro(matrix = df_data,seed = 1234, tooltip = info_list)  
-  
+ cr 
 # adding all matrix values as strings to the tooltip list     
   df_mtcars02 <- df_mtcars
   colnames(df_mtcars02) <- paste0('info_', colnames(df_mtcars02))
@@ -101,7 +101,7 @@ color_legend03$label_position <- c(-1.9,-0.5,0,0.5,3.3)
   }
 
 cr <- clustpro(matrix = df_data,seed = 1234, tooltip = info_list02)  
-
+cr
 ```
 
 #### Clustering
@@ -114,7 +114,7 @@ best_k <- db_object$best_k
 
 # the best k is used to run the clustpro function with fixed k
 cr <- clustpro(matrix = df_data, method = 'kmeans', fixed_k = best_k, seed = seed)
-
+cr
 
 
 # it is also possible to use the fussy cmeans algorithm
@@ -125,18 +125,18 @@ best_k <- db_object$best_k
 
 
 cr <- clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, seed = seed)
-
+cr
 
 # large dataset can be simplified for visualisation. This means that own the mean value of a cluster is show in a single row. The tooltip included the number of grouped proteins. In the json file all protein of a group a stored.
 cr <- clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_clustering = TRUE, seed = seed)
-
+cr
 ```
 
 #### Using clustPro without Visualization
 ```{r using clustPro without visualization}
 
 cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
-
+cr
 
 
 ```

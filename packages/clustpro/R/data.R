@@ -31,7 +31,7 @@
 #' @docType data
 #' @keywords datasets
 #' @name mcp_reimann_et_al_2017
-#' @references Warscheid Lab, Freiburg University
+#' @references Reimann, L., et al. Myofibrillar Z-discs Are a Protein Phosphorylation Hot Spot with Protein Kinase C (PKCα) Modulating Protein Dynamics. Molecular & Cellular Proteomics 2017;16(3):346-367.
 #' @usage data(mcp_reimann_et_al_2017)
 #' @format A data frame with  2588 rows and 23 variables
 "mcp_reimann_et_al_2017"
@@ -108,7 +108,7 @@
 #' @docType data
 #' @keywords datasets
 #' @name cellr_morgenstern_et_al_2017
-#' @references Warscheid Lab, Freiburg University
+#' @references Morgenstern, M., et al. Definition of a High-Confidence Mitochondrial Proteome at Quantitative Scale. Cell reports 2017;19(13):2836-2852.
 #' @usage data(cellr_morgenstern_et_al_2017)
 #' @format A data frame with  1576 rows and 23 variables
 "cellr_morgenstern_et_al_2017"

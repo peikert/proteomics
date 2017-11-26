@@ -11,8 +11,6 @@ runExample04 <- function() {
   source(file.path(appDir,"app.R"))
   source(file.path(moduleDir,"module_shiny_clustpro.R"))
 
-
-
   data("cellr_morgenstern_et_al_2017")
   df_proteomics <- cellr_morgenstern_et_al_2017
   colnames(df_proteomics)

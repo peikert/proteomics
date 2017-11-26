@@ -9,7 +9,6 @@ runExample02 <- function() {
   }
   source(file.path(appDir,"app.R"))
 
-
   df_mtcars <- datasets::mtcars
   df_data <- as.data.frame(scale(df_mtcars))
   colnames(df_mtcars) <- paste0('info_', colnames(df_mtcars))

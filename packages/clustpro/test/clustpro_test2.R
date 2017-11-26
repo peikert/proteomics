@@ -1,11 +1,11 @@
-install.packages('htmlwidgets')
+
 if(F){
   library(devtools)
   # library(knitr)
   setwd("D:/git/proteomics/packages/clustpro")
 # devtools::check()
   devtools::document()
-  devtools::build_vignettes()
+  # devtools::build_vignettes()
   devtools::install()
   # help(package = "clustpro", help_type = "html")
   # browseVignettes(package = "clustpro")
@@ -13,7 +13,7 @@ if(F){
   #devtools::reload()
   # runExample01()
   # runExample02()
-  # runExample03()
+  runExample03()
   # runExample04()
   # runExample05()
 }
