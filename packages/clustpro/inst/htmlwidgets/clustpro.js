@@ -20,8 +20,10 @@ HTMLWidgets.widget({
     },
 
     change: function(){
+        console.log("we are the change function");
+        console.log();
         debugger;
-        Shiny.onInputChange(el.id + "_json", json_object);
+        
     },
 
     htmlSideBarInitialize : function (el,x){
@@ -163,6 +165,7 @@ HTMLWidgets.widget({
                                             sidebar_options, sideBarDimensions, workSpaceDimensions,
                                              innerworkSpaceDimensions, randomIdString);
         console.log("Exited ClustPro()");
+        Shiny.onInputChange(el.id+"_json", x);
         document.getElementById("workspace"+randomIdString).style.overflow = sidebar_options.overflow;
         if(innerworkSpaceDimensions.ratioCorrected) // SEE ISSUE # 26
             {
