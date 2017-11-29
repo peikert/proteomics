@@ -13,8 +13,8 @@ if(F){
   #devtools::reload()
   # runExample01()
   # runExample02()
-  runExample03()
-  # runExample04()
+  # runExample03()
+   runExample04()
   # runExample05()
 }
 
