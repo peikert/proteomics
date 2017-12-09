@@ -448,6 +448,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                 controller.datapoint_hover(null);
             })
             .on("dblclick", function () {
+                debugger;
                 var e = d3.event;
                 var offsetX = d3.event.offsetX;
                 var offsetY = d3.event.offsetY;
@@ -458,8 +459,12 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                     offsetX = e.clientX - rect.left,
                         offsetY = e.clientY - rect.top;
                 }
+                var col = Math.floor(x.invert(offsetX));
                 var row = Math.floor(y.invert(offsetY));
-                var link = links[row];
+                var link = links[row];                
+                if (HTMLWidgets.shinyMode) {
+                    Shiny.onInputChange(el.id+"_clickedCell", [row,col] ); // Return clicked cell information to the shiny app
+                }
                 window.open(link);
             });
 

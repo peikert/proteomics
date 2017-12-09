@@ -165,7 +165,15 @@ HTMLWidgets.widget({
                                             sidebar_options, sideBarDimensions, workSpaceDimensions,
                                              innerworkSpaceDimensions, randomIdString);
         console.log("Exited ClustPro()");
-        Shiny.onInputChange(el.id+"_json", x);
+        
+        if (HTMLWidgets.shinyMode) {
+            Shiny.onInputChange(el.id+"_json", x); // Return Json object to the shiny app
+        }
+        
+        // Shiny.onInputChange(el.id+"_zoom",[]);
+        
+
+
         document.getElementById("workspace"+randomIdString).style.overflow = sidebar_options.overflow;
         if(innerworkSpaceDimensions.ratioCorrected) // SEE ISSUE # 26
             {
@@ -613,7 +621,7 @@ HTMLWidgets.widget({
         if (x.dendnw_row[0] != null) { // if row dendogram information is provided.
             rowDendLinesListner = heatMapObject[1];
             rowDendLinesListner.on("click", function (d, i) {
-                console.log("you clicked a line");
+                console.log("you clicked a row dendogram line");
                 console.log(i);
                 console.log(d);
                 self.refreshRowDendogram(d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
@@ -826,6 +834,7 @@ HTMLWidgets.widget({
         saveAs(new Blob([source], { type: "application/svg+xml" }), "clustpro_heatmap." + export_type); // saving in the user passed format.
     },
 
+    // Refreshes the json matrix after flipping of the row dendogram.
     refreshRowDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
         var clusterSwapArray_1 = x.clusters.slice(d.rowRange.startRow, d.rowRange.endRow + 1);
         var clusterSwapArray_2 = x.clusters.slice(d.siblingRowRange.startRow, d.siblingRowRange.endRow + 1);
@@ -854,6 +863,7 @@ HTMLWidgets.widget({
         this.doRenderValue(el, x, rowNewickSting, colNewickString, instance, x.matrix.merged, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions);
     },
 
+    // Refresh the json object after flipping the column dendogram.
     refreshColDendogram: function (d, el, x, rowNewickSting, colNewickString, instance, sidebar_options, sideBarDimensions, workSpaceDimensions, innerworkSpaceDimensions) {
         var columnRangeClicked = d.columnRange;
         var siblingColumnRange = d.siblingColumnRange;
