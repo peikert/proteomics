@@ -622,10 +622,12 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                         return 0;
                     }
                 });
-
-            tAxisNodes
-                 .selectAll("text")
-                 .style("text-anchor", "start");
+            
+            /* Stop x-axis labels to change position while transforming */
+            //tAxisNodes
+            //     .selectAll("text")
+            //     .style("text-anchor", "start");
+                    
             mouseTargets.transition().duration(opts.anim_duration).ease('linear')
                 .call(layoutMouseTargets)
                 .style("opacity", function (d, i) {
