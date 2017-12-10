@@ -68,7 +68,15 @@ HTMLWidgets.widget({
         var sidebar_options = {"colorLegend":x.show_legend[0], "rowLabels":true, "zoom_enabled":false, "overflow":"hidden", "overflowY": "hidden"};
         var sideBarDimensions = this.htmlSideBarInitialize(el,x);
         var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
-        var innerworkSpaceDimensions = this.heightToRowsChecker(this.workspaceDimensionsInitialize(el,x), x);
+
+        // See issue 47
+        if(true){ //x.innerworkSpaceDimensions.initialPass){ // it will be undefined until the R part is implemented.
+            var innerworkSpaceDimensions = this.heightToRowsChecker(this.workspaceDimensionsInitialize(el,x), x);
+            innerworkSpaceDimensions.intialPass = true;
+        } else {
+            var innerworkSpaceDimensions = x.workSpaceDimensions;
+        }
+        
         innerworkSpaceDimensions.left = 0;
         x.matrix.data = [].concat.apply([], x.matrix.data);
         this.doRenderValue(el, x, rowNewickString, colNewickString, instance, null, sidebar_options, 
@@ -258,6 +266,10 @@ HTMLWidgets.widget({
                 innerworkSpaceDimensions.width = workSpaceDimensions.width;
                 innerworkSpaceDimensions.height = workSpaceDimensions.height;
                 sidebar_options.overflow = "hidden";
+                // See issue 47
+                if (HTMLWidgets.shinyMode) {
+                    Shiny.onInputChange(el.id+"innerworkSpaceDimensions", innerworkSpaceDimensions); // Return Json object to the shiny app
+                }
                 self.doRenderValue(el, x, rowNewickSting, colNewickString, instance, 
                         newMerged, sidebar_options, sideBarDimensions, 
                             workSpaceDimensions, innerworkSpaceDimensions, randomIdString);
@@ -400,6 +412,10 @@ HTMLWidgets.widget({
                                                                 // Fix for Issue 20. Last comments for reference.
                                                                  initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
                                                                  initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
+                                                                 // see issue 47
+                                                                 if (HTMLWidgets.shinyMode) {
+                                                                    Shiny.onInputChange(el.id+"innerworkSpaceDimensions", innerworkSpaceDimensions); // Return Json object to the shiny app
+                                                                }
                                                                  // Fix for Issue 20. Last comments for reference.
                                                                  self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, sidebar_options, sideBarDimensions, 
@@ -422,6 +438,12 @@ HTMLWidgets.widget({
                                                                 // Fix for Issue 20. Last comments for reference.
                                                                  initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
                                                                  initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
+
+                                                                // see issue 47
+                                                                 if (HTMLWidgets.shinyMode) {
+                                                                    Shiny.onInputChange(el.id+"innerworkSpaceDimensions", innerworkSpaceDimensions); // Return Json object to the shiny app
+                                                                }
+
                                                                  // Fix for Issue 20. Last comments for reference.
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, sidebar_options, sideBarDimensions, 
@@ -454,6 +476,12 @@ HTMLWidgets.widget({
                                                                 // Fix for Issue 20. Last comments for reference.
                                                                 initialScrollValues.scrollLeft = document.getElementById("workspace"+randomIdString).scrollLeft;
                                                                 initialScrollValues.scrollTop = document.getElementById("workspace"+randomIdString).scrollTop;
+
+                                                                // see issue 47
+                                                                 if (HTMLWidgets.shinyMode) {
+                                                                    Shiny.onInputChange(el.id+"innerworkSpaceDimensions", innerworkSpaceDimensions); // Return Json object to the shiny app
+                                                                }
+
                                                                 // Fix for Issue 20. Last comments for reference.
                                                                 self.doRenderValue(el, x, rowNewickSting, colNewickString, 
                                                                                             instance, newMerged, sidebar_options, 
