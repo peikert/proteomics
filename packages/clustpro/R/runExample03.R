@@ -28,7 +28,7 @@ runExample03 <- function() {
   # # shinyClustPro(df_data)
   # # shinyClustPro(df_data, data_columns = data_columns)
   # #shinyClustPro(df_data, info_columns = info_columns)
-  sapply(df_proteomics[,data_columns],class)
+  # sapply(df_proteomics[,data_columns],class)
   shinyClustPro(df_proteomics, data_columns = data_columns, info_columns = info_columns)
   #shinyClustPro()
 }

@@ -5,7 +5,7 @@
 \title{Clustpro main function}
 \usage{
 clustpro(matrix, method = "kmeans", hclust_method = "ward.D2", min_k = 2,
-  max_k = 10, fixed_k = NULL, perform_clustering = TRUE,
+  max_k = 10, fixed_k = NULL, perform_clustering = F,
   simplify_clustering = FALSE, clusterVector = NULL, rows = TRUE,
   cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
   color_legend = NULL, width = NULL, height = NULL,

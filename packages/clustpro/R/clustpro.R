@@ -81,7 +81,7 @@ clustpro <- function(matrix,
                      min_k = 2,
                      max_k = 10,
                      fixed_k = NULL,
-                     perform_clustering = TRUE,
+                     perform_clustering = F,
                      simplify_clustering = FALSE,
                      clusterVector = NULL,
                      rows = TRUE,
@@ -100,6 +100,38 @@ clustpro <- function(matrix,
                      cores = 2,
                      useShiny = TRUE) {
 
+  #### Test ####
+
+  if(F){
+    library('foreach')
+  matrix =mtcars
+  method = "kmeans"
+  hclust_method = "ward.D2"
+  min_k = 2
+  max_k = 10
+  fixed_k = NULL
+  perform_clustering = TRUE
+  simplify_clustering = FALSE
+  clusterVector = NULL
+  rows = TRUE
+  cols = TRUE
+  tooltip = NULL
+  save_widget = TRUE
+  show_legend = FALSE
+  color_legend = NULL
+  width = NULL
+  height = NULL
+  export_graphics = FALSE
+  export_dir = NULL
+  export_type = 'svg'
+  seed = NULL
+  random_seeds = NULL
+  cores = 2
+  useShiny = TRUE
+  }
+
+
+
   #### proofing #####
   if(!class(matrix) %in% c('data.frame'))stop('matrix is no data.frame')
   if(!all(complete.cases(matrix)))stop('matrix is contains missing values')
@@ -109,8 +141,8 @@ clustpro <- function(matrix,
   if(!is.null(fixed_k) && (!is.numeric(fixed_k) && (is.numeric(fixed_k) && fixed_k<2)))stop('fixed_k must be numeric and greater 1 or NULL')
   if(!is.logical(perform_clustering))
   if(!is.null(clusterVector) || (!class(clusterVector) %in% c("list","vector")) && length(clusterVector) != nrow(matrix)) stop('"clusterVector" must be NULL or of type "list/vector" with a length equal to the rows of the matrix')
-  if(!is.logical(rows) & class(rows)!="hclust") stop('"rows" must be logical or of class hclust')
-  if(!is.logical(cols) & class(cols)!="hclust") stop('"cols" must be logical or of class hclust')
+  if(!is.logical(cols) & class(cols)!="hclust" & !is.Newick(cols)) stop('"cols" must be logical, hclust or a newick string')
+  if(!is.logical(rows) & class(rows)!="hclust" & !is.Newick(rows)) stop('"rows" must be logical, hclust or a newick string')
   if(!is.null(tooltip) && class(tooltip)!='list') stop('"tooltip" must be NULL or of type "list"')
   if(!is.logical(save_widget)) stop('"save_widget" must be logical')
   if(!is.logical(show_legend)) stop('"show_legend" must be logical')
@@ -180,12 +212,13 @@ clustpro <- function(matrix,
     col_dend_nw <- NULL
     row_dend <- NULL
     col_dend <- NULL
-    if (!is.logical(rows) & class(rows) != 'hclust') {
-      stop('row_dend is not of type hclust')
-    }
-    if (!is.logical(cols) & class(cols) != 'hclust') {
-      stop('col_dend is not of type hclust')
-    }
+    # if (!is.logical(rows) & class(rows) != 'hclust') {
+    #   stop('row_dend is not of type hclust')
+    # }
+    # if (!is.logical(cols) & class(cols) != 'hclust') {
+    #   stop('col_dend is not of type hclust')
+    # }
+
     if (is.null(clusterVector)) {
       stop('clusterVector has to been a numeric vector of same length as the data matrix!')
     }
@@ -201,6 +234,30 @@ clustpro <- function(matrix,
       col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
       col_dend <- as.dendrogram(cols)
     }
+
+    if (!is.logical(rows) && is.Newick(rows)) {
+      row_dend_nw <- rows
+      row_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", row_dend_nw)
+      pre_list <- gsub("\\(+", ",", row_dend_nw)
+      pre_list <- gsub("\\)+", ",", pre_list)
+      pre_list <- gsub(",+", ",", pre_list)
+      if(substr(pre_list,nchar(pre_list),nchar(pre_list))==';') pre_list <- substr(pre_list,1,nchar(pre_list)-1)
+      pre_list <- gsub("^,+", "", pre_list)
+      pre_list <- gsub(",+$", "", pre_list)
+      row_dend <- as.vector(sapply(strsplit(pre_list,',')[[1]],as.numeric))
+    }
+    if (!is.logical(cols) && is.Newick(cols)) {
+      col_dend_nw <- cols
+      col_dend_nw <- gsub(":\\d+\\.{0,1}\\d*", "", col_dend_nw)
+      pre_list <- gsub("\\(+", ",", col_dend_nw)
+      pre_list <- gsub("\\)+", ",", pre_list)
+      pre_list <- gsub(",+", ",", pre_list)
+      if(substr(pre_list,nchar(pre_list),nchar(pre_list))==';') pre_list <- substr(pre_list,1,nchar(pre_list)-1)
+      pre_list <- gsub("^,+", "", pre_list)
+      pre_list <- gsub(",+$", "", pre_list)
+      col_dend <- as.vector(sapply(strsplit(pre_list,',')[[1]],as.numeric))
+    }
+
     matrix$clusters <- clusters
     cluster_centers = aggregate(matrix, list(clusters), mean)
     matrix$clusters <- NULL
@@ -262,7 +319,7 @@ clustpro <- function(matrix,
   # sapply(color_legend,length)
 
   if(is.null(color_legend)){
-    color_legend <- setHeatmapColors(data=matrix,,auto=TRUE)
+    color_legend <- setHeatmapColors(data=matrix,auto=TRUE)
   }
 
   color_matrix <-
@@ -344,6 +401,7 @@ clustpro <- function(matrix,
   payload[['export_dir']] <- export_dir
   payload[['export_type']] <- export_type
   payload[['show_legend']] <- show_legend
+
 
   json_payload <- jsonlite::toJSON(payload, pretty = TRUE)
   write(json_payload,
@@ -785,23 +843,26 @@ clustering <- function(matrix,
   col_dend <- as.dendrogram(col_dend_hclust)
 }
 
-
+  # order.dendrogram(as.dendrogram(test))
   ordered_df <- NULL
+  row_order <- NULL
   if (class(row_dend) == "dendrogram") {
-    for (c in order.dendrogram(row_dend)) {
-      if (is.null(ordered_df)) {
-        ordered_df <- df[df$cluster == c, ]
-      }
-      else{
-        ordered_df <- rbind(ordered_df, df[df$cluster == c, ])
-      }
-    }
-  }
+    row_order <- order.dendrogram(row_dend)
+  } else if (class(row_dend) == "list" && all(sapply(row_dend,is.numeric))) {
+    row_order <- row_dend
+  } else stop("row_dend is in wrong format!")
 
+  ordered_df <- order_dataframe_by_list(x = df,list = row_order ,col = "cluster")
+
+
+  col_order <- NULL
   if (class(col_dend) == "dendrogram") {
-    ordered_df <-
-      ordered_df[, c(order.dendrogram(col_dend), ncol(ordered_df))]
-  }
+    col_order <- order.dendrogram(col_dend)
+  } else if (class(col_dend) == "list" && all(sapply(col_dend,is.numeric))) {
+    col_order <- col_dend
+  } else stop("col_dend is in wrong format!")
+
+  ordered_df <- ordered_df[, c(col_order, ncol(ordered_df))]
 
   ordered_df_wo_cluster <-
     ordered_df[colnames(ordered_df)[!colnames(ordered_df) %in% c('cluster')]]
@@ -979,4 +1040,25 @@ createTooltipList <- function(data,selected_columns=NULL){
   }
 
 
+#' Function to prove if sting is in newick format
+#'
+#' This function returns TRUE is string is in newick format, FALSE otherwise
+#' @param x numeric data.frame
+#' @keywords newickformat
+#' @export
 
+is.Newick <- function(newick_string){
+
+  if(class(newick_string)!='character')return(FALSE)
+  newick_string  <- stringr::str_replace_all(newick_string,":\\d+\\.{0,1}\\d*", "")
+  if(stringr::str_sub(newick_string,-1,-1)!=';') newick_string <- paste0(newick_string,';')
+  if(stringr::str_count(newick_string,"\\(") != stringr::str_count(newick_string,"\\)"))return(FALSE)
+  while(TRUE){
+    newick_string_pre <- newick_string
+    newick_string <- stringr::str_replace_all(newick_string,'\\([\\d+|\\?],[\\d+|\\?]\\)','\\?')
+    if(newick_string_pre==newick_string)break
+    # print(newick_string)
+  }
+  if(newick_string!="?;")return(FALSE)
+  return(TRUE)
+}

@@ -13,8 +13,8 @@ if(F){
   #devtools::reload()
   # runExample01()
   # runExample02()
-  # runExample03()
-   runExample04()
+  runExample03()
+  # runExample04()
   # runExample05()
 }
 
@@ -58,8 +58,9 @@ info_list[['description']] <- msdata$definition
 info_list[['test']] <- rep('non',nrow(msdata))
 
 # matrix <- msdata[,c(3:6)]
+head(colnames(msdata))
 class(msdata[,c(3:6)])
-clustpro(matrix=cars)
+# clustpro(matrix=cars)
 matrix <- msdata[,c(3:6)]
 
 
@@ -72,10 +73,10 @@ cr <- clustpro(matrix=msdata[,c(3:6)],
                   max_k = 5,
                   fixed_k = NULL,
                   perform_clustering = TRUE,
-                simplify_clustering = T,
+                simplify_clustering = F,
                   clusterVector = NULL,
                   rows = TRUE,
-                  cols = TRUE,
+                  cols =  TRUE,
                   tooltip = info_list,
                   save_widget = TRUE,
                   color_legend = heatmap_color,
@@ -83,13 +84,37 @@ cr <- clustpro(matrix=msdata[,c(3:6)],
                   height = NULL,
                   export_dir = NULL,
                   export_type = 'svg',
-                  seed=3
+                  seed=3,
+               useShiny = F
                   )
 
+order.dendrogram(as.dendrogram(cr$col_dend_hclust))
+order.dendrogram(as.dendrogram(cr$row_dend_hclust))
 
-
-
-
+colnames(cr$datatable)
+ncol(cr$datatable)
+clustpro(matrix=cr$datatable[,1:4],
+         method = "kmeans",
+         min_k = 2,
+         max_k = 5,
+         fixed_k = max(cr$cobject$cluster),
+         perform_clustering = F,
+         simplify_clustering = F,
+         clusterVector = cr$datatable$cluster,
+         rows = "(4,(5,(1,(2,3))));",
+         cols =  "((1,4),(2,3));",
+         tooltip = info_list,
+         save_widget = TRUE,
+         color_legend = heatmap_color,
+         width = NULL,
+         height = NULL,
+         export_dir = NULL,
+         export_type = 'svg',
+         seed=3,
+         useShiny = T
+)
+# is.Newick(rows)
+# is.Newick(cols)
 # head(cr$datatable)
 # tail(cr$datatable)
 # write.table(cr$datatable, 'test.txt', sep = "\t", row.names = TRUE , col.names = NA, quote = FALSE)
