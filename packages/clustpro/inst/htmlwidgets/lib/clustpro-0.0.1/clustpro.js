@@ -448,6 +448,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                 controller.datapoint_hover(null);
             })
             .on("dblclick", function () {
+                debugger;
                 var e = d3.event;
                 var offsetX = d3.event.offsetX;
                 var offsetY = d3.event.offsetY;
@@ -458,8 +459,12 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                     offsetX = e.clientX - rect.left,
                         offsetY = e.clientY - rect.top;
                 }
+                var col = Math.floor(x.invert(offsetX));
                 var row = Math.floor(y.invert(offsetY));
-                var link = links[row];
+                var link = links[row];                
+                if (HTMLWidgets.shinyMode) {
+                    Shiny.onInputChange(el.id+"_clickedCell", [row,col] ); // Return clicked cell information to the shiny app
+                }
                 window.open(link);
             });
 
@@ -550,6 +555,11 @@ function clustpro(selector, data, options, location_object_array, cluster_change
             .attr("fill", "transparent")
             .on("click", function (d, i) {
                 var dim = rotated ? 'x' : 'y';
+                debugger;
+                var selectedAxis = rotated ? [null, d]: [d, null];
+                if (HTMLWidgets.shinyMode) {
+                    Shiny.onInputChange(el.id+"_axis", selectedAxis); // Return Json object to the shiny app
+                }
                 var hl = controller.highlight() || { x: null, y: null };
                 if (hl[dim] == i) {
                     // If clicked already-highlighted row/col, then unhighlight
@@ -612,10 +622,12 @@ function clustpro(selector, data, options, location_object_array, cluster_change
                         return 0;
                     }
                 });
+            
             /* Stop x-axis labels to change position while transforming */
-            // tAxisNodes
+            //tAxisNodes
             //     .selectAll("text")
             //     .style("text-anchor", "start");
+                    
             mouseTargets.transition().duration(opts.anim_duration).ease('linear')
                 .call(layoutMouseTargets)
                 .style("opacity", function (d, i) {
