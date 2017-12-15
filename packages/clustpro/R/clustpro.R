@@ -70,12 +70,13 @@ clustpro_example <- function(){
 #' @param cores natural number, number of nodes/cores used for parallelisation
 #' @param show_legend boolean; if TRUE color legend is shown
 #' @param useShiny if TRUE html widget is usable for shiny apps, otherwise clustering is returned to R
+#' @param json json file with will used to gernerate widget. further parameter are ignored.
 #' @return see clustpro() function output
 #' @importFrom htmlwidgets createWidget sizingPolicy
 #' @importFrom ctc hc2Newick
 #' @importFrom jsonlite toJSON
 #' @export
-clustpro <- function(matrix,
+clustpro <- function(matrix = NULL,
                      method = "kmeans",
                      hclust_method = "ward.D2",
                      min_k = 2,
@@ -98,7 +99,8 @@ clustpro <- function(matrix,
                      seed = NULL,
                      random_seeds = NULL,
                      cores = 2,
-                     useShiny = TRUE) {
+                     useShiny = TRUE,
+                     json = NULL) {
 
   #### Test ####
 
@@ -128,11 +130,14 @@ clustpro <- function(matrix,
   random_seeds = NULL
   cores = 2
   useShiny = TRUE
+  json = NULL
   }
 
 
 
   #### proofing #####
+  if(!is.null(json) && class(json) != 'list') stop('"json" must be NULL or of type "list"')
+  if(is.null(json)){
   if(!class(matrix) %in% c('data.frame'))stop('matrix is no data.frame')
   if(!all(complete.cases(matrix)))stop('matrix is contains missing values')
   if(class(method) != 'character' | !method %in% c("kmeans","cmeans"))stop('method must be a string. options:"kmeans","cmeans"')
@@ -153,7 +158,8 @@ clustpro <- function(matrix,
     if(max(matrix)>max(color_legend$ticks))stop(paste0('"color_legend" max ticks out of range! ',max(matrix),'>',max(color_legend$ticks)))
   if(!is.null(seed) && !class(seed)%in%c('numeric','integer')) stop('"seed" must be NULL or of type "numeric"')
   if(!is.null(random_seeds) && !class(random_seeds)%in%c('numeric','integer')) stop('"random_seeds" must be NULL or of type "numeric"')
-    # if(min(matrix)<min(color_legend$ticks)){
+  }
+       # if(min(matrix)<min(color_legend$ticks)){
     #   warning(paste0('"color_legend" min ticks out of range. ',min(matrix),'<',min(color_legend$ticks),'. Range will be extended!'))
     #   color_legend$ticks[1] <- min(matrix)-0.01
     #   }
@@ -161,7 +167,7 @@ clustpro <- function(matrix,
     #   warning(paste0('"color_legend" max ticks out of range. ',max(matrix),'>',max(color_legend$ticks),'. Range will be extended!'))
     #   color_legend$ticks[length(color_legend$ticks)] <- max(matrix)+0.01
     # }
-    }
+
   if(!is.null(width) && !is.numeric(width)) stop('"width" must be numeric')
   if(!is.null(width) && !is.numeric(height)) stop('"height" must be numeric')
   if(!is.logical(export_graphics)) stop('"export_graphics" must be logical')
@@ -169,6 +175,13 @@ clustpro <- function(matrix,
   if(class(export_type) != 'character' || !export_type %in% c("tiff","svg","png","jpg"))stop('"export_type" must be a string. options:"tiff","svg","png","jpg"')
   if(!is.null(seed) && (!is.numeric(seed) && seed != round(seed))) stop('"seed" must be integer')
   if(is.null(cores) || (!is.numeric(cores) && cores != round(cores))) stop('"cores" must be integer')
+  }
+
+
+  if(!is.null(json) && class(json)=='list'){
+    payload <- json
+    useShiny <- TRUE
+  }else{
 
   # static default values
   xaxis_height = 80
@@ -403,7 +416,10 @@ clustpro <- function(matrix,
   payload[['show_legend']] <- show_legend
 
 
-  json_payload <- jsonlite::toJSON(payload, pretty = TRUE)
+
+  }
+  json_payload <- jsonlite::toJSON(payload, digits = NaN, pretty = TRUE)
+
   write(json_payload,
         file = "payload.json",
         ncolumns = 1,
@@ -412,8 +428,9 @@ clustpro <- function(matrix,
         file = "version_0.03a",
         ncolumns = 1,
         append = FALSE)
-  utils::write.table(cbind(matrix,clusters),file = "clustered_matrix.txt",sep="\t", col.names=NA, row.names=T)
-  # widget <-
+  # utils::write.table(cbind(matrix,clusters),file = "clustered_matrix.txt",sep="\t", col.names=NA, row.names=T)
+
+
   if(useShiny){
   return(
   htmlwidgets::createWidget(
@@ -976,15 +993,28 @@ setHeatmapColors <-
   function(data,
            color_list = c("red", "yellow", "green"),
            intervals,
-           auto = FALSE) {
+           auto = FALSE,
+           border_extensions = 0.0001,
+           decimal_places = 4
+           ) {
     if (auto) {
-      d_min <- round(min(data, na.rm = TRUE), 8) - 0.00000001
-      d_max <- round(max(data, na.rm = TRUE), 8) + 0.00000001
+      d_min <- round(min(data, na.rm = TRUE), decimal_places) - border_extensions
+      d_max <- round(max(data, na.rm = TRUE), decimal_places) + border_extensions
       steps <- (d_max - d_min) / 299
       heatmap_color <- list(ticks = seq(d_min, d_max, steps),
                             colors = grDevices::colorRampPalette(color_list)(n = 299),
                             label_position = c(round(d_min,2),round(d_max,2))
                                                 )
+      color_list <- grDevices::colorRampPalette(color_list)(n=length(color_list))
+      pre_intervals <- seq(1,299,ceiling(299/(length(color_list)-1)))
+      intervals <- c(d_min,heatmap_color$ticks[c(1,pre_intervals[2:length(pre_intervals)]-1,299)][2:(length(color_list)-1)],d_max)
+      color_list <- heatmap_color$colors[c(1,pre_intervals[2:length(pre_intervals)]-1,299)]
+      # heatmap_color$colors[95:105]
+      # heatmap_color$colors[101]
+      # sapply(color_list, function(x)which( heatmap_color$colors==x))
+
+      # heatmap_color$colors[length(heatmap_color$colors)]
+
     } else{
       if (!is.null(data) &&  (min(intervals) > min(data, na.rm = TRUE) |
           max(data, na.rm = TRUE) > max(intervals))) {
@@ -998,14 +1028,23 @@ setHeatmapColors <-
           )
         )
       }
-      intervals[1] <- intervals[1]-0.00000001
-      intervals[length(intervals)] <- intervals[length(intervals)] +0.00000001
+      # intervals[1] <- intervals[1] - border_extensions
+      # intervals[length(intervals)] <- intervals[length(intervals)] + border_extensions
 
       heatmap_color <- color_spectrum(intervals, color_list)
-      heatmap_color$label_position <- c(round(min(intervals),2),round(max(intervals),2))
-      return(heatmap_color)
+      # heatmap_color$label_position <- c(round(min(intervals),2),round(max(intervals),2))
+      #
+      # heatmap_color$init_colors <- color_list
+      # heatmap_color$init_intervals <-  intervals
+      # return(heatmap_color)
 
     }
+
+    heatmap_color$init_colors <- color_list
+    heatmap_color$init_intervals <-  intervals
+    heatmap_color$label_position <- c(round(min(intervals),2),round(max(intervals),2))
+
+    return(heatmap_color)
   }
 
 

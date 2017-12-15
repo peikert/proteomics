@@ -5,7 +5,7 @@
 \title{Function to set heatmap color}
 \usage{
 setHeatmapColors(data, color_list = c("red", "yellow", "green"), intervals,
-  auto = FALSE)
+  auto = FALSE, border_extensions = 1e-04, decimal_places = 4)
 }
 \arguments{
 \item{data}{numeric data.frame, list or vector}

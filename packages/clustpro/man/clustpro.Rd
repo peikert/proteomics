@@ -4,13 +4,14 @@
 \alias{clustpro}
 \title{Clustpro main function}
 \usage{
-clustpro(matrix, method = "kmeans", hclust_method = "ward.D2", min_k = 2,
-  max_k = 10, fixed_k = NULL, perform_clustering = F,
+clustpro(matrix = NULL, method = "kmeans", hclust_method = "ward.D2",
+  min_k = 2, max_k = 10, fixed_k = NULL, perform_clustering = F,
   simplify_clustering = FALSE, clusterVector = NULL, rows = TRUE,
   cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
   color_legend = NULL, width = NULL, height = NULL,
   export_graphics = FALSE, export_dir = NULL, export_type = "svg",
-  seed = NULL, random_seeds = NULL, cores = 2, useShiny = TRUE)
+  seed = NULL, random_seeds = NULL, cores = 2, useShiny = TRUE,
+  json = NULL)
 }
 \arguments{
 \item{matrix}{numeric data.frame}
@@ -54,6 +55,8 @@ string and have \code{'px'} appended.}
 \item{cores}{natural number, number of nodes/cores used for parallelisation}
 
 \item{useShiny}{if TRUE html widget is usable for shiny apps, otherwise clustering is returned to R}
+
+\item{json}{json file with will used to gernerate widget. further parameter are ignored.}
 }
 \value{
 see clustpro() function output

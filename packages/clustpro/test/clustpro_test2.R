@@ -113,6 +113,9 @@ clustpro(matrix=cr$datatable[,1:4],
          seed=3,
          useShiny = T
 )
+path = "D:/git/proteomics/packages/clustpro/payload.json"
+json_data <- jsonlite::fromJSON(paste(readLines( "D:/git/proteomics/packages/clustpro/payload.json"), collapse=""))
+clustpro(json = json_data)
 # is.Newick(rows)
 # is.Newick(cols)
 # head(cr$datatable)
