@@ -1,5 +1,5 @@
-/** Last Updated: 21th November
-    Version: 0.0.22
+/** Last Updated: 17th December
+    Version: 0.0.23
 */
 HTMLWidgets.widget({
     name: "clustpro",
@@ -177,9 +177,6 @@ HTMLWidgets.widget({
         if (HTMLWidgets.shinyMode) {
             Shiny.onInputChange(el.id+"_json", x); // Return Json object to the shiny app
         }
-        
-        // Shiny.onInputChange(el.id+"_zoom",[]);
-        
 
 
         document.getElementById("workspace"+randomIdString).style.overflow = sidebar_options.overflow;

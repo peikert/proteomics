@@ -1,5 +1,5 @@
-/** Last Updated: 21th November
-    Version: 0.0.22
+/** Last Updated: 17th December
+    Version: 0.0.23
 */
 function clustpro(selector, data, options, location_object_array, cluster_change_rows, cluster,
     rowDendLinesListner, colDendLinesListner, sidebar_options, sideBarDimensions, 
@@ -233,6 +233,25 @@ function clustpro(selector, data, options, location_object_array, cluster_change
             inner.classed('highlighting',
                 typeof (hl.x) === 'number' || typeof (hl.y) === 'number');
         });
+
+        // Add listener on the scroll bars, so that each time the workspace div
+        // is changed, the updated scroll values are sent to the shiny app.
+        // See issue 47
+        
+        // +++++++++++ TODO ++++++++++++++
+        // When the R side is implemented, integrate the scroll values coming from the shiny app
+
+        document.getElementById("workspace"+randomIdString).onscroll = function(){
+            var left = document.getElementById("workspace"+randomIdString).scrollLeft;
+            var right = document.getElementById("workspace"+randomIdString).scrollTop;
+            if (HTMLWidgets.shinyMode) {
+                    Shiny.onInputChange(el.id+"_scrollParameters", [left,top] ); // Return scroll bar information to the shiny app
+                }
+        };
+        
+
+
+
     })();
     data.matrix.tooltip = data.tooltip; // Temporary solution
     console.log("       [Generating Color Map]");
