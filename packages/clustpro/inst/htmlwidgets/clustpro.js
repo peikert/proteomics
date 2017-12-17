@@ -544,7 +544,7 @@ HTMLWidgets.widget({
 
             d3.select("#downloadJSON"+ randomIdString)
                 .on("click", function () {
-                    var json = JSON.stringify(x.matrix, null, 2);
+                    var json = JSON.stringify(x, null, 2);
                     saveAs(new Blob([json], { type: "application/svg+xml" }), "clustpro_heatmap.json"); // Is the type correct ?
                     debugger;
             })
