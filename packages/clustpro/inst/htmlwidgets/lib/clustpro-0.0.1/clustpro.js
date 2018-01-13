@@ -207,7 +207,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         rowDendBounds.width = rowDendBounds.width - (sideBarDimensions.width * 0.7); 
         rowDendBounds.left = sideBarDimensions.width * 0.7;
         var rowDend = workspaceInner.append("svg").classed("dendrogram rowDend", true).style(cssify(rowDendBounds));
-        var colmap = workspaceInner.append("svg").attr("id", "colormap"+randomIdString).classed("colormap", true).style(cssify(colormapBounds));
+        var colmap = workspaceInner.append("svg").attr("id", "colormap"+randomIdString).classed("colormap"+randomIdString, true).style(cssify(colormapBounds));
         var xaxis = workspaceInner.append("svg").attr("id", "xaxis"+randomIdString).classed("axis xaxis", true).style(cssify(xaxisBounds));
         var yaxis = workspaceInner.append("svg").attr("id", "yaxis").classed("axis yaxis", true).style(cssify(yaxisBounds));
         
@@ -255,7 +255,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
     })();
     data.matrix.tooltip = data.tooltip; // Temporary solution
     console.log("       [Generating Color Map]");
-    var colormap = colormap(el.select('svg.colormap'), data.matrix, colormapBounds.width, colormapBounds.height, data.tooltip);
+    var colormap = colormap(el.select('svg.colormap'+randomIdString), data.matrix, colormapBounds.width, colormapBounds.height, data.tooltip);
     console.log("       [ColorMap generated]");
     columnNames = data.matrix.cols;
     console.log("       [Generating Xaxis]");
