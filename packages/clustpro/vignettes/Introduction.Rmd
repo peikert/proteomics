@@ -28,6 +28,14 @@ clustPro
 ```{r initialization}
 # suppressMessages is used to turn of loading package messages
 suppressMessages(library('clustpro'))
+unique_ids <<- paste0('vingette_id_',sprintf("%06d", 1:100000))
+
+get_unique_id <- function(){
+  id <- unique_ids[1]
+  unique_ids <<- unique_ids[-1]
+  return(id)
+}
+
 ```
 
 ### Basic Usage
@@ -36,7 +44,8 @@ seed <- 1234
 df_mtcars <- datasets::mtcars
 df_data <- as.data.frame(scale(df_mtcars))
 
-clustpro(matrix = df_data)
+clustpro(matrix = df_data, elementId = get_unique_id())
+
 ```
 
 ### Color setup
@@ -49,7 +58,7 @@ clustpro(matrix = df_data)
                      color_list = color_list,
                      auto = TRUE)
 
-clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TRUE ,seed = 1234)  
+clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TRUE ,seed = 1234, elementId = get_unique_id())  
  
 # setting of individual intervals
 intervals <- c(-1.9,-0.5,0,0.5,3.3)
@@ -59,13 +68,13 @@ intervals <- c(-1.9,-0.5,0,0.5,3.3)
                      intervals = intervals,
                      auto = FALSE)
 
-clustpro(matrix = df_data, color_legend = color_legend02, show_legend = TRUE ,seed = 1234)  
+clustpro(matrix = df_data, color_legend = color_legend02, show_legend = TRUE ,seed = 1234, elementId = get_unique_id())  
 
 # setting of individual shown ticks in the legend
 color_legend03 <- color_legend02
 color_legend03$label_position <- c(-1.9,-0.5,0,0.5,3.3)
 
-clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,seed = 1234)  
+clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,seed = 1234, elementId = get_unique_id())  
 ```
 
 ### Adding Tooltips
@@ -76,7 +85,7 @@ clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,se
   info_list[['link']] <-
     paste('https://www.google.de/search?q=/', rownames(df_data), sep = '')
 
-clustpro(matrix = df_data,seed = 1234, tooltip = info_list)  
+clustpro(matrix = df_data,seed = 1234, tooltip = info_list, elementId = get_unique_id())  
  
 # adding all matrix values as strings to the tooltip list     
   df_mtcars02 <- df_mtcars
@@ -96,7 +105,7 @@ clustpro(matrix = df_data,seed = 1234, tooltip = info_list)
     info_list02 <- c(info_list, temp_list)
   }
 
-clustpro(matrix = df_data,seed = 1234, tooltip = info_list02)  
+clustpro(matrix = df_data,seed = 1234, tooltip = info_list02, elementId = get_unique_id()) 
 ```
 
 ### Clustering
@@ -108,7 +117,7 @@ db_object$db_list
 best_k <- db_object$best_k
 
 # the best k is used to run the clustpro function with fixed k
-clustpro(matrix = df_data, method = 'kmeans', fixed_k = best_k, seed = seed)
+clustpro(matrix = df_data, method = 'kmeans', fixed_k = best_k, seed = seed, elementId = get_unique_id())
 
 # it is also possible to use the fussy cmeans algorithm
 db_object <- get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'cmeans', seed = seed, cores = 4)
@@ -116,16 +125,16 @@ db_object <- get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'cmean
 db_object$db_list
 best_k <- db_object$best_k
 
-clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, seed = seed)
+clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, seed = seed, elementId = get_unique_id())
 
 # large dataset can be simplified for visualisation. This means that own the mean value of a cluster is show in a single row. The tooltip included the number of grouped proteins. In the json file all protein of a group a stored.
-clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_clustering = TRUE, seed = seed)
+clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_clustering = TRUE, seed = seed, elementId = get_unique_id())
 ```
 
 ### Using clustPro without Visualization
 ```{r using clustPro without visualization}
 # run clustPro without visualization just in the console
-clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
+clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE, elementId = get_unique_id())
 ```
 
 ### Using pre clustered Data
@@ -164,7 +173,7 @@ clustpro(matrix = df_data_extended
          ,clusterVector = clusterVector
          ,perform_clustering = FALSE
          ,rows = row_dend_hclust
-         ,cols = col_dend_hclust)
+         ,cols = col_dend_hclust, elementId = get_unique_id())
 
 ```
 

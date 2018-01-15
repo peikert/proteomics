@@ -71,6 +71,7 @@ clustpro_example <- function(){
 #' @param show_legend boolean; if TRUE color legend is shown
 #' @param useShiny if TRUE html widget is usable for shiny apps, otherwise clustering is returned to R
 #' @param json json file with will used to gernerate widget. further parameter are ignored.
+#' @param elementId unique id for the htmlwdiget. Shiny should take care of this so the default value is NULL.
 #' @return see clustpro() function output
 #' @importFrom htmlwidgets createWidget sizingPolicy
 #' @importFrom ctc hc2Newick
@@ -82,7 +83,7 @@ clustpro <- function(matrix = NULL,
                      min_k = 2,
                      max_k = 10,
                      fixed_k = NULL,
-                     perform_clustering = F,
+                     perform_clustering = TRUE,
                      simplify_clustering = FALSE,
                      clusterVector = NULL,
                      rows = TRUE,
@@ -100,7 +101,9 @@ clustpro <- function(matrix = NULL,
                      random_seeds = NULL,
                      cores = 2,
                      useShiny = TRUE,
-                     json = NULL) {
+                     json = NULL,
+                     elementId = NULL
+                     ) {
 
   #### Test ####
 
@@ -133,8 +136,6 @@ clustpro <- function(matrix = NULL,
   json = NULL
   }
 
-
-
   #### proofing #####
   if(!is.null(json) && class(json) != 'list') stop('"json" must be NULL or of type "list"')
   if(is.null(json)){
@@ -144,8 +145,8 @@ clustpro <- function(matrix = NULL,
   if(!is.numeric(min_k) && min_k>1)stop('min_k must be numeric and greater 1')
   if(!is.numeric(max_k) && max_k>min_k)stop('max_k must be numeric and greater min_k')
   if(!is.null(fixed_k) && (!is.numeric(fixed_k) && (is.numeric(fixed_k) && fixed_k<2)))stop('fixed_k must be numeric and greater 1 or NULL')
-  if(!is.logical(perform_clustering))
-  if(!is.null(clusterVector) || (!class(clusterVector) %in% c("list","vector")) && length(clusterVector) != nrow(matrix)) stop('"clusterVector" must be NULL or of type "list/vector" with a length equal to the rows of the matrix')
+  # if(!is.logical(perform_clustering))
+  if(!is.null(clusterVector) && (!class(clusterVector) %in% c("list","vector")) && length(clusterVector) != nrow(matrix)) stop('"clusterVector" must be NULL or of type "list/vector" with a length equal to the rows of the matrix')
   if(!is.logical(cols) & class(cols)!="hclust" & !is.Newick(cols)) stop('"cols" must be logical, hclust or a newick string')
   if(!is.logical(rows) & class(rows)!="hclust" & !is.Newick(rows)) stop('"rows" must be logical, hclust or a newick string')
   if(!is.null(tooltip) && class(tooltip)!='list') stop('"tooltip" must be NULL or of type "list"')
@@ -177,12 +178,10 @@ clustpro <- function(matrix = NULL,
   if(is.null(cores) || (!is.numeric(cores) && cores != round(cores))) stop('"cores" must be integer')
   }
 
-
   if(!is.null(json) && class(json)=='list'){
     payload <- json
     useShiny <- TRUE
   }else{
-
   # static default values
   xaxis_height = 80
   yaxis_width = 120
@@ -191,7 +190,6 @@ clustpro <- function(matrix = NULL,
   brush_color = "#0000FF"
   show_grid = TRUE
   anim_duration = 500
-
   options <- NULL
   options <- c(
     options,
@@ -207,7 +205,6 @@ clustpro <- function(matrix = NULL,
   )
 
   payload <- list(options = options)
-
   clusters <- NULL
   cluster_centers <- NULL
   row_dend_nw <- NULL
@@ -216,8 +213,6 @@ clustpro <- function(matrix = NULL,
   col_dend_hclust <- NULL
   data <- NULL
   cobject <- NULL
-
-
   if (!perform_clustering) {
     clusters <- clusterVector
     cobject <- NA
@@ -418,6 +413,8 @@ clustpro <- function(matrix = NULL,
 
 
   }
+
+  payload[['elementId']] <- elementId
   json_payload <- jsonlite::toJSON(payload, digits = NaN, pretty = TRUE)
 
   write(json_payload,
@@ -439,6 +436,7 @@ clustpro <- function(matrix = NULL,
     width = width,
     height = height,
     package = 'clustpro',
+    elementId = elementId,
     sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
   )

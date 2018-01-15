@@ -5,13 +5,13 @@
 \title{Clustpro main function}
 \usage{
 clustpro(matrix = NULL, method = "kmeans", hclust_method = "ward.D2",
-  min_k = 2, max_k = 10, fixed_k = NULL, perform_clustering = F,
+  min_k = 2, max_k = 10, fixed_k = NULL, perform_clustering = TRUE,
   simplify_clustering = FALSE, clusterVector = NULL, rows = TRUE,
   cols = TRUE, tooltip = NULL, save_widget = TRUE, show_legend = FALSE,
   color_legend = NULL, width = NULL, height = NULL,
   export_graphics = FALSE, export_dir = NULL, export_type = "svg",
   seed = NULL, random_seeds = NULL, cores = 2, useShiny = TRUE,
-  json = NULL)
+  json = NULL, elementId = NULL)
 }
 \arguments{
 \item{matrix}{numeric data.frame}
@@ -57,6 +57,8 @@ string and have \code{'px'} appended.}
 \item{useShiny}{if TRUE html widget is usable for shiny apps, otherwise clustering is returned to R}
 
 \item{json}{json file with will used to gernerate widget. further parameter are ignored.}
+
+\item{elementId}{unique id for the htmlwdiget. Shiny should take care of this so the default value is NULL.}
 }
 \value{
 see clustpro() function output

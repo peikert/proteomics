@@ -85,7 +85,8 @@ cr <- clustpro(matrix=msdata[,c(3:6)],
                   export_dir = NULL,
                   export_type = 'svg',
                   seed=3,
-               useShiny = F
+               useShiny = T,
+               elementId = 'test'
                   )
 
 order.dendrogram(as.dendrogram(cr$col_dend_hclust))

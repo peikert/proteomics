@@ -15,7 +15,7 @@ output:
 clustPro
 =========
 
-### Install
+## Install
 
 `clustpro` is not on CRAN, so we'll use `devtools::install_github` to install.
 
@@ -24,23 +24,31 @@ clustPro
 ```
 
 
-### Examples
+## Examples
 ```{r initialization}
 # suppressMessages is used to turn of loading package messages
 suppressMessages(library('clustpro'))
+unique_ids <<- paste0('vingette_id_',sprintf("%06d", 1:100000))
+
+get_unique_id <- function(){
+  id <- unique_ids[1]
+  unique_ids <<- unique_ids[-1]
+  return(id)
+}
+
 ```
 
-#### Basic Usage
+### Basic Usage
 ```{r basic usage}
 seed <- 1234
 df_mtcars <- datasets::mtcars
 df_data <- as.data.frame(scale(df_mtcars))
 
-cr <- clustpro(matrix = df_data)
-cr
+clustpro(matrix = df_data, elementId = get_unique_id())
+
 ```
 
-#### Color setup
+### Color setup
 ```{r color setup}
 
 # setting of individual colors
@@ -50,8 +58,8 @@ cr
                      color_list = color_list,
                      auto = TRUE)
 
-cr <- clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TRUE ,seed = 1234)  
-cr 
+clustpro(matrix = df_data, color_legend = color_legend01, show_legend = TRUE ,seed = 1234, elementId = get_unique_id())  
+ 
 # setting of individual intervals
 intervals <- c(-1.9,-0.5,0,0.5,3.3)
   color_legend02 <-
@@ -60,18 +68,16 @@ intervals <- c(-1.9,-0.5,0,0.5,3.3)
                      intervals = intervals,
                      auto = FALSE)
 
-  cr <- clustpro(matrix = df_data, color_legend = color_legend02, show_legend = TRUE ,seed = 1234)  
-cr
+clustpro(matrix = df_data, color_legend = color_legend02, show_legend = TRUE ,seed = 1234, elementId = get_unique_id())  
+
 # setting of individual shown ticks in the legend
-  
 color_legend03 <- color_legend02
 color_legend03$label_position <- c(-1.9,-0.5,0,0.5,3.3)
 
-  cr <- clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,seed = 1234)  
-cr
+clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,seed = 1234, elementId = get_unique_id())  
 ```
 
-#### Adding Tooltips
+### Adding Tooltips
 ```{r tooltips}
 # adding row id to the tooltips as well as a web link 
   info_list <- list()
@@ -79,9 +85,8 @@ cr
   info_list[['link']] <-
     paste('https://www.google.de/search?q=/', rownames(df_data), sep = '')
 
-
-    cr <- clustpro(matrix = df_data,seed = 1234, tooltip = info_list)  
- cr 
+clustpro(matrix = df_data,seed = 1234, tooltip = info_list, elementId = get_unique_id())  
+ 
 # adding all matrix values as strings to the tooltip list     
   df_mtcars02 <- df_mtcars
   colnames(df_mtcars02) <- paste0('info_', colnames(df_mtcars02))
@@ -100,11 +105,10 @@ cr
     info_list02 <- c(info_list, temp_list)
   }
 
-cr <- clustpro(matrix = df_data,seed = 1234, tooltip = info_list02)  
-cr
+clustpro(matrix = df_data,seed = 1234, tooltip = info_list02, elementId = get_unique_id()) 
 ```
 
-#### Clustering
+### Clustering
 ```{r clustering}
 # determine the best number of clusters using the DB-index. Minimal and maximal cluster size defining the rank of options.
 db_object <- clustpro::get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'kmeans', seed = seed, cores = 4)
@@ -113,9 +117,7 @@ db_object$db_list
 best_k <- db_object$best_k
 
 # the best k is used to run the clustpro function with fixed k
-cr <- clustpro(matrix = df_data, method = 'kmeans', fixed_k = best_k, seed = seed)
-cr
-
+clustpro(matrix = df_data, method = 'kmeans', fixed_k = best_k, seed = seed, elementId = get_unique_id())
 
 # it is also possible to use the fussy cmeans algorithm
 db_object <- get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'cmeans', seed = seed, cores = 4)
@@ -123,29 +125,20 @@ db_object <- get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'cmean
 db_object$db_list
 best_k <- db_object$best_k
 
-
-cr <- clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, seed = seed)
-cr
+clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, seed = seed, elementId = get_unique_id())
 
 # large dataset can be simplified for visualisation. This means that own the mean value of a cluster is show in a single row. The tooltip included the number of grouped proteins. In the json file all protein of a group a stored.
-cr <- clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_clustering = TRUE, seed = seed)
-cr
+clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_clustering = TRUE, seed = seed, elementId = get_unique_id())
 ```
 
-#### Using clustPro without Visualization
+### Using clustPro without Visualization
 ```{r using clustPro without visualization}
-
-cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
-cr
-
-
+# run clustPro without visualization just in the console
+clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE, elementId = get_unique_id())
 ```
 
-#### Using pre clustered Data
+### Using pre clustered Data
 ```{r using pre clustered data}
-
-# cr <- clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE)
-
 #randomly group matrix in 3 clusters
 set.seed(seed)
 clusterVector <- sample(1:3, nrow(df_data), replace = TRUE)
@@ -180,22 +173,14 @@ clustpro(matrix = df_data_extended
          ,clusterVector = clusterVector
          ,perform_clustering = FALSE
          ,rows = row_dend_hclust
-         ,cols = col_dend_hclust)
+         ,cols = col_dend_hclust, elementId = get_unique_id())
 
 ```
 
-```{r bug}
+```{r}
 
-# library(d3heatmap)
-# test2 <- d3heatmap(mtcars, scale="column", colors="Blues")
-# 
-# library(gradientPickerD3)
-#  payload <- list(
-#         colors = c("purple", "blue", "green", "yellow", "red"),
-#         ticks = c(-5, stats::runif(1, -4, -1), 0, stats::runif(1, 1, 4), 5)
-#       )
-# gradientPickerD3::gradientPickerD3(payload)
 ```
+
 
 Session info
 =============
