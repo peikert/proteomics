@@ -85,11 +85,10 @@ HTMLWidgets.widget({
     },
     resize: function (el, width, height, instance) {
         debugger;
-        //d3.select(el).select("svg")
-            //.attr("width", width)
-            //.attr("height", height);
-        // instance.force.size([width, height]).resume();
-        // this.doRenderValue(el, instance.lastValue, instance);  // FIX THIS >:/
+        d3.select(el).select("svg")
+            .attr("width", width)
+            .attr("height", height);
+        this.renderValue(el, instance.lastValue, instance);
     },
 
     drawColorLegend : function(el,x, randomIdString){
