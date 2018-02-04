@@ -1028,7 +1028,7 @@ HTMLWidgets.widget({
         var r = (bigint >> 16) & 255;
         var g = (bigint >> 8) & 255;
         var b = bigint & 255;
-        return "rgba(" + r + "," + g + "," + b + ",1)";
+        return "rgba(" + r + "," + g + "," + b + ")"; // removed ,1 from the end (issue 2)
     },
 
     clusterChangeInformation: function (cluster, cluster_change_rows) {
