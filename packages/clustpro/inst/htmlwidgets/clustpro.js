@@ -813,7 +813,7 @@ HTMLWidgets.widget({
         var rowDend = document.getElementsByClassName("rowDend")[0];
         var rowDendSvgString = "";
         if (rowDend.getElementsByTagName("g")[0] != undefined) {
-            rowDend.getElementsByTagName("g")[0].setAttribute("transform", "translate(0,110)");
+            rowDend.getElementsByTagName("g")[0].setAttribute("transform", "translate(40,110)");
             rowDendSvgString = rowDend.innerHTML;
             rowDend.getElementsByTagName("g")[0].setAttribute("transform", "translate(0,0)"); // Transform it back
         }
@@ -829,9 +829,23 @@ HTMLWidgets.widget({
         }
 
         var colormap = document.getElementsByClassName("colormap"+randomIdString)[0];
+        colormap.removeChild(colormap.getElementsByClassName("brush")[0]); // Black box problem (issue 2)
         var normalized_colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
+
+        // Get y axis.
+        var yaxis = document.getElementById("yaxis");
+        yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(1630,110)");
+        var yaxisSVGstring = yaxis.innerHTML;
+
+        // Get x axis
+        var xaxis = document.getElementsByClassName("axis xaxis")[0];
+        xaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(216,760)");
+        var xaxisSVGstring = xaxis.innerHTML;
+        
+
+
         // Do extensicve string manipulations here.
-        var combinedSVG = rowDendSvgString + colDendSvgString + normalized_colormap;
+        var combinedSVG = rowDendSvgString + colDendSvgString + normalized_colormap +yaxisSVGstring + xaxisSVGstring;
         combinedSVG = '<?xml version="1.0"?>\r\n' +
             '<?xml-stylesheet href="lib/clustpro-0.0.1/./clustpro.css" type="text/css"?>\r\n' +
             '<svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" class="colormap" width="2000" height="1000" style="position: absolute; top: 0px; left: 0px; width:1680px; height: 1000px;">\r\n' +
