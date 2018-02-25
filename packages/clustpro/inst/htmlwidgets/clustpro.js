@@ -70,11 +70,11 @@ HTMLWidgets.widget({
         var workSpaceDimensions = this.workspaceDimensionsInitialize(el,x);
 
         // See issue 47
-        if(true){ //x.innerworkSpaceDimensions.initialPass){ // it will be undefined until the R part is implemented.
+        if(true){ //x.innerworkSpaceDimensions.initialPass[0]){ // it will be undefined until the R part is implemented.
             var innerworkSpaceDimensions = this.heightToRowsChecker(this.workspaceDimensionsInitialize(el,x), x);
             innerworkSpaceDimensions.intialPass = true;
         } else {
-            var innerworkSpaceDimensions = x.workSpaceDimensions;
+            var innerworkSpaceDimensions = x.innerworkSpaceDimensions;
         }
         
         innerworkSpaceDimensions.left = 0;

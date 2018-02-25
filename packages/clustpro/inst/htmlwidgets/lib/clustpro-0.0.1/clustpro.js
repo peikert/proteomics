@@ -240,13 +240,24 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         
         // +++++++++++ TODO ++++++++++++++
         // When the R side is implemented, integrate the scroll values coming from the shiny app
-
+        var timer = null;
         document.getElementById("workspace"+randomIdString).onscroll = function(){
-            var left = document.getElementById("workspace"+randomIdString).scrollLeft;
-            var right = document.getElementById("workspace"+randomIdString).scrollTop;
-            if (HTMLWidgets.shinyMode) {
+            if(timer != null){
+                clearTimeout(timer);
+            }
+            timer  = setTimeout(function() {
+                console.log("u scrolling bro")
+                var left = document.getElementById("workspace"+randomIdString).scrollLeft;
+                var right = document.getElementById("workspace"+randomIdString).scrollTop;
+                console.log(left);
+                console.log(right);
+                if (HTMLWidgets.shinyMode) {
                     Shiny.onInputChange(el.id+"_scrollParameters", [left,top] ); // Return scroll bar information to the shiny app
                 }
+            }, 200);
+            // var left = document.getElementById("workspace"+randomIdString).scrollLeft;
+            // var right = document.getElementById("workspace"+randomIdString).scrollTop;
+            
         };
         
 

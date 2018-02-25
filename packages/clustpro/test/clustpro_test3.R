@@ -10,7 +10,8 @@ if(F){
 library("clustpro")
 #runExample03()
 
-path = "D:/git/proteomics/packages/clustpro/payload.json"
-json_data <- jsonlite::fromJSON(paste(readLines( "D:/git/proteomics/packages/clustpro/payload.json"), collapse=""))
+# path = "D:/git/proteomics/packages/clustpro/payload.json"
+path = "/home/numair/Videos/proteomics/packages/clustpro/payload.json"
+#json_data <- jsonlite::fromJSON(paste(readLines( "D:/git/proteomics/packages/clustpro/payload.json"), collapse=""))
+json_data <- jsonlite::fromJSON(paste(readLines( "/home/numair/Videos/proteomics/packages/clustpro/payload.json"), collapse=""))
 clustpro(json = json_data)
-
