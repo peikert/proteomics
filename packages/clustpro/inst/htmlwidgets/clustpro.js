@@ -810,14 +810,14 @@ HTMLWidgets.widget({
 
     combineSVG: function (randomIdString) {
         debugger;
-        var rowDend = document.getElementsByClassName("rowDend")[0];
+        var rowDend = document.getElementsByClassName("rowDend")[0].cloneNode(true);
         var rowDendSvgString = "";
         if (rowDend.getElementsByTagName("g")[0] != undefined) {
             rowDend.getElementsByTagName("g")[0].setAttribute("transform", "translate(40,110)");
             rowDendSvgString = rowDend.innerHTML;
             rowDend.getElementsByTagName("g")[0].setAttribute("transform", "translate(0,0)"); // Transform it back
         }
-        var colDend = document.getElementsByClassName("dendrogram colDend")[0];
+        var colDend = document.getElementsByClassName("dendrogram colDend")[0].cloneNode(true);
         var colDendSvgString = "";
         if (colDend.getElementsByTagName("g")[0] != undefined) {
             colDend.getElementsByTagName("g")[0].setAttribute("transform", "rotate(-90)  translate(0,216)");
@@ -828,19 +828,19 @@ HTMLWidgets.widget({
             colDend = "";
         }
 
-        var colormap = document.getElementsByClassName("colormap"+randomIdString)[0];
+        var colormap = document.getElementsByClassName("colormap"+randomIdString)[0].cloneNode(true);
         colormap.removeChild(colormap.getElementsByClassName("brush")[0]); // Black box problem (issue 2)
         var normalized_colormap = '<g transform="translate(216,110)">' + colormap.innerHTML + '</g>';
 
         // Get y axis.
-        var yaxis = document.getElementById("yaxis");
+        var yaxis = document.getElementById("yaxis").cloneNode(true);
         yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(1630,110)");
         var temp = yaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
         temp.parentNode.removeChild(temp);
         var yaxisSVGstring = yaxis.innerHTML;
 
         // Get x axis
-        var xaxis = document.getElementsByClassName("axis xaxis")[0];
+        var xaxis = document.getElementsByClassName("axis xaxis")[0].cloneNode(true);
         xaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(216,760)");
         temp = xaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
         temp.parentNode.removeChild(temp);
