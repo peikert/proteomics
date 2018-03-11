@@ -576,7 +576,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
 
         var halfColumnWidth = (width/data.length)/2;
-        var mouseTargets = svg.append("g")
+        var mouseTargets = svg.append("g").attr("class","removeThisForSVGSaving")
             .selectAll("g").data(leaves);
         mouseTargets
             .enter()

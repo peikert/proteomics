@@ -835,11 +835,15 @@ HTMLWidgets.widget({
         // Get y axis.
         var yaxis = document.getElementById("yaxis");
         yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(1630,110)");
+        var temp = yaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
+        temp.parentNode.removeChild(temp);
         var yaxisSVGstring = yaxis.innerHTML;
 
         // Get x axis
         var xaxis = document.getElementsByClassName("axis xaxis")[0];
         xaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(216,760)");
+        temp = xaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
+        temp.parentNode.removeChild(temp);
         var xaxisSVGstring = xaxis.innerHTML;
         
 
