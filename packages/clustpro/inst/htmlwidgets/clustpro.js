@@ -130,6 +130,10 @@ HTMLWidgets.widget({
         }
     },
 
+    validateFormOnSubmit: function(){
+        debugger;
+    },
+
 
     doRenderValue: function (el, x, rowNewickSting, colNewickString, instance, 
                                 newMerged, sidebar_options, sideBarDimensions, 
@@ -277,7 +281,38 @@ HTMLWidgets.widget({
                 unscroll.style.cssText = normalCSSText;
         });
 
+        
+        
+        // Set angle
 
+        var setAngle = document.createElement("div");
+        setAngle.setAttribute("id", "setAngle"+randomIdString);
+        setAngle.setAttribute("title", "Set Angle for x-axis labels");
+        setAngle.style.cssText = normalCSSText;
+        // Try to insert a GIF in here....
+        setAngle.innerHTML = Angle();
+        // GIF INSERTED....
+        sideBar.appendChild(setAngle);
+
+        d3.select("#setAngle"+randomIdString)
+        .on("click", function(){
+            debugger;
+            currentRotation = d3.transform(d3.selectAll("#axislabelRow"+randomIdString).attr("transform")).rotate;
+            incrementedRotation = currentRotation + 5;
+           // d3.selectAll("#axislabelRow"+randomIdString).attr("transform","rotate("+incrementedRotation.toString()+")");
+
+            currenty = d3.transform(d3.selectAll("#axislabelRow"+randomIdString).attr("transform")).translate[1];
+            incrementedy= currenty + 5;
+            d3.selectAll("#axislabelRow"+randomIdString).attr("transform" ,"translate(0,"+incrementedy.toString()+")rotate("+incrementedRotation.toString()+")");
+            
+
+        })
+        .on("mouseover", function (d, i) {
+                setAngle.style.cssText = hoverCSSText;
+        })
+        .on("mouseout", function (d, i) {
+                setAngle.style.cssText = normalCSSText;
+        });
 
         // 4) Enable Row Label
         {
@@ -834,14 +869,14 @@ HTMLWidgets.widget({
 
         // Get y axis.
         var yaxis = document.getElementById("yaxis").cloneNode(true);
-        yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(1630,110)");
+        yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(1630,110)"); // Check how much should we translate ?
         var temp = yaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
         temp.parentNode.removeChild(temp);
         var yaxisSVGstring = yaxis.innerHTML;
 
         // Get x axis
         var xaxis = document.getElementsByClassName("axis xaxis")[0].cloneNode(true);
-        xaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(216,760)");
+        xaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(216,760)"); // Check how much should we translate ?
         temp = xaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
         temp.parentNode.removeChild(temp);
         var xaxisSVGstring = xaxis.innerHTML;

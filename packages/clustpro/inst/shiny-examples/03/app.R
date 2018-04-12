@@ -29,6 +29,7 @@ shinyServer(function(input, output) {
 # options(warn = -1)
 # head(data)
   if(is.null(data))file_browser=TRUE else file_browser=FALSE
+  if(is.null(data_columns)) data_columns=colnames(data)
 out_clustProPanel <- callModule(clustProPanel,"clustProPanel",reactive(data), reactive(data_columns), reactive(info_columns), file_browser=file_browser)
 # out_clustProPanel <- callModule(clustProPanel,"clustProPanel")
 

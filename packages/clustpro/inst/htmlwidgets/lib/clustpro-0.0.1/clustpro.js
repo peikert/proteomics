@@ -537,6 +537,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         // Create the actual axis
         var axisNodes = svg.append("g")
             .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
+            .attr("id", "axisnodes"+randomIdString)
             .call(axis);
 
         // Maximum data length
@@ -563,6 +564,8 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         // Calculated on the basis of text length
         axisNodes.selectAll("text").style("fill", "#6F6F6F");
 
+        // The option to rotate
+        axisNodes.selectAll("text").attr("id", rotated ? "axislabelRow"+randomIdString : "");
 
 
         // First find the maximum length,
