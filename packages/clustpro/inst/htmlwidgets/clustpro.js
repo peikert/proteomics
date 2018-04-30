@@ -19,12 +19,6 @@ HTMLWidgets.widget({
         };
     },
 
-    change: function(){
-        console.log("we are the change function");
-        console.log();
-        debugger;
-        
-    },
 
     htmlSideBarInitialize : function (el,x){
         var el = d3.select(el);
@@ -62,6 +56,7 @@ HTMLWidgets.widget({
     renderValue: function (el, x, instance) {
         console.log("-- Entered renderValue() --");
         debugger;
+        x.matrix.cols[1] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbnnnnnnnnnnnnnnnn";
         var randomIdString = Math.floor(Math.random() * 1000000).toString(); // Issue 40
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
@@ -869,7 +864,8 @@ HTMLWidgets.widget({
 
         // Get y axis.
         var yaxis = document.getElementById("yaxis").cloneNode(true);
-        yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate(1630,110)"); // Check how much should we translate ?
+        var yOffset = document.getElementById("yaxis").style.left;
+        yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate("+(parseInt(yOffset,10)).toString()+",110)"); // Check how much should we translate ? // It should be calculated based on the height and the width of the colormap.
         var temp = yaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
         temp.parentNode.removeChild(temp);
         var yaxisSVGstring = yaxis.innerHTML;

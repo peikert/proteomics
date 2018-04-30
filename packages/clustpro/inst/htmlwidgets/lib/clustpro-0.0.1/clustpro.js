@@ -539,7 +539,6 @@ function clustpro(selector, data, options, location_object_array, cluster_change
             .attr("transform", rotated ? "translate(0," + padding + ")" : "translate(" + padding + ",0)")
             .attr("id", "axisnodes"+randomIdString)
             .call(axis);
-
         // Maximum data length
         var maxLength = 0;
         for (i in data) { data[i].length > maxLength ? maxLength = data[i].length : maxLength = maxLength }
@@ -554,13 +553,32 @@ function clustpro(selector, data, options, location_object_array, cluster_change
 
         // We discard the above fix for fontsize for a better and more robust calculation below:
         // The formula only works for x_axis labels
-        fontSize =  opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || rotated ? ((scale.rangeBand()/1.7) / maxLength) * 1.577909 : 
+        fontSize =  opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || rotated ? ((scale.rangeBand()/1.7) / (maxLength*0.5)) * 1.577909 : 
                                                                                     Math.min(18, Math.max(9, scale.rangeBand() - 8));
 
-        //var fontSize = opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || Math.min(18, Math.max(9, scale.rangeBand() - (rotated ? 11 : 8))) + "px";
+        // If we are in the x-axis and font size is below a certain level, then
+
+        // rotate 45 degrees, 
+        // if the font size is still below a certain level, then rotate it 90 degrees. and the font size should be the minimum
+        // comfortably visible level.
+
+
+
+        console.log("FONT SIZE");
+        console.log(fontSize);
+        console.log("SCALE BAND");
+        console.log(scale.rangeBand());
+
+        if(rotated && fontSize <= 13){
+            // so Y and the angle should be calculated dynamically.
+            var newY = maxLength; // should be a function of max length and the width.
+            var angle = 10; // should be a function of the max length and the width.
+            axisNodes.selectAll("text").attr("transform", "translate(0,35)rotate(10)");
+            fontSize =  opts[(rotated ? 'x' : 'y') + 'axis_font_size'] || rotated ? ((scale.rangeBand()/1.7) / (maxLength*0.40)) * 1.577909 : 
+                                                                                    Math.min(18, Math.max(9, scale.rangeBand() - 8));
+        }
+
         axisNodes.selectAll("text").style("font-size", fontSize); // Actual Value
-
-
         // Calculated on the basis of text length
         axisNodes.selectAll("text").style("fill", "#6F6F6F");
 
