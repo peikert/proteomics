@@ -1,11 +1,13 @@
 ---
 title: "Introduction to clustPro"
-date: "`r Sys.Date()`"
 author: "Christian D. Peikert"
+date: '`r Sys.Date()`'
 output:
+  pdf_document:
+    toc: yes
   html_document:
     self_contained: yes
-    toc: true    
+    toc: yes
 ---
 <!--
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,7 +26,7 @@ clustPro
 ```
 
 
-## Examples
+## Initialization
 ```{r initialization}
 # suppressMessages is used to turn of loading package messages
 suppressMessages(library('clustpro'))
@@ -38,7 +40,7 @@ get_unique_id <- function(){
 
 ```
 
-### Basic Usage
+## Basic Usage
 ```{r basic usage}
 seed <- 1234
 df_mtcars <- datasets::mtcars
@@ -48,7 +50,7 @@ clustpro(matrix = df_data, elementId = get_unique_id())
 
 ```
 
-### Color setup
+## Color setup
 ```{r color setup}
 
 # setting of individual colors
@@ -77,7 +79,7 @@ color_legend03$label_position <- c(-1.9,-0.5,0,0.5,3.3)
 clustpro(matrix = df_data, color_legend = color_legend03, show_legend = TRUE ,seed = 1234, elementId = get_unique_id())  
 ```
 
-### Adding Tooltips
+## Adding Tooltips
 ```{r tooltips}
 # adding row id to the tooltips as well as a web link 
   info_list <- list()
@@ -108,7 +110,7 @@ clustpro(matrix = df_data,seed = 1234, tooltip = info_list, elementId = get_uniq
 clustpro(matrix = df_data,seed = 1234, tooltip = info_list02, elementId = get_unique_id()) 
 ```
 
-### Clustering
+## Clustering
 ```{r clustering}
 # determine the best number of clusters using the DB-index. Minimal and maximal cluster size defining the rank of options.
 db_object <- clustpro::get_best_k(matrix = df_data, min_k = 2, max_k = 10, method = 'kmeans', seed = seed, cores = 4)
@@ -131,13 +133,13 @@ clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, seed = seed, ele
 clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_clustering = TRUE, seed = seed, elementId = get_unique_id())
 ```
 
-### Using clustPro without Visualization
+## Using clustPro without Visualization
 ```{r using clustPro without visualization}
 # run clustPro without visualization just in the console
 clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE, elementId = get_unique_id())
 ```
 
-### Using pre clustered Data
+## Using pre clustered Data
 ```{r using pre clustered data}
 #randomly group matrix in 3 clusters
 set.seed(seed)
