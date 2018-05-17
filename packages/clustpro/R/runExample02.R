@@ -60,5 +60,6 @@ runExample02 <- function() {
   parameter_list$cores = 2
   parameter_list$useShiny = TRUE
 
-  app02(parameter_list)
+
+  app(parameter_list)
 }

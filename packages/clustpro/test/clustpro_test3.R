@@ -8,6 +8,7 @@ if(F){
   devtools::install()
 }
 library("clustpro")
+#runExample02()
 #runExample03()
 
 # path = "D:/git/proteomics/packages/clustpro/payload.json"
