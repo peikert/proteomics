@@ -56,7 +56,7 @@ HTMLWidgets.widget({
     renderValue: function (el, x, instance) {
         console.log("-- Entered renderValue() --");
         debugger;
-        x.matrix.cols[1] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbnnnnnnnnnnnnnnnn";
+        //x.matrix.cols[1] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbnnnnnnnnnnnnnnnn";
         var randomIdString = Math.floor(Math.random() * 1000000).toString(); // Issue 40
         var rowNewickString = x.dendnw_row[0];
         var colNewickString = x.dendnw_col[0];
@@ -864,8 +864,9 @@ HTMLWidgets.widget({
 
         // Get y axis.
         var yaxis = document.getElementById("yaxis").cloneNode(true);
-        var yOffset = document.getElementById("yaxis").style.left;
-        yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate("+(parseInt(yOffset,10)).toString()+",110)"); // Check how much should we translate ? // It should be calculated based on the height and the width of the colormap.
+        var yOffset = parseInt(document.getElementById("yaxis").style.left,10);
+        var sidebar_width =  parseInt(document.getElementById("myTopnav"+randomIdString).style.width,10);
+        yaxis.getElementsByTagName("g")[0].setAttribute("transform","translate("+(yOffset+sidebar_width).toString()+",110)"); // Check how much should we translate ? // It should be calculated based on the height and the width of the colormap.
         var temp = yaxis.getElementsByClassName("removeThisForSVGSaving")[0] // Black box problem (issue 2)
         temp.parentNode.removeChild(temp);
         var yaxisSVGstring = yaxis.innerHTML;

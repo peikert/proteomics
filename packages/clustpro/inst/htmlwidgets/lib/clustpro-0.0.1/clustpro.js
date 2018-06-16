@@ -570,6 +570,7 @@ function clustpro(selector, data, options, location_object_array, cluster_change
         console.log(scale.rangeBand());
 
         if(rotated && fontSize <= 13){
+            // Come up with a more robust equation to calculate the angle and the font.
             // so Y and the angle should be calculated dynamically.
             var newY = maxLength; // should be a function of max length and the width.
             var angle = 10; // should be a function of the max length and the width.
