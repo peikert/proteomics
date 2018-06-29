@@ -6,9 +6,18 @@
     column(
       4,
       br(),
-
-      uiOutput(ns('datafile')),
-      uiOutput(ns('choice')),
+      div(
+        style="
+        display: inline-flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: left;
+        width: 100%;
+        position: relavtive;
+        ",
+        div(style = "width: 65%; height:100%; padding: 4px;", uiOutput(ns('datafile'))),
+        div(style = "width: 35%; height:100%; padding: 4px;", uiOutput(ns('choice')))
+        ),
       fluidRow(
         column(
           6,

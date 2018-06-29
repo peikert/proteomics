@@ -4,10 +4,11 @@
 #' @export
 runExample02 <- function() {
   appDir <- system.file("shiny-examples", "02", package = "clustpro")
-  if (appDir == "") {
+  print(appDir)
+  if (appDir == ""){
     stop("Could not find example directory. Try re-installing `clustpro`.", call. = FALSE)
   }
-  source(file.path(appDir,"app.R"))
+  source(file.path(appDir,"/app.R"))
 
   df_mtcars <- datasets::mtcars
   df_data <- as.data.frame(scale(df_mtcars))
@@ -61,5 +62,5 @@ runExample02 <- function() {
   parameter_list$useShiny = TRUE
 
 
-  app(parameter_list)
+  example02_app(parameter_list)
 }

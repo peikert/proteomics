@@ -4,7 +4,8 @@
 #' parameter_list list of parameter for clustpro function call.
 #' @import shiny, shinyjs, clustpro, gradientPickerD3, plotly, stringr
 #' @export
-app <- function(parameter_list) {
+example02_app <- function(parameter_list) {
+  library('shiny')
 shinyApp(
   ui = fluidPage(div(style = 'width: 100% ; height:100vh', clustproOutput("cluster"))),
   server = function(input, output) {
