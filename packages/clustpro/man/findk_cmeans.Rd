@@ -12,10 +12,6 @@ findk_cmeans(matrix, k, seed = NULL)
 \item{k}{number of clusters, k}
 
 \item{seed}{natural number, useful for creating simulations or random objects that can be reproduced}
-
-\item{minimalSet}{object of the class minimalSet}
-
-\item{fp}{fuzzification parameter}
 }
 \description{
 .................

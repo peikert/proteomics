@@ -7,7 +7,7 @@
 is.Newick(newick_string)
 }
 \arguments{
-\item{x}{numeric data.frame}
+\item{newick_string}{string to test}
 }
 \description{
 This function returns TRUE is string is in newick format, FALSE otherwise

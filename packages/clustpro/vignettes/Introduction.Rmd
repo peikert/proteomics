@@ -1,11 +1,13 @@
 ---
 title: "Introduction to clustPro"
-date: "`r Sys.Date()`"
 author: "Christian D. Peikert"
+date: "`r Sys.Date()`"
 output:
   html_document:
     self_contained: yes
-    toc: true    
+    toc: yes
+  pdf_document:
+    toc: yes
 ---
 <!--
   %\VignetteEngine{knitr::rmarkdown}
@@ -28,7 +30,7 @@ clustPro
 ```{r initialization}
 # suppressMessages is used to turn of loading package messages
 suppressMessages(library('clustpro'))
-unique_ids <<- paste0('vingette_id_',sprintf("%06d", 1:100000))
+unique_ids <<- paste0('vignette_id_',sprintf("%06d", 1:100000))
 
 get_unique_id <- function(){
   id <- unique_ids[1]
@@ -48,7 +50,7 @@ clustpro(matrix = df_data, elementId = get_unique_id())
 
 ```
 
-### Color setup
+### Color Setup
 ```{r color setup}
 
 # setting of individual colors
@@ -137,7 +139,7 @@ clustpro(matrix = df_data, method = 'cmeans', fixed_k = best_k, simplify_cluster
 clustpro(matrix = df_data, method = 'kmeans', seed = seed, useShiny = FALSE, elementId = get_unique_id())
 ```
 
-### Using pre clustered Data
+### Using pre-clustered Data
 ```{r using pre clustered data}
 #randomly group matrix in 3 clusters
 set.seed(seed)

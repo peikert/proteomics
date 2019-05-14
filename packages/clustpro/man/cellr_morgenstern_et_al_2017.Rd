@@ -4,7 +4,7 @@
 \name{cellr_morgenstern_et_al_2017}
 \alias{cellr_morgenstern_et_al_2017}
 \title{Morgenstern et al., Cell Reports 2017}
-\format{A data frame with  1576 rows and 23 variables}
+\format{A data frame with 1576 rows and 54 variables}
 \usage{
 data(cellr_morgenstern_et_al_2017)
 }
@@ -21,60 +21,60 @@ The variables are as follows:
 }
 \details{
 \itemize{
-\item Systematic_names ToDo
-\item Uniprot_ID ToDo
-\item Gene_names ToDo
-\item Protein_Description ToDo
-\item Moleular_weight_Da ToDo
-\item High_confidence_mito_proteome ToDo
-\item Sequence_coverage ToDo
-\item Mean_copy_number_Glucose ToDo
-\item Mean_copy_number_Galactose ToDo
-\item Mean_copy_number_Glycerol ToDo
-\item Absolute_quantification_accuracy ToDo
-\item Copy_number_Kulak_et_al_2014 ToDo
-\item Copy_number_Chong_et_al_2015 ToDo
-\item Copy_number_Ghaemmaghami_et_al_2003 ToDo
-\item Cluster ToDo
-\item pValue_ANOVA_test ToDo
-\item GOBP_terms ToDo
-\item GOBP_names ToDo
-\item GOMF_terms ToDo
-\item GOMF_names ToDo
-\item GOCC_terms ToDo
-\item GOC_names ToDo
-\item Copy_number_Gal_Rep1 ToDo
-\item Copy_number_Gal_Rep2 ToDo
-\item Copy_number_Gal_Rep3 ToDo
-\item Copy_number_Glc_Rep1 ToDo
-\item Copy_number_Glc_Rep2 ToDo
-\item Copy_number_Glc_Rep3 ToDo
-\item Copy_number_Gly_Rep1 ToDo
-\item Copy_number_Gly_Rep2 ToDo
-\item Copy_number_Gly_Rep3 ToDo
-\item Log2_copy_number_Gal_Rep1 ToDo
-\item Log2_copy_number_Gal_Rep2 ToDo
-\item Log2_copy_number_Gal_Rep3 ToDo
-\item Log2_copy_number_Glc_Rep1 ToDo
-\item Log2_copy_number_Glc_Rep2 ToDo
-\item Log2_copy_number_Glc_Rep3 ToDo
-\item Log2_copy_number_Gly_Rep1 ToDo
-\item Log2_copy_number_Gly_Rep2 ToDo
-\item Log2_copy_number_Gly_Rep3 ToDo
-\item MS_Intensity_Gal_Rep1 ToDo
-\item MS_Intensity_Gal_Rep2 ToDo
-\item MS_Intensity_Gal_Rep3 ToDo
-\item MS_Intensity_Glc_Rep1 ToDo
-\item MS_Intensity_Glc_Rep2 ToDo
-\item MS_Intensity_Glc_Rep3 ToDo
-\item MS_Intensity_Gly_Rep1 ToDo
-\item MS_Intensity_Gly_Rep2 ToDo
-\item MS_Intensity_Gly_Rep3 ToDo
-\item mean_log2_copy_number_Gal ToDo
-\item mean_log2_copy_number_Gly ToDo
-\item mean_log2_copy_number_Glc ToDo
-\item Gal_div_Glc ToDo
-\item Gly_div_Glc ToDo
+\item Systematic_names systematic name, Saccharomyces Genome Datavase (SGD)
+\item Uniprot_ID Universal Protein database (UniProt) identifier
+\item Gene_names name of gene
+\item Protein_Description protein description
+\item Moleular_weight_Da molecular weight of the leading protein sequence
+\item High_confidence_mito_proteome reported mitochondria proteome
+\item Sequence_coverage coverage of protein sequence by the identified peptides
+\item Mean_copy_number_Glucose protein mean copy number in cells grown on glucose
+\item Mean_copy_number_Galactose protein mean copy number in cells grown on galactose
+\item Mean_copy_number_Glycerol protein mean copy number in cells grown on glycerol
+\item Absolute_quantification_accuracy degree of quantification accuracy, according to Perseus
+\item Copy_number_Kulak_et_al_2014 protein copy number reported by Kulak et al 2014
+\item Copy_number_Chong_et_al_2015 protein copy number reported by Chong et al 2015
+\item Copy_number_Ghaemmaghami_et_al_2003 protein copy number reported by Ghaemmaghami et al 2003
+\item Cluster corresponding cluster number
+\item pValue_ANOVA_test resulting p-value of an anova test
+\item GOBP_terms gene ontology biological process terms
+\item GOBP_names gene ontology biological process names
+\item GOMF_terms gene ontology molecular function terms
+\item GOMF_names gene ontology molecular function names
+\item GOCC_terms gene ontology cellular component terms
+\item GOC_names gene ontology cellular component names
+\item Copy_number_Gal_Rep1 protein copy number based on the proteomic ruler method galactose (Gal) replicate 1
+\item Copy_number_Gal_Rep2 protein copy number based on the proteomic ruler method galactose (Gal) replicate 2
+\item Copy_number_Gal_Rep3 protein copy number based on the proteomic ruler method galactose (Gal) replicate 3
+\item Copy_number_Glc_Rep1 protein copy number based on the proteomic ruler method glucose (Glc) replicate 1
+\item Copy_number_Glc_Rep2 protein copy number based on the proteomic ruler method glucose (Glc) replicate 2
+\item Copy_number_Glc_Rep3 protein copy number based on the proteomic ruler method glucose (Glc) replicate 3
+\item Copy_number_Gly_Rep1 protein copy number based on the proteomic ruler method glycerol (Gly) replicate 1
+\item Copy_number_Gly_Rep2 protein copy number based on the proteomic ruler method glycerol (Gly) replicate 2
+\item Copy_number_Gly_Rep3 protein copy number based on the proteomic ruler method glycerol (Gly) replicate 3
+\item Log2_copy_number_Gal_Rep1 protein copy number based on the proteomic ruler method galactose (Gal) replicate 1, log2 transformed
+\item Log2_copy_number_Gal_Rep2 protein copy number based on the proteomic ruler method galactose (Gal) replicate 2, log2 transformed
+\item Log2_copy_number_Gal_Rep3 protein copy number based on the proteomic ruler method galactose (Gal) replicate 3, log2 transformed
+\item Log2_copy_number_Glc_Rep1 protein copy number based on the proteomic ruler method glucose (Glc) replicate 1, log2 transformed
+\item Log2_copy_number_Glc_Rep2 protein copy number based on the proteomic ruler method glucose (Glc) replicate 2, log2 transformed
+\item Log2_copy_number_Glc_Rep3 protein copy number based on the proteomic ruler method glucose (Glc) replicate 3, log2 transformed
+\item Log2_copy_number_Gly_Rep1 protein copy number based on the proteomic ruler method glycerol (Gly) replicate 1, log2 transformed
+\item Log2_copy_number_Gly_Rep2 protein copy number based on the proteomic ruler method glycerol (Gly) replicate 2, log2 transformed
+\item Log2_copy_number_Gly_Rep3 protein copy number based on the proteomic ruler method glycerol (Gly) replicate 3, log2 transformed
+\item MS_Intensity_Gal_Rep1 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, galactose (Gal) replicate 1
+\item MS_Intensity_Gal_Rep2 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, galactose (Gal) replicate 2
+\item MS_Intensity_Gal_Rep3 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, galactose (Gal) replicate 3
+\item MS_Intensity_Glc_Rep1 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, glucose (Glc) replicate 1
+\item MS_Intensity_Glc_Rep2 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, glucose (Glc) replicate 2
+\item MS_Intensity_Glc_Rep3 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, glucose (Glc) replicate 3
+\item MS_Intensity_Gly_Rep1 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, glycerol (Gly) replicate 1
+\item MS_Intensity_Gly_Rep2 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, glycerol (Gly) replicate 2
+\item MS_Intensity_Gly_Rep3 summed up eXtracted Ion Current (XIC) of all isotopic clusters associated with the identified AA sequence, glycerol (Gly) replicate 3
+\item mean_log2_copy_number_Gal protein mean copy number grown on galactose, log2 transformed
+\item mean_log2_copy_number_Gly protein mean copy number grown on glucose, log2 transformed
+\item mean_log2_copy_number_Glc protein mean copy number grown on glycerol, log2 transformed
+\item Gal_div_Glc ratio of mean log2 ratio galactose vs mean log2 ratio glucose
+\item Gly_div_Glc ratio of mean log2 ratio glycerol vs mean log2 ratio glucose
 }
 }
 \references{

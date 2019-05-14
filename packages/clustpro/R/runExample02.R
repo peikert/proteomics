@@ -4,11 +4,12 @@
 #' @export
 runExample02 <- function() {
   appDir <- system.file("shiny-examples", "02", package = "clustpro")
-  print(appDir)
-  if (appDir == ""){
+  if (appDir == "") {
     stop("Could not find example directory. Try re-installing `clustpro`.", call. = FALSE)
   }
-  source(file.path(appDir,"/app.R"))
+
+  example02_app <- NULL
+  source(file.path(appDir,"app.R"))
 
   df_mtcars <- datasets::mtcars
   df_data <- as.data.frame(scale(df_mtcars))
@@ -17,7 +18,6 @@ runExample02 <- function() {
   info_columns <- colnames(df_mtcars)
   data <- cbind(df_data, df_mtcars)
 
-  # intervals <- c(-1.1,-0.5,0,0.5,1.1)
   color_list <- c("blue", "lightblue", "white", "yellow", "red")
   color_legend <-
     setHeatmapColors(data = df_data,
@@ -39,7 +39,7 @@ runExample02 <- function() {
     })
     names(temp_list) <-
       sapply(info_columns, function(x)
-        stringr:::str_match(x, 'info_(.*)')[2])
+        stringr::str_match(x, 'info_(.*)')[2])
 
     info_list <- c(info_list, temp_list)
   }
@@ -60,7 +60,6 @@ runExample02 <- function() {
   parameter_list$seed = 1234
   parameter_list$cores = 2
   parameter_list$useShiny = TRUE
-
 
   example02_app(parameter_list)
 }

@@ -8,17 +8,13 @@ runExample04 <- function() {
   if (appDir == "") {
     stop("Could not find example directory. Try re-installing `clustpro`.", call. = FALSE)
   }
+  shinyClustPro <- NULL
   source(file.path(appDir,"app.R"))
   source(file.path(moduleDir,"module_shiny_clustpro.R"))
-
-  data("cellr_morgenstern_et_al_2017")
-  df_proteomics <- cellr_morgenstern_et_al_2017
+  clustpro::cellr_morgenstern_et_al_2017
   colnames(df_proteomics)
   data_columns <- c("Gal_div_Glc","Gly_div_Glc")
   df_proteomics <- df_proteomics[complete.cases(df_proteomics[,data_columns]),]
-  # sds <-  apply(df_proteomics[,data_columns],1,sd,na.rm=TRUE)
-  # bp <- boxplot(sds)
-  # df_proteomics <- df_proteomics[sds>bp$stats[5],]
   info_columns <- c("Gene_names","Protein_Description","Sequence_coverage","Gene_names","High_confidence_mito_proteome","Mean_copy_number_Glucose","Mean_copy_number_Galactose","Mean_copy_number_Glycerol","Copy_number_Kulak_et_al_2014","Copy_number_Chong_et_al_2015","Copy_number_Ghaemmaghami_et_al_2003")
   rownames(df_proteomics) <- df_proteomics$Systematic_names
 

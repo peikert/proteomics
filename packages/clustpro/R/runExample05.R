@@ -8,6 +8,7 @@ runExample05 <- function() {
   if (appDir == "") {
     stop("Could not find example directory. Try re-installing `clustpro`.", call. = FALSE)
   }
+  shinyClustPro <- NULL
   source(file.path(appDir,"app.R"))
   source(file.path(moduleDir,"module_shiny_clustpro.R"))
   shinyClustPro()

@@ -105,36 +105,36 @@ clustpro <- function(matrix = NULL,
                      elementId = NULL
                      ) {
 
-  #### Test ####
-
-  if(F){
-    library('foreach')
-  matrix =mtcars
-  method = "kmeans"
-  hclust_method = "ward.D2"
-  min_k = 2
-  max_k = 10
-  fixed_k = NULL
-  perform_clustering = TRUE
-  simplify_clustering = FALSE
-  clusterVector = NULL
-  rows = TRUE
-  cols = TRUE
-  tooltip = NULL
-  save_widget = TRUE
-  show_legend = FALSE
-  color_legend = NULL
-  width = NULL
-  height = NULL
-  export_graphics = FALSE
-  export_dir = NULL
-  export_type = 'svg'
-  seed = NULL
-  random_seeds = NULL
-  cores = 2
-  useShiny = TRUE
-  json = NULL
-  }
+  # #### Test ####
+  #
+  # if(F){
+  #   library('foreach')
+  # matrix =mtcars
+  # method = "kmeans"
+  # hclust_method = "ward.D2"
+  # min_k = 2
+  # max_k = 10
+  # fixed_k = NULL
+  # perform_clustering = TRUE
+  # simplify_clustering = FALSE
+  # clusterVector = NULL
+  # rows = TRUE
+  # cols = TRUE
+  # tooltip = NULL
+  # save_widget = TRUE
+  # show_legend = FALSE
+  # color_legend = NULL
+  # width = NULL
+  # height = NULL
+  # export_graphics = FALSE
+  # export_dir = NULL
+  # export_type = 'svg'
+  # seed = NULL
+  # random_seeds = NULL
+  # cores = 2
+  # useShiny = TRUE
+  # json = NULL
+  # }
 
   #### proofing #####
   if(!is.null(json) && class(json) != 'list') stop('"json" must be NULL or of type "list"')
@@ -550,8 +550,6 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
 #' .................
 #' @param matrix numeric data.frame
 #' @param k number of clusters, k
-#' @param minimalSet object of the class minimalSet
-#' @param fp fuzzification parameter
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
 #' @import e1071
 #' @importFrom clusterSim index.DB
@@ -733,7 +731,7 @@ get_best_k <-
 #' @param export_type character; type of exported graphics, tested for tif and svg
 #' @import stats
 #' @import e1071
-#' @importFrom ggplot2 ggplot geom_line geom_point geom_text ylab xlab theme ggtitle ggsave aes_string element_text element_blank element_line
+#' @importFrom ggplot2 ggplot geom_line geom_point geom_text ylab xlab theme ggtitle ggsave aes_string element_text element_blank element_line scale_colour_manual sec_axis scale_y_continuous
 #' @importFrom ctc hc2Newick
 clustering <- function(matrix,
                        min_k = 2,
@@ -753,10 +751,13 @@ clustering <- function(matrix,
     k <- fixed_k
   } else {
 
-    if(is.null(seed))seed <- .Random.seed[1]
+    if(is.null(seed)){
+      # seed <- .Random.seed[1]
+      seed <- sample(1000:9999, 1)
+    }
     seeds <- list(seed)
     if(is.numeric(random_seeds)){
-      seeds <- sample(1:5000, random_seeds, replace=T)
+      seeds <- sample(1000:9999, random_seeds, replace=T)
     }
     best_ks <- list()
     for(seed_i in seeds){
@@ -985,6 +986,8 @@ color_spectrum <-
 #' @param intervals list of numerical vaules which define the breaks of the color space
 #' @param color_list list of colors
 #' @param auto boolean, if TRUE automatical gerneates ticks for the dataset
+#' @param border_extensions double, which are add/subtracted from the maxima/minima
+#' @param decimal_places integer indicating the number of decimal places
 #' @keywords color spectrum heatmaps
 #' @export
 setHeatmapColors <-
@@ -1080,19 +1083,20 @@ createTooltipList <- function(data,selected_columns=NULL){
 #' Function to prove if sting is in newick format
 #'
 #' This function returns TRUE is string is in newick format, FALSE otherwise
-#' @param x numeric data.frame
+#' @param newick_string string to test
 #' @keywords newickformat
+#' @import stringr
 #' @export
 
 is.Newick <- function(newick_string){
 
   if(class(newick_string)!='character')return(FALSE)
-  newick_string  <- stringr::str_replace_all(newick_string,":\\d+\\.{0,1}\\d*", "")
-  if(stringr::str_sub(newick_string,-1,-1)!=';') newick_string <- paste0(newick_string,';')
-  if(stringr::str_count(newick_string,"\\(") != stringr::str_count(newick_string,"\\)"))return(FALSE)
+  newick_string  <- str_replace_all(newick_string,":\\d+\\.{0,1}\\d*", "")
+  if(str_sub(newick_string,-1,-1)!=';') newick_string <- paste0(newick_string,';')
+  if(str_count(newick_string,"\\(") !=str_count(newick_string,"\\)"))return(FALSE)
   while(TRUE){
     newick_string_pre <- newick_string
-    newick_string <- stringr::str_replace_all(newick_string,'\\([\\d+|\\?],[\\d+|\\?]\\)','\\?')
+    newick_string <- str_replace_all(newick_string,'\\([\\d+|\\?],[\\d+|\\?]\\)','\\?')
     if(newick_string_pre==newick_string)break
     # print(newick_string)
   }

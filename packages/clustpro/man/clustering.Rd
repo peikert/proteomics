@@ -5,8 +5,9 @@
 \title{Clustering}
 \usage{
 clustering(matrix, min_k = 2, max_k = 100, fixed_k = NULL,
-  method = "kmeans", hclust_method = "ward.D2", cores = 2, seed = NULL,
-  random_seeds = NULL, export_graphics = FALSE, export_type = "svg")
+  method = "kmeans", hclust_method = "ward.D2", cores = 2,
+  seed = NULL, random_seeds = NULL, export_graphics = FALSE,
+  export_type = "svg")
 }
 \arguments{
 \item{matrix}{numeric data.frame}

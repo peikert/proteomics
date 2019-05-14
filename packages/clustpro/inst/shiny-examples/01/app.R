@@ -11,8 +11,6 @@ shinyApp(
       data_columns <- colnames(df_data)
       info_columns <- colnames(df_mtcars)
       data <- cbind(df_data, df_mtcars)
-
-      # intervals <- c(-1.1,-0.5,0,0.5,1.1)
       color_list <- c("blue", "lightblue", "white", "yellow", "red")
       color_legend <-
         setHeatmapColors(data = df_data,
@@ -34,7 +32,7 @@ shinyApp(
         })
         names(temp_list) <-
           sapply(info_columns, function(x)
-            stringr:::str_match(x, 'info_(.*)')[2])
+            stringr::str_match(x, 'info_(.*)')[2])
 
         info_list <- c(info_list, temp_list)
       }

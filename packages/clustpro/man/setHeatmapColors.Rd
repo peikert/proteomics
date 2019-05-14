@@ -4,8 +4,9 @@
 \alias{setHeatmapColors}
 \title{Function to set heatmap color}
 \usage{
-setHeatmapColors(data, color_list = c("red", "yellow", "green"), intervals,
-  auto = FALSE, border_extensions = 1e-04, decimal_places = 4)
+setHeatmapColors(data, color_list = c("red", "yellow", "green"),
+  intervals, auto = FALSE, border_extensions = 1e-04,
+  decimal_places = 4)
 }
 \arguments{
 \item{data}{numeric data.frame, list or vector}
@@ -15,6 +16,10 @@ setHeatmapColors(data, color_list = c("red", "yellow", "green"), intervals,
 \item{intervals}{list of numerical vaules which define the breaks of the color space}
 
 \item{auto}{boolean, if TRUE automatical gerneates ticks for the dataset}
+
+\item{border_extensions}{double, which are add/subtracted from the maxima/minima}
+
+\item{decimal_places}{integer indicating the number of decimal places}
 }
 \description{
 This function allows you to define the color spectrum for heatmaps.

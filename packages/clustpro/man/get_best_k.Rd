@@ -4,8 +4,8 @@
 \alias{get_best_k}
 \title{Get best k}
 \usage{
-get_best_k(matrix, min_k = 2, max_k = 10, method = "kmeans", cores = 1,
-  seed = NULL)
+get_best_k(matrix, min_k = 2, max_k = 10, method = "kmeans",
+  cores = 1, seed = NULL)
 }
 \arguments{
 \item{matrix}{numeric data.frame}
