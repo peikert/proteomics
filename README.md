@@ -7,6 +7,6 @@ the Shiny framework.
 
 clustPro is available on CRAN.
 
-devtools::install_github("peikert/proteomics/clustpro")
+https://github.com/peikert/proteomics/blob/master/packages/clustpro_0.1.0.0.tar.gz
 
 [ClustPro](/packages/clustpro)
