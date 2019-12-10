@@ -1,13 +1,13 @@
 Package: clustpro
 Type: Package
-Title: clustPro, guided clustering analysis and interactive visualization using R Shiny
+Title: Guided Clustering Analysis and Interactive Visualization using 'shiny'
 Version: 0.1.0.0
 Authors@R: c(
     person("Christian D.","Peikert", role = c("aut", "cre"), email = "christian.peikert@t-online.de"),
     person("Muhammad Numair", "Mansur", email = "numair.mansur@gmail.com", role = c("aut"))
     )
-Maintainer: Christian D. Peikert <christian.peikert@biologie.uni-freiburg.de>
-Description: clustPro is an R package for guided clustering analysis and interactive data visualization. It supports the common clustering algorithms k-means and c-means and enables optimal cluster size prediction. In addition to interactive visualization, it allows user-friendly analysis and sharing of data using JavaScript and the Shiny framework.
+Maintainer: Christian D. Peikert <christian.peikert@t-online.de>
+Description: Supports the common clustering algorithms k-means and c-means and enables optimal cluster size prediction. In addition to interactive visualization, it allows user-friendly analysis and sharing of data using 'JavaScript' and the 'shiny' framework.
 License: GPL-2
 Depends:
     R (>= 3.1.0)

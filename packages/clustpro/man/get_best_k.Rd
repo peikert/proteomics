@@ -21,3 +21,6 @@ get_best_k(matrix, min_k = 2, max_k = 10, method = "kmeans",
 \description{
 .................
 }
+\examples{
+get_best_k(matrix = mtcars["mpg",drop=FALSE],min_k = 2,max_k = 4)
+}

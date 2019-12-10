@@ -66,3 +66,32 @@ see clustpro() function output
 \description{
 This function is used to start the clustering and visualisation process.
 }
+\examples{
+library('foreach')
+clustpro(matrix = mtcars
+,method = "kmeans"
+,hclust_method = "ward.D2"
+,min_k = 2
+,max_k = 10
+,fixed_k = NULL
+,perform_clustering = TRUE
+,simplify_clustering = FALSE
+,clusterVector = NULL
+,rows = TRUE
+,cols = TRUE
+,tooltip = NULL
+,save_widget = TRUE
+,show_legend = FALSE
+,color_legend = NULL
+,width = NULL
+,height = NULL
+,export_graphics = FALSE
+,export_dir = NULL
+,export_type = 'svg'
+,seed = NULL
+,random_seeds = NULL
+,cores = 2
+,useShiny = TRUE
+,json = NULL
+)
+}

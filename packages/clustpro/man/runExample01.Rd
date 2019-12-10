@@ -9,3 +9,8 @@ runExample01()
 \description{
 starts a test shiny app
 }
+\examples{
+\dontrun{
+runExample01()
+}
+}

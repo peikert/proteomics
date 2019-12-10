@@ -2,8 +2,9 @@
 #'
 #' A theoretical proteomics dataset composed of 1000 human proteins (UniProt accessionn umbers) and random choosen values will be used to call the clustpro() main function.
 #' @return see clustpro() function output
+#' @examples
+#' clustpro_example()
 #' @export
-#'
 clustpro_example <- function(){
   matrix <- datasets::iris[-ncol(datasets::iris)]
   max(matrix)
@@ -76,6 +77,34 @@ clustpro_example <- function(){
 #' @importFrom htmlwidgets createWidget sizingPolicy
 #' @importFrom ctc hc2Newick
 #' @importFrom jsonlite toJSON
+#' @examples
+#' library('foreach')
+#' clustpro(matrix = mtcars
+#' ,method = "kmeans"
+#' ,hclust_method = "ward.D2"
+#' ,min_k = 2
+#' ,max_k = 10
+#' ,fixed_k = NULL
+#' ,perform_clustering = TRUE
+#' ,simplify_clustering = FALSE
+#' ,clusterVector = NULL
+#' ,rows = TRUE
+#' ,cols = TRUE
+#' ,tooltip = NULL
+#' ,save_widget = TRUE
+#' ,show_legend = FALSE
+#' ,color_legend = NULL
+#' ,width = NULL
+#' ,height = NULL
+#' ,export_graphics = FALSE
+#' ,export_dir = NULL
+#' ,export_type = 'svg'
+#' ,seed = NULL
+#' ,random_seeds = NULL
+#' ,cores = 2
+#' ,useShiny = TRUE
+#' ,json = NULL
+#' )
 #' @export
 clustpro <- function(matrix = NULL,
                      method = "kmeans",
@@ -105,37 +134,6 @@ clustpro <- function(matrix = NULL,
                      elementId = NULL
                      ) {
 
-  # #### Test ####
-  #
-  # if(F){
-  #   library('foreach')
-  # matrix =mtcars
-  # method = "kmeans"
-  # hclust_method = "ward.D2"
-  # min_k = 2
-  # max_k = 10
-  # fixed_k = NULL
-  # perform_clustering = TRUE
-  # simplify_clustering = FALSE
-  # clusterVector = NULL
-  # rows = TRUE
-  # cols = TRUE
-  # tooltip = NULL
-  # save_widget = TRUE
-  # show_legend = FALSE
-  # color_legend = NULL
-  # width = NULL
-  # height = NULL
-  # export_graphics = FALSE
-  # export_dir = NULL
-  # export_type = 'svg'
-  # seed = NULL
-  # random_seeds = NULL
-  # cores = 2
-  # useShiny = TRUE
-  # json = NULL
-  # }
-
   #### proofing #####
   if(!is.null(json) && class(json) != 'list') stop('"json" must be NULL or of type "list"')
   if(is.null(json)){
@@ -160,14 +158,6 @@ clustpro <- function(matrix = NULL,
   if(!is.null(seed) && !class(seed)%in%c('numeric','integer')) stop('"seed" must be NULL or of type "numeric"')
   if(!is.null(random_seeds) && !class(random_seeds)%in%c('numeric','integer')) stop('"random_seeds" must be NULL or of type "numeric"')
   }
-       # if(min(matrix)<min(color_legend$ticks)){
-    #   warning(paste0('"color_legend" min ticks out of range. ',min(matrix),'<',min(color_legend$ticks),'. Range will be extended!'))
-    #   color_legend$ticks[1] <- min(matrix)-0.01
-    #   }
-    # if(max(matrix)>max(color_legend$ticks)){
-    #   warning(paste0('"color_legend" max ticks out of range. ',max(matrix),'>',max(color_legend$ticks),'. Range will be extended!'))
-    #   color_legend$ticks[length(color_legend$ticks)] <- max(matrix)+0.01
-    # }
 
   if(!is.null(width) && !is.numeric(width)) stop('"width" must be numeric')
   if(!is.null(width) && !is.numeric(height)) stop('"height" must be numeric')
@@ -220,12 +210,6 @@ clustpro <- function(matrix = NULL,
     col_dend_nw <- NULL
     row_dend <- NULL
     col_dend <- NULL
-    # if (!is.logical(rows) & class(rows) != 'hclust') {
-    #   stop('row_dend is not of type hclust')
-    # }
-    # if (!is.logical(cols) & class(cols) != 'hclust') {
-    #   stop('col_dend is not of type hclust')
-    # }
 
     if (is.null(clusterVector)) {
       stop('clusterVector has to been a numeric vector of same length as the data matrix!')
@@ -318,13 +302,9 @@ clustpro <- function(matrix = NULL,
     reordered_tooltip[['id']] <- NULL
     tooltip <- reordered_tooltip
   }else{
-  #tooltip[['id']] <- rownames(matrix)
     tooltip <- c(list(id=rownames(matrix)),tooltip)
     tooltip[['link']] <- NULL
   }
-
-
-  # sapply(color_legend,length)
 
   if(is.null(color_legend)){
     color_legend <- setHeatmapColors(data=matrix,auto=TRUE)
@@ -342,15 +322,6 @@ clustpro <- function(matrix = NULL,
     )
   colnames(color_matrix) <- colnames(matrix)
   rownames(color_matrix) <- rownames(matrix)
-
-   ## Test>
-  # payload[['matrix']] <- list(
-  #   data = as.matrix(cluster_centers),
-  #   rows = rownames(cluster_centers),
-  #   cols = colnames(cluster_centers),
-  #   dim = dim(cluster_centers)
-  # )
-  ## <Test
 
   payload[['matrix']] <- list(
     data = as.matrix(matrix),
@@ -425,8 +396,6 @@ clustpro <- function(matrix = NULL,
         file = "version_0.03a",
         ncolumns = 1,
         append = FALSE)
-  # utils::write.table(cbind(matrix,clusters),file = "clustered_matrix.txt",sep="\t", col.names=NA, row.names=T)
-
 
   if(useShiny){
   return(
@@ -440,10 +409,7 @@ clustpro <- function(matrix = NULL,
     sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE)
   )
   )
-  # show(widget)
-  # if (save_widget) {
-  #   saveWidget(widget, file = paste(getwd(), 'widget.html', sep = '/'))
-  # }
+
   }else{
   return(
     list(
@@ -473,7 +439,8 @@ clustpro <- function(matrix = NULL,
 #'
 #' @name clustpro-shiny
 #' @importFrom htmlwidgets shinyWidgetOutput
-#'
+#' @examples
+#' clustproOutput(1)
 #' @export
 clustproOutput <-
   function(outputId,
@@ -484,6 +451,8 @@ clustproOutput <-
 
 #' @rdname clustpro-shiny
 #' @importFrom htmlwidgets shinyRenderWidget
+#' @examples
+#' renderClustpro(NA)
 #' @export
 renderClustpro <-
   function(expr,
@@ -499,13 +468,15 @@ renderClustpro <-
 #'
 #' .................
 #' @param matrix numeric data.frame
-#' @param export_type character; type of exported graphics, tested for tif and svg
+#' @param export_type character; type of exported graphics, tested for tiff and svg
 #' @importFrom ggplot2 ggplot geom_density scale_color_discrete xlab xlab theme ggtitle ggsave  aes_string element_text element_blank element_line
-#'
+#' @examples
+#' \dontrun{
+#' distributions_histograms(mtcars[1:3],'tiff')
+#' }
 distributions_histograms <- function(matrix, export_type) {
   for (i in 1:ncol(matrix)) {
     x <- matrix[, i, drop = FALSE]
-  # initialize_graphic(paste('distribution_column_',colnames(matrix)[i], sep = "_"), type = export_type)
     g <-
       ggplot(x, aes_string(x = colnames(x))) +
       geom_density(fill = 'blue',alpha = 0.2) +
@@ -533,6 +504,13 @@ distributions_histograms <- function(matrix, export_type) {
 #' @param list list, unique list of numbers or character in whished order
 #' @param col character or numerical, col with should be ordered in accordance to list
 #' @param reverse boolean, if TRUE reverse order of list
+#' @examples
+#' df_tmp <- mtcars
+#' df_tmp$model <- rownames(df_tmp)
+#' order_dataframe_by_list(x = df_tmp
+#' ,list = sample(df_tmp$model,nrow(df_tmp)
+#' ,replace = FALSE)
+#' ,col = 'model')
 #' @export
 order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
   if (reverse) {
@@ -553,8 +531,10 @@ order_dataframe_by_list <- function(x, list, col, reverse = FALSE) {
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
 #' @import e1071
 #' @importFrom clusterSim index.DB
-#'
-
+#' @examples
+#' \dontrun{
+#' findk_cmeans(mtcars[1:3],2)
+#' }
 findk_cmeans <- function(matrix, k, seed = NULL) {
   tryCatch({
     if (!is.null(seed))
@@ -583,7 +563,10 @@ findk_cmeans <- function(matrix, k, seed = NULL) {
 #' @param k number of clusters, k
 #' @param seed natural number, useful for creating simulations or random objects that can be reproduced
 #' @importFrom clusterSim index.DB
-
+#' @examples
+#' \dontrun{
+#' findk_kmeans(mtcars[1:3],2)
+#' }
 findk_kmeans <- function(matrix, k, seed = NULL) {
   tryCatch({
     if (!is.null(seed))
@@ -623,8 +606,9 @@ findk_kmeans <- function(matrix, k, seed = NULL) {
 #' @import e1071
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel makeCluster stopCluster
+#' @examples
+#' get_best_k(matrix = mtcars["mpg",drop=FALSE],min_k = 2,max_k = 4)
 #' @export
-#'
 get_best_k <-
   function(matrix,
            min_k = 2,
@@ -781,7 +765,6 @@ clustering <- function(matrix,
     k <- as.numeric(filtered_db_list[filtered_db_list[, 2] == max(filtered_db_list[, 2], na.rm = TRUE),1])
     colnames(db_list) <- c('k','score','withinerror')
     if(export_graphics){
-    # initialize_graphic('best k estimation', type = export_type)
       yfactor <- max(db_list$score,na.rm=T) / max(db_list$withinerror,na.rm=T)
 
       db_list$withinerror <- db_list$withinerror * yfactor
@@ -900,45 +883,16 @@ clustering <- function(matrix,
   )
 }
 
-
-#' Function to initialize a graphic
-#'
-#' This function allows you to initialize a graphic
-#' @param filename character; filename for saving
-#' @param type character; type of exported graphics, tif, svg or pdf
-#' @param ...  further parameters
-initialize_graphic <- function(filename, type = 'tif', ...) {
-  gap_free_title <- gsub('\\s', '_', filename)
-  switch(type,
-         svg = {
-           grDevices::svg(paste(gap_free_title, '.svg', sep = ''),
-               width = 10,
-               height = 10)
-         },
-         tif = {
-           grDevices::tiff(
-             paste(gap_free_title, '.tif', sep = ''),
-             width = 2000,
-             height = 2000,
-             res = 200,
-             compression = 'lzw'
-           )
-         },
-         pdf = {
-           grDevices::pdf(paste(gap_free_title, '.pdf', sep = ''),
-               width = 10,
-               height = 10)
-         })
-}
-
-
-
 #' Function to get color
 #'
 #' ..............
 #' @param x numeric; value in range of the ticks
 #' @param ticks numeric vector breaks/ticks for a gradient
 #' @param colors character vector of colors for a gradient
+#' @examples
+#' \dontrun{
+#' get_color(x = 2, ticks = seq(1,3,1), colors = c('red','yellow','green'))
+#' }
 
 get_color <- function(x, ticks, colors) {
   i = 1
@@ -955,6 +909,8 @@ get_color <- function(x, ticks, colors) {
 #' This function allows you to define the color spectrum for heatmaps.
 #' @param intervals list of numerical vaules which define the breaks of the color space
 #' @param color_spect list of colors
+#' @examples
+#' color_spectrum(c(1,2,3),c('red','green'))
 #' @export
 color_spectrum <-
   function(intervals, color_spect) {
@@ -989,6 +945,8 @@ color_spectrum <-
 #' @param border_extensions double, which are add/subtracted from the maxima/minima
 #' @param decimal_places integer indicating the number of decimal places
 #' @keywords color spectrum heatmaps
+#' @examples
+#' setHeatmapColors(scale(mtcars[1:3]),intervals = c(-3,0,3))
 #' @export
 setHeatmapColors <-
   function(data,
@@ -1069,6 +1027,8 @@ factorial <- function(n)
 #' @param data numeric data.frame
 #' @param selected_columns null or list of selected columns of data
 #' @keywords tooltip
+#' @examples
+#' createTooltipList(data = mtcars, selected_columns =  c("cyl","mpg"))
 #' @export
 createTooltipList <- function(data,selected_columns=NULL){
     if(is.null(selected_columns)){return(sapply(data,function(x)return(list(x))))}
@@ -1086,6 +1046,8 @@ createTooltipList <- function(data,selected_columns=NULL){
 #' @param newick_string string to test
 #' @keywords newickformat
 #' @import stringr
+#' @examples
+#' is.Newick(newick_string = "(1:0.1,(2:0.2,(3:0.3,4:0.4):0.5)):0.7")
 #' @export
 
 is.Newick <- function(newick_string){

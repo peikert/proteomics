@@ -14,4 +14,7 @@ createTooltipList(data, selected_columns = NULL)
 \description{
 This function allows you convert selected columns of a data.frame into a list
 }
+\examples{
+createTooltipList(data = mtcars, selected_columns =  c("cyl","mpg"))
+}
 \keyword{tooltip}

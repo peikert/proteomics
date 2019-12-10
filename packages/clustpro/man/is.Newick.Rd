@@ -12,4 +12,7 @@ is.Newick(newick_string)
 \description{
 This function returns TRUE is string is in newick format, FALSE otherwise
 }
+\examples{
+is.Newick(newick_string = "(1:0.1,(2:0.2,(3:0.3,4:0.4):0.5)):0.7")
+}
 \keyword{newickformat}

@@ -16,3 +16,8 @@ get_color(x, ticks, colors)
 \description{
 ..............
 }
+\examples{
+\dontrun{
+get_color(x = 2, ticks = seq(1,3,1), colors = c('red','yellow','green'))
+}
+}

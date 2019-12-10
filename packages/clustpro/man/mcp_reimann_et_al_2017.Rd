@@ -35,6 +35,10 @@ Identifications referring to reverse hits and potential contaminants have been r
 \item Minus_log10_p_value_MTP_vs_MT The negative log10 transformed p-value of paced myotubes MTP to myoblasts MB
 }
 }
+\examples{
+data(mcp_reimann_et_al_2017)
+str(mcp_reimann_et_al_2017)
+}
 \references{
 Reimann, L., et al. Myofibrillar Z-discs Are a Protein Phosphorylation Hot Spot with Protein Kinase C (PKCalpha) Modulating Protein Dynamics. Molecular & Cellular Proteomics 2017;16(3):346-367.
 }

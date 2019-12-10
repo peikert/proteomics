@@ -16,3 +16,8 @@ findk_kmeans(matrix, k, seed = NULL)
 \description{
 .................
 }
+\examples{
+\dontrun{
+findk_kmeans(mtcars[1:3],2)
+}
+}

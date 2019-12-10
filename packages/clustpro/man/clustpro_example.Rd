@@ -12,3 +12,6 @@ see clustpro() function output
 \description{
 A theoretical proteomics dataset composed of 1000 human proteins (UniProt accessionn umbers) and random choosen values will be used to call the clustpro() main function.
 }
+\examples{
+clustpro_example()
+}

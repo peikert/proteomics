@@ -24,6 +24,9 @@ setHeatmapColors(data, color_list = c("red", "yellow", "green"),
 \description{
 This function allows you to define the color spectrum for heatmaps.
 }
+\examples{
+setHeatmapColors(scale(mtcars[1:3]),intervals = c(-3,0,3))
+}
 \keyword{color}
 \keyword{heatmaps}
 \keyword{spectrum}

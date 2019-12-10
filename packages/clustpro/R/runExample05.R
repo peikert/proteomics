@@ -1,6 +1,10 @@
 #' Example 5
 #'
 #' starts a test shiny app
+#' @examples
+#' \dontrun{
+#' runExample05()
+#' }
 #' @export
 runExample05 <- function() {
   appDir <- system.file("shiny-examples", "03", package = "clustpro")

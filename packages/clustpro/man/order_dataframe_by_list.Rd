@@ -22,3 +22,11 @@ order_dataframe_by_list
 order a data.frame by the order of a list
 .................
 }
+\examples{
+df_tmp <- mtcars
+df_tmp$model <- rownames(df_tmp)
+order_dataframe_by_list(x = df_tmp
+,list = sample(df_tmp$model,nrow(df_tmp)
+,replace = FALSE)
+,col = 'model')
+}

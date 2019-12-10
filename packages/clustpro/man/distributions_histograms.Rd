@@ -9,8 +9,13 @@ distributions_histograms(matrix, export_type)
 \arguments{
 \item{matrix}{numeric data.frame}
 
-\item{export_type}{character; type of exported graphics, tested for tif and svg}
+\item{export_type}{character; type of exported graphics, tested for tiff and svg}
 }
 \description{
 .................
+}
+\examples{
+\dontrun{
+distributions_histograms(mtcars[1:3],'tiff')
+}
 }

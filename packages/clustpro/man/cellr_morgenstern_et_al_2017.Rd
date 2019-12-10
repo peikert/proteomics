@@ -77,6 +77,10 @@ The variables are as follows:
 \item Gly_div_Glc ratio of mean log2 ratio glycerol vs mean log2 ratio glucose
 }
 }
+\examples{
+data(cellr_morgenstern_et_al_2017)
+str(cellr_morgenstern_et_al_2017)
+}
 \references{
 Morgenstern, M., et al. Definition of a High-Confidence Mitochondrial Proteome at Quantitative Scale. Cell reports 2017;19(13):2836-2852.
 }
